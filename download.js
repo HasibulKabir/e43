@@ -8,6 +8,6 @@ process.argv.forEach(function (val, index, array) {
 
 const alltomp3 = require('alltomp3');
 
-var dl = alltomp3.findAndDownload(args, "./", function (infos) {
-    console.log(infos.file);
+var dl = alltomp3.findVideo(args).then(function(results) {
+    console.log(results.url);
 });

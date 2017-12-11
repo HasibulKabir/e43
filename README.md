@@ -14,6 +14,11 @@ This Telegram bot can download almost anything :)
 - eyeD3
 - node-acoustid
 - chromaprint
+- Python 2
+- Python 3
+- youtube-dl
+- wget
+- Sacad
 
 ### How to install
 
