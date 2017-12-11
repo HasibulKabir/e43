@@ -12,7 +12,7 @@ This Telegram bot can download almost anything :)
 - FFMPEG
 - LAME
 - eyeD3
-- node-acoutstid
+- node-acoustid
 - chromaprint
 
 ### How to install
@@ -21,6 +21,7 @@ This Telegram bot can download almost anything :)
 git clone https://github.com/botschmiede/everythingbot
 cd everythingbot
 npm install git+https://github.com/AllToMP3/alltomp3
+sudo npm -g install acoustid
 sudo pip2 install -r requirements.txt
 ```
 
