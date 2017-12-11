@@ -12,7 +12,6 @@ import subprocess
 import urlparse
 import time
 import re
-import eyed3
 
 TOKEN = ""
 
@@ -27,7 +26,6 @@ def handle(msg):
     else:
         bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
         metadata = os.popen("node --no-warnings download.js " + input_text).read()
-        bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
         cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 \
             --output "audio.%%(ext)s" %summary'%(metadata)
         os.system(cmd)
@@ -63,7 +61,7 @@ def handle(msg):
 	filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
 	os.rename("audio.mp3.mp3", filename)
         sendAudio(chat_id,filename)
-        bot.sendMessage(chat_id,"Here you go!")
+        bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
 
 def sendAudio(chat_id,file_name):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
