@@ -9,5 +9,5 @@ process.argv.forEach(function (val, index, array) {
 const alltomp3 = require('alltomp3');
 
 var dl = alltomp3.findVideo(args).then(function(results) {
-    console.log(results.url);
+    console.log(results[0].url);
 });
