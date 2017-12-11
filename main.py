@@ -1,9 +1,18 @@
 #!/usr/bin/python2
 # -*- coding: utf-8 -*-
 
-import os
+import sys
 import time
 import telepot
+import requests
+import os
+import re
+import requests
+import subprocess
+import urlparse
+import time
+import re
+import eyed3
 
 TOKEN = ""
 
@@ -16,7 +25,7 @@ def handle(msg):
     if input_text.startswith("/start"):
         bot.sendMessage(chat_id,"Hello, please send me the name of the song or a link from YouTube, Spotify, Deezer and many more :)")
     else:
-        bot.sendMessage(chat_id, "Please wait...I'm converting the link to an MP3 file")
+        bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
         metadata = os.popen("node --no-warnings download.js " + input_text).read()
         bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
         cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 \
