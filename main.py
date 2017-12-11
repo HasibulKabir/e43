@@ -31,11 +31,11 @@ def handle(msg):
         cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 \
             --output "audio.%%(ext)s" %summary'%(metadata)
         os.system(cmd)
-        url_data = urlparse.urlparse(input_text)
+        url_data = urlparse.urlparse(metadata)
         query = urlparse.parse_qs(url_data.query)
         #video = query["v"][0]
         #os.system("wget -O audio.jpg http://i4.ytimg.com/vi/" + video + "/default.jpg")
-        cmd = ["youtube-dl", "--get-title", "--skip-download", input_text]
+        cmd = ["youtube-dl", "--get-title", "--skip-download", metadata]
         output = subprocess.Popen(cmd,stdout=subprocess.PIPE).communicate()[0]
         output = output.split("\n")[0]
         time.sleep(3)
