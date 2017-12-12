@@ -12,6 +12,7 @@ import subprocess
 import urlparse
 import time
 import re
+import eyed3
 
 TOKEN = ""
 
@@ -22,7 +23,13 @@ def handle(msg):
     summary = telepot.glance(msg, flavor=flavor)
     print(flavor, summary)
     if input_text.startswith("/start"):
-        bot.sendMessage(chat_id,"Hello, please send me the name of the song or a link from YouTube, Spotify, Deezer and many more :)")
+        bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
+    if input_text.startswith("http://") or input_text.startswith("https://"):
+        bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
+        filename = os.popen("node --no-warnings download-url.js " + input_text).read()
+        bot.sendMessage(chat_id, "Sending the file...")
+        bot.sendAudio(chat_id, filename)
+        bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
     else:
         bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
         metadata = os.popen("node --no-warnings download.js " + input_text).read()
@@ -56,8 +63,8 @@ def handle(msg):
 	  artist = tag.tag.artist
 	#bot.sendMessage(chat_id,artist+" - "+title)
 	os.system("sacad '" + artist + "' '" + title + "' 800 audio.jpg")
-        os.system("lame -V 0 -b 128 --ti audio.jpg --tt \"" + title + "\" --ta \"" + artist + "\" audio.mp3")
-        bot.sendMessage(chat_id,"Sending the file...")
+    os.system("lame -V 0 -b 128 --ti audio.jpg --tt \"" + title + "\" --ta \"" + artist + "\" audio.mp3")
+    bot.sendMessage(chat_id,"Sending the file...")
 	filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
 	os.rename("audio.mp3.mp3", filename)
         sendAudio(chat_id,filename)
