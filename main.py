@@ -44,7 +44,10 @@ def handle(msg):
         output = subprocess.Popen(cmd,stdout=subprocess.PIPE).communicate()[0]
         output = output.split("\n")[0]
         time.sleep(3)
-        tag = eyed3.load("audio.mp3")
+        try:
+            tag = eyed3.load("audio.mp3")
+        except:
+            bot.sendMessage(chat_id, "I couldn't find the song you're looking for. Maybe you could go find yourself a link and enter it here, so I know where to start from.")
 	try:
           title = tag.tag.title.split(" - ")[1]
           artist = tag.tag.title.split(" - ")[0]
@@ -67,8 +70,8 @@ def handle(msg):
     	bot.sendMessage(chat_id,"Sending the file...")
 	filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
 	os.rename("audio.mp3.mp3", filename)
-        sendAudio(chat_id,filename)
-        bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
+    sendAudio(chat_id,filename)
+    bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
 
 def sendAudio(chat_id,file_name):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
