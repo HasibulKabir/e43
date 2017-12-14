@@ -13,27 +13,45 @@ import urlparse
 import time
 import re
 import eyed3
+from mutagen.mp3 import MP3
 
-TOKEN = ""
+TOKEN = "499796086:AAEAJNzSVmgMqcAmC9fBur3KSywC3ZoU1o8"
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-    input_text = msg['text']
+    print(chat_type)
     flavor = telepot.flavor(msg)
     summary = telepot.glance(msg, flavor=flavor)
     print(flavor, summary)
-    if input_text.startswith("/start"):
+    if content_type == 'audio':
+        audiofile = msg['audio']
+        fileid = msg['audio']['file_id']
+        flavor = telepot.flavor(msg)
+        summary = telepot.glance(msg, flavor=flavor)
+        print(flavor, summary)
+        print(fileid)
+        print(bot.getFile(file_id=fileid))
+        os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + bot.getFile(file_id=fileid)['file_path'] + " -O " + bot.getFile(file_id=fileid)['file_path'])
+        audio = MP3(bot.getFile(file_id=fileid)['file_path'])
+        length = audio.info.length * 0.33
+        l2 = (audio.info.length * 0.33) + 60
+        if audio.info.length > l2:
+            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + bot.getFile(file_id=fileid)['file_path'] + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+        else:
+            os.system("ffmpeg -ss 0 -t 60 -y -i " + bot.getFile(file_id=fileid)['file_path'] + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+        sendVoice(chat_id, "output.ogg")
+    if msg['text'].startswith("/start"):
         bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
-    if input_text.startswith("http://") or input_text.startswith("https://"):
+    if msg['text'].startswith("http://") or msg['text'].startswith("https://"):
         bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
-        filename = os.popen("node --no-warnings download-url.js " + input_text).read().rstrip()
+        filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
         bot.sendMessage(chat_id, "Sending the file...")
         sendAudio(chat_id, filename)
         bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
-    else:
+    if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http"):
         try:
             bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
-            metadata = os.popen("node --no-warnings download.js " + input_text).read()
+            metadata = os.popen("node --no-warnings download.js " + msg['text']).read()
             cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 \
                 --output "audio.%%(ext)s" %summary'%(metadata)
             os.system(cmd)
@@ -77,6 +95,13 @@ def handle(msg):
 def sendAudio(chat_id,file_name):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
     files = {'audio': open(file_name, 'rb')}
+    data = {'chat_id' : chat_id}
+    r= requests.post(url, files=files, data=data)
+    print(r.status_code, r.reason, r.content)
+
+def sendVoice(chat_id,file_name):
+    url = "https://api.telegram.org/bot%s/sendVoice"%(TOKEN)
+    files = {'voice': open(file_name, 'rb')}
     data = {'chat_id' : chat_id}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
