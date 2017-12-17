@@ -15,7 +15,7 @@ import re
 import eyed3
 from mutagen.mp3 import MP3
 
-TOKEN = "499796086:AAEAJNzSVmgMqcAmC9fBur3KSywC3ZoU1o8"
+TOKEN = ""
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -44,53 +44,23 @@ def handle(msg):
         bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
     if msg['text'].startswith("http://") or msg['text'].startswith("https://"):
         bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
-        filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
-        bot.sendMessage(chat_id, "Sending the file...")
-        sendAudio(chat_id, filename)
-        bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
+        try:
+            filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
+            bot.sendMessage(chat_id, "Sending the file...")
+            sendAudio(chat_id, filename)
+            bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
+        except:
+            bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
     if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http"):
         try:
             bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
-            metadata = os.popen("node --no-warnings download.js " + msg['text']).read()
-            cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 \
-                --output "audio.%%(ext)s" %summary'%(metadata)
-            os.system(cmd)
-            url_data = urlparse.urlparse(metadata)
-            query = urlparse.parse_qs(url_data.query)
-            #video = query["v"][0]
-            #os.system("wget -O audio.jpg http://i4.ytimg.com/vi/" + video + "/default.jpg")
-            cmd = ["youtube-dl", "--get-title", "--skip-download", metadata]
-            output = subprocess.Popen(cmd,stdout=subprocess.PIPE).communicate()[0]
-            output = output.split("\n")[0]
-            time.sleep(3)
-            tag = eyed3.load("audio.mp3")
-            try:
-                title = tag.tag.title.split(" - ")[1]
-                artist = tag.tag.title.split(" - ")[0]
-                title = title.replace(artist + " - ","")
-                try:
-                    if not "Remix" in title and not "Mix" in title:
-                        title = title.split(" (")[0]
-                except:
-                    pass
-                try:
-                    title = title.split(" [")[0]
-                except:
-                    pass
-            except:
-                title = tag.tag.title
-                artist = tag.tag.artist
-                #bot.sendMessage(chat_id,artist+" - "+title)
-            os.system("sacad '" + artist + "' '" + title + "' 800 audio.jpg")
-            os.system("lame -V 0 -b 128 --ti audio.jpg --tt \"" + title + "\" --ta \"" + artist + "\" audio.mp3")
-            bot.sendMessage(chat_id,"Sending the file...")
-            filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
-            os.rename("audio.mp3.mp3", filename)
-            sendAudio(chat_id,filename)
-            os.system("rm -f *.mp3")
+            metadata = os.popen("node --no-warnings download.js " + msg['text']).read().rstrip()
+            filename = os.popen("node --no-warnings download-url.js " + metadata).read().rstrip()
+            bot.sendMessage(chat_id, "Sending the file...")
+            sendAudio(chat_id, filename)
             bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
         except:
-            bot.sendMessage(chat_id, "I couldn't find the song you're looking for. Maybe you could go find yourself a link and enter it here, so I know where to start from.")
+            bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
 
 def sendAudio(chat_id,file_name):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
