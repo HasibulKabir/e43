@@ -22,7 +22,7 @@ def handle(msg):
     print(chat_type)
     flavor = telepot.flavor(msg)
     summary = telepot.glance(msg, flavor=flavor)
-    print(flavor, summary)
+    print(flavor, summary, chat_type)
     if content_type == 'audio':
         audiofile = msg['audio']
         fileid = msg['audio']['file_id']
@@ -42,7 +42,7 @@ def handle(msg):
         sendVoice(chat_id, "output.ogg")
     if msg['text'].startswith("/start"):
         bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
-    if msg['text'].startswith("http://") or msg['text'].startswith("https://"):
+    if msg['text'].startswith("http://") or msg['text'].startswith("https://") and not chat_type == "channel":
         bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
         try:
             filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
