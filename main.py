@@ -48,6 +48,14 @@ def handle(msg):
             filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
             bot.sendMessage(chat_id, "Sending the file...")
             sendAudio(chat_id, filename)
+            audio = MP3(filename)
+            length = audio.info.length * 0.33
+            l2 = (audio.info.length * 0.33) + 60
+            if audio.info.length > l2:
+                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+            else:
+                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+            sendVoice(chat_id, "output.ogg")
             bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
         except:
             bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
@@ -58,6 +66,14 @@ def handle(msg):
             filename = os.popen("node --no-warnings download-url.js " + metadata).read().rstrip()
             bot.sendMessage(chat_id, "Sending the file...")
             sendAudio(chat_id, filename)
+            audio = MP3(filename)
+            length = audio.info.length * 0.33
+            l2 = (audio.info.length * 0.33) + 60
+            if audio.info.length > l2:
+                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+            else:
+                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+            sendVoice(chat_id, "output.ogg")
             bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
         except:
             bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
