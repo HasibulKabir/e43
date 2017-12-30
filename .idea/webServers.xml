@@ -3,11 +3,11 @@
   <component name="WebServers">
     <option name="servers">
       <webServer id="983079bb-cbdb-4301-a91c-710953b5c293" name="koyu.space" url="http://koyu.space">
-        <fileTransfer host="koyu.space" port="22" rootFolder="/home/koyu/everythingbot" accessType="SFTP">
+        <fileTransfer host="koyu.space" port="53" rootFolder="/home/koyu/everythingbot" accessType="SFTP">
           <advancedOptions>
             <advancedOptions dataProtectionLevel="Private" />
           </advancedOptions>
-          <option name="port" value="22" />
+          <option name="port" value="53" />
         </fileTransfer>
       </webServer>
     </option>
