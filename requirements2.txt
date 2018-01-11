@@ -1,0 +1,4 @@
+telepot
+eyed3
+mutagen
+requests
