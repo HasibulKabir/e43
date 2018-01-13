@@ -61,16 +61,16 @@ def handle(msg):
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = length + 60
-                            if audio.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                            else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                            sendVoice(chat_id, "output.ogg")
-                            bot.sendMessage(chat_id,"Here you go!")
-                        except:
-                            bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
+                    length = audio.info.length * 0.33
+                    l2 = length + 60
+                    if audio.info.length > l2:
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    else:
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    sendVoice(chat_id, "output.ogg")
+                    bot.sendMessage(chat_id,"Here you go!")
+                except:
+                    bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
         if chat_type == "private" and msg["text"].startswith("http"):
             if " &" in msg['text']:
                 bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
@@ -81,16 +81,16 @@ def handle(msg):
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = length + 60
-                            if audio.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                            else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                            sendVoice(chat_id, "output.ogg")
-                            bot.sendMessage(chat_id,"Here you go!")
-                        except:
-                            bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
+                    length = audio.info.length * 0.33
+                    l2 = length + 60
+                    if audio.info.length > l2:
+                       os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    else:
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    sendVoice(chat_id, "output.ogg")
+                    bot.sendMessage(chat_id,"Here you go!")
+                except:
+                    bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
         if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http"):
             if " &" in msg['text']:
                 bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
