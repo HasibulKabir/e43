@@ -16,7 +16,7 @@ import eyed3
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 
-TOKEN = "481910499:AAFVkKxQrk3zTqefstekkLw-Liz7Ln35Ces"
+TOKEN = ""
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
