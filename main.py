@@ -52,11 +52,15 @@ def handle(msg):
         sendVoice(chat_id, "output.ogg")
     if content_type == "text":
         if "😂" in msg['text']:
-            count = len(msg['text'].split("😂"))
-            f = open("joy.txt", "w+")
+            count = len(msg['text'].split("😂")) - 1
+            f = open("joy.txt", "r")
             s = f.read()
+            f.close()
+            if s == "":
+                s = "0"
             sum = int(count) + int(s)
-            f.write(s)
+            f = open("joy.txt", "w")
+            f.write(str(sum))
             f.close()
             bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
         if msg['text'].startswith("/start"):
