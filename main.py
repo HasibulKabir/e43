@@ -78,7 +78,7 @@ def handle(msg):
             if sum % 5 == 0:
                 bot.sendMessage(chat_id, "bro level is now: " + str(sum))
         if "Hi" in msg['text']:
-            count = len(msg['text'].split("bro")) - 1
+            count = len(msg['text'].split("Hi")) - 1
             f = open("counters/hi.txt", "r")
             s = f.read()
             f.close()
@@ -91,7 +91,7 @@ def handle(msg):
             if sum % 5 == 0:
                 bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
         if "lol" in msg['text']:
-            count = len(msg['text'].split("bro")) - 1
+            count = len(msg['text'].split("lol")) - 1
             f = open("counters/lol.txt", "r")
             s = f.read()
             f.close()
