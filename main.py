@@ -16,7 +16,7 @@ import eyed3
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 
-TOKEN = "481910499:AAFVkKxQrk3zTqefstekkLw-Liz7Ln35Ces"
+TOKEN = ""
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -48,6 +48,14 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "text":
+        if "😂" in msg['text']:
+            count = len(msg['text'].split("😂"))
+            f = open("joy.txt", "w+")
+            s = f.read()
+            sum = int(count) + int(s)
+            f.write(s)
+            f.close()
+            bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
         if msg['text'].startswith("/start"):
             bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
