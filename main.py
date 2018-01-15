@@ -53,17 +53,56 @@ def handle(msg):
     if content_type == "text":
         if "😂" in msg['text']:
             count = len(msg['text'].split("😂")) - 1
-            f = open("joy.txt", "r")
+            f = open("counters/joy.txt", "r")
             s = f.read()
             f.close()
             if s == "":
                 s = "0"
             sum = int(count) + int(s)
-            f = open("joy.txt", "w")
+            f = open("counters/joy.txt", "w")
             f.write(str(sum))
             f.close()
             if sum % 5 == 0:
                 bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
+        if "bro" in msg['text']:
+            count = len(msg['text'].split("bro")) - 1
+            f = open("counters/bro.txt", "r")
+            s = f.read()
+            f.close()
+            if s == "":
+                s = "0"
+            sum = int(count) + int(s)
+            f = open("counters/bro.txt", "w")
+            f.write(str(sum))
+            f.close()
+            if sum % 5 == 0:
+                bot.sendMessage(chat_id, "bro level is now: " + str(sum))
+        if "Hi" in msg['text']:
+            count = len(msg['text'].split("bro")) - 1
+            f = open("counters/hi.txt", "r")
+            s = f.read()
+            f.close()
+            if s == "":
+                s = "0"
+            sum = int(count) + int(s)
+            f = open("counters/hi.txt", "w")
+            f.write(str(sum))
+            f.close()
+            if sum % 5 == 0:
+                bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
+        if "lol" in msg['text']:
+            count = len(msg['text'].split("bro")) - 1
+            f = open("counters/lol.txt", "r")
+            s = f.read()
+            f.close()
+            if s == "":
+                s = "0"
+            sum = int(count) + int(s)
+            f = open("counters/lol.txt", "w")
+            f.write(str(sum))
+            f.close()
+            if sum % 5 == 0:
+                bot.sendMessage(chat_id, "lol level is now: " + str(sum))
         if msg['text'].startswith("/start"):
             bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
