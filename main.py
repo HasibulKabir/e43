@@ -16,6 +16,9 @@ import eyed3
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
+
 TOKEN = ""
 
 def handle(msg):
