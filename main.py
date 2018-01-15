@@ -62,7 +62,8 @@ def handle(msg):
             f = open("joy.txt", "w")
             f.write(str(sum))
             f.close()
-            bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
+            if sum % 5 == 0:
+                bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
         if msg['text'].startswith("/start"):
             bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
