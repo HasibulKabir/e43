@@ -64,7 +64,8 @@ def handle(msg):
             else:
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
-                    filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
+                    url = msg['text'].split("/conv ")
+                    filename = os.popen("node --no-warnings download-url.js " + url).read().rstrip()
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
@@ -72,6 +73,26 @@ def handle(msg):
                     l2 = length + 60
                     if audio.info.length > l2:
                         os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    else:
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    sendVoice(chat_id, "output.ogg")
+                    bot.sendMessage(chat_id,"Here you go!")
+                except:
+                    bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
+        if chat_type == "private" and msg["text"].startswith("http"):
+            if " &" in msg['text']:
+                bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
+            else:
+                bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
+                try:
+                    filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
+                    bot.sendMessage(chat_id, "Sending the file...")
+                    sendAudio(chat_id, filename)
+                    audio = MP3(filename)
+                    length = audio.info.length * 0.33
+                    l2 = length + 60
+                    if audio.info.length > l2:
+                       os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
