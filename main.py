@@ -13,6 +13,7 @@ import urlparse
 import time
 import re
 import eyed3
+import random
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 
@@ -20,6 +21,9 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 TOKEN = ""
+f = open("random.txt", "w+")
+f.write(str(random.randint(20,30)))
+f.close()
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -27,6 +31,9 @@ def handle(msg):
     flavor = telepot.flavor(msg)
     summary = telepot.glance(msg, flavor=flavor)
     print(flavor, summary, chat_type)
+    f = open("random.txt", "r")
+    rnumber = int(f.read())
+    f.close()
     if content_type == 'audio':
         audiofile = msg['audio']
         fileid = msg['audio']['file_id']
@@ -62,7 +69,7 @@ def handle(msg):
             f = open("counters/joy.txt", "w")
             f.write(str(sum))
             f.close()
-            if sum % 5 == 0:
+            if sum % rnumber == 0:
                 bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
         if "bro" in msg['text']:
             count = len(msg['text'].split("bro")) - 1
@@ -75,7 +82,7 @@ def handle(msg):
             f = open("counters/bro.txt", "w")
             f.write(str(sum))
             f.close()
-            if sum % 5 == 0:
+            if sum % rnumber == 0:
                 bot.sendMessage(chat_id, "bro level is now: " + str(sum))
         if "Hi" in msg['text']:
             count = len(msg['text'].split("Hi")) - 1
@@ -88,7 +95,7 @@ def handle(msg):
             f = open("counters/hi.txt", "w")
             f.write(str(sum))
             f.close()
-            if sum % 5 == 0:
+            if sum % rnumber == 0:
                 bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
         if "lol" in msg['text']:
             count = len(msg['text'].split("lol")) - 1
@@ -101,7 +108,7 @@ def handle(msg):
             f = open("counters/lol.txt", "w")
             f.write(str(sum))
             f.close()
-            if sum % 5 == 0:
+            if sum % rnumber == 0:
                 bot.sendMessage(chat_id, "lol level is now: " + str(sum))
         if msg['text'].startswith("/start"):
             bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
