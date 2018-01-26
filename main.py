@@ -64,7 +64,7 @@ def handle(msg):
             else:
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
-                    url = msg['text'].split("/conv ")
+                    url = msg['text'].split("/conv ")[1]
                     filename = os.popen("node --no-warnings download-url.js " + url).read().rstrip()
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
