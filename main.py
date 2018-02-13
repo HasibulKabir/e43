@@ -65,7 +65,7 @@ def handle(msg):
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
                     url = msg['text'].split("/conv ")[1]
-                    filename = os.popen("node --no-warnings download-url.js " + url).read().rstrip()
+                    filename, err = subprocess.Popen("node", "--no-warnings download-url.js", url, stdout=subprocess.PIPE).communicate()
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
@@ -140,7 +140,7 @@ def handle(msg):
                 else:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                     try:
-                        filename = os.popen("node --no-warnings download-url.js " + msg['text']).read().rstrip()
+                        filename, err = subprocess.Popen("node", "--no-warnings download-url.js", url, stdout=subprocess.PIPE).communicate()
                         bot.sendMessage(chat_id, "Sending the file...")
                         sendAudio(chat_id, filename)
                         audio = MP3(filename)
@@ -160,8 +160,8 @@ def handle(msg):
                 else:
                     try:
                         bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
-                        metadata = os.popen("node --no-warnings download.js " + msg['text']).read().rstrip()
-                        filename = os.popen("node --no-warnings download-url.js " + metadata).read().rstrip()
+                        metadata, err = subprocess.Popen("node", "--no-warnings download.js", msg['text'], stdout=subprocess.PIPE).communicate()
+                        filename, err = subprocess.Popen("node", "--no-warnings download-url.js", metadata, stdout=subprocess.PIPE).communicate()
                         bot.sendMessage(chat_id, "Sending the file...")
                         sendAudio(chat_id, filename)
                         audio = MP3(filename)
