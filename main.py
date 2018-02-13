@@ -59,7 +59,7 @@ def handle(msg):
         sendVoice(chat_id, "output.ogg")
     if content_type == "text":
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
-            if " &" in msg['text']:
+            if "&" in msg['text'] or ";" in msg['text']:
                 bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
             else:
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
@@ -135,7 +135,7 @@ def handle(msg):
             if msg['text'].startswith("/start"):
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
-                if " &" in msg['text']:
+                if "&" in msg['text'] or ";" in msg['text']:
                     bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
                 else:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
@@ -155,7 +155,7 @@ def handle(msg):
                     except:
                         bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
-                if " &" in msg['text']:
+                if "&" in msg['text'] or ";" in msg['text']:
                     bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
                 else:
                     try:
