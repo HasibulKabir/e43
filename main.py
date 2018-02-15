@@ -62,7 +62,7 @@ def handle(msg):
             bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
             try:
                 url = msg['text'].split("/conv ")[1]
-                filename, err = subprocess.Popen("node", "--no-warnings download-url.js", url, stdout=subprocess.PIPE).communicate()
+                filename = subprocess.Popen("node --no-warnings download-url.js \"" + url + "\"", shell=False).wait()
                 bot.sendMessage(chat_id, "Sending the file...")
                 sendAudio(chat_id, filename)
                 audio = MP3(filename)
@@ -134,7 +134,7 @@ def handle(msg):
             if chat_type == "private" and msg["text"].startswith("http"):
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
-                    filename, err = subprocess.Popen("node", "--no-warnings download-url.js", url, stdout=subprocess.PIPE).communicate()
+                    filename = subprocess.Popen("node --no-warnings download-url.js \"" + url + "\"", shell=False).wait()
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
@@ -151,8 +151,8 @@ def handle(msg):
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
-                    metadata, err = subprocess.Popen("node", "--no-warnings download.js", msg['text'], stdout=subprocess.PIPE).communicate()
-                    filename, err = subprocess.Popen("node", "--no-warnings download-url.js", metadata, stdout=subprocess.PIPE).communicate()
+                    metadata = subprocess.Popen("node --no-warnings download.js " + msg['text'], shell=False).wait()
+                    filename = subprocess.Popen("node --no-warnings download-url.js " + metadata, shell=False).wait()
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
