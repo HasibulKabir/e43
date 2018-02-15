@@ -135,7 +135,7 @@ def handle(msg):
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
                     url = msg['text']
-                    filename = subprocess.check_output(["node", "--no-warnings download-url.js", url]).split('\n')[0]
+                    filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
                     audio = MP3(filename)
@@ -152,7 +152,7 @@ def handle(msg):
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
-                    metadata = subprocess.check_output(["node", "--no-warnings download.js", msg['text']]).split('\n')[0]
+                    metadata = subprocess.check_output(["node", "--no-warnings", "download.js", msg['text']]).split('\n')[0]
                     filename = subprocess.check_output(["node", "--no-warnings" "download-url.js", metadata]).split('\n')[0]
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
