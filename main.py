@@ -14,13 +14,14 @@ import time
 import re
 import eyed3
 import random
+import mutagen
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-TOKEN = ""
+TOKEN = "481910499:AAGsn85q4ZHFeGCBIr1Q_GtWVIHursfCgmo"
 f = open("random.txt", "w+")
 f.write(str(random.randint(20,30)))
 f.close()
@@ -63,8 +64,12 @@ def handle(msg):
             try:
                 url = msg['text'].split("/conv ")[1]
                 filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
+                os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
                 bot.sendMessage(chat_id, "Sending the file...")
-                sendAudio(chat_id, filename)
+                audio = eyed3.load(filename)
+                tt = audio.tag.title
+                artist = audio.tag.artist
+                sendAudio(chat_id, "output.mp3", artist, tt)
                 audio = MP3(filename)
                 length = audio.info.length * 0.33
                 l2 = length + 60
@@ -132,12 +137,16 @@ def handle(msg):
             if msg['text'].startswith("/start"):
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
-                bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
+                    bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                     url = msg['text']
                     filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
+                    os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
                     bot.sendMessage(chat_id, "Sending the file...")
-                    sendAudio(chat_id, filename)
+                    audio = eyed3.load(filename)
+                    tt = audio.tag.title
+                    artist = audio.tag.artist
+                    sendAudio(chat_id, "output.mp3", artist, tt)
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = length + 60
@@ -155,7 +164,10 @@ def handle(msg):
                     metadata = subprocess.check_output(["node", "--no-warnings", "download.js", msg['text']]).split('\n')[0]
                     filename = subprocess.check_output(["node", "--no-warnings" "download-url.js", metadata]).split('\n')[0]
                     bot.sendMessage(chat_id, "Sending the file...")
-                    sendAudio(chat_id, filename)
+                    audio = eyed3.load(filename)
+                    tt = audio.tag.title
+                    artist = audio.tag.artist
+                    sendAudio(chat_id, filename, artist, tt)
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
@@ -168,10 +180,10 @@ def handle(msg):
                 except:
                     bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
 
-def sendAudio(chat_id,file_name):
+def sendAudio(chat_id,file_name,performer,title):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
     files = {'audio': open(file_name, 'rb')}
-    data = {'chat_id' : chat_id}
+    data = {'chat_id' : chat_id, 'performer' : performer, 'title' : title}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
 
