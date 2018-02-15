@@ -74,8 +74,8 @@ def handle(msg):
                     os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
                     bot.sendMessage(chat_id,"Here you go!")
-            except:
-                bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
+            except Exception, e:
+                bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.\n\n```\n" + e + "\n```", "Markdown")
         else:
             if "😂" in msg['text']:
                 count = len(msg['text'].split("😂")) - 1
@@ -146,8 +146,8 @@ def handle(msg):
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
                     bot.sendMessage(chat_id,"Here you go!")
-                except:
-                    bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.")
+             except Exception, e:
+                bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.\n\n```\n" + e + "\n```", "Markdown")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
