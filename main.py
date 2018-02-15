@@ -69,7 +69,9 @@ def handle(msg):
                 audio = eyed3.load(filename)
                 tt = audio.tag.title
                 artist = audio.tag.artist
-                sendAudio(chat_id, "output.mp3", artist, tt)
+                filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
+                os.rename("output.mp3", filename)
+                sendAudio(chat_id, filename, artist, tt)
                 audio = MP3(filename)
                 length = audio.info.length * 0.33
                 l2 = length + 60
@@ -146,7 +148,9 @@ def handle(msg):
                     audio = eyed3.load(filename)
                     tt = audio.tag.title
                     artist = audio.tag.artist
-                    sendAudio(chat_id, "output.mp3", artist, tt)
+                    filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
+                    os.rename("output.mp3", filename)
+                    sendAudio(chat_id, filename, artist, tt)
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = length + 60
@@ -167,6 +171,8 @@ def handle(msg):
                     audio = eyed3.load(filename)
                     tt = audio.tag.title
                     artist = audio.tag.artist
+                    filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
+                    os.rename("output.mp3", filename)
                     sendAudio(chat_id, filename, artist, tt)
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
