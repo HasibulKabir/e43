@@ -134,6 +134,7 @@ def handle(msg):
             if chat_type == "private" and msg["text"].startswith("http"):
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 try:
+                    url = msg['text']
                     filename = subprocess.Popen("node --no-warnings download-url.js \"" + url + "\"", shell=False).wait()
                     bot.sendMessage(chat_id, "Sending the file...")
                     sendAudio(chat_id, filename)
