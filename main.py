@@ -59,6 +59,11 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "text":
+        if msg['text'].startswith("/isopen"):
+            if time.strftime("%H") == "15":
+                bot.sendMessage(chat_id,"koyu.space Social is open!!\nYou can register here: https://social.koyu.space/", disable_web_page_preview=False)
+            else:
+                bot.sendMessage(chat_id,"koyu.space Social ist closed 😢")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
             try:
@@ -162,7 +167,7 @@ def handle(msg):
                     bot.sendMessage(chat_id,"Here you go!")
                 except Exception, e:
                     bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.\n\n```\n" + str(e) + "\n```", "Markdown")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv") and not msg['text'].startswith("/isopen"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
                     metadata = subprocess.check_output(["node", "--no-warnings", "download.js", msg['text']]).split('\n')[0]
