@@ -63,7 +63,7 @@ def handle(msg):
             if time.strftime("%H") == "15":
                 bot.sendMessage(chat_id,"koyu.space Social is open!!\nYou can register here: https://social.koyu.space/", disable_web_page_preview=False)
             else:
-                bot.sendMessage(chat_id,"koyu.space Social ist closed 😢")
+                bot.sendMessage(chat_id,"koyu.space Social is closed 😢\nMessage @Sommerlichter if you're interested in opening up an account!")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
             try:
