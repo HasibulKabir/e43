@@ -35,7 +35,7 @@ def handle(msg):
     f = open("random.txt", "r")
     rnumber = int(f.read())
     f.close()
-    if "try_it_harder" in msg['from']['username'].lower():
+    if "try_it_harder" in msg['from']['username'].lower() or "126094773" in str(chat_id):
         bot.sendMessage(chat_id, "You were banned from this bot. If this is an error, please contact @Sommerlichter")
     else:
         if content_type == 'audio':
