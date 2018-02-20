@@ -77,16 +77,26 @@ def handle(msg):
                     audio = eyed3.load(filename)
                     tt = audio.tag.title
                     artist = audio.tag.artist
-                    filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                    os.rename("output.mp3", filename)
-                    sendAudio(chat_id, filename, artist, tt)
-                    audio = MP3(filename)
-                    length = audio.info.length * 0.33
-                    l2 = length + 60
-                    if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                    else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    try:
+                        filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
+                        os.rename("output.mp3", filename)
+                        sendAudio(chat_id, filename, artist, tt)
+                        audio = MP3(filename)
+                        length = audio.info.length * 0.33
+                        l2 = length + 60
+                        if audio.info.length > l2:
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        else:
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                    except:
+                        sendAudio(chat_id, fname, artist, tt)
+                        audio = MP3(filename)
+                        length = audio.info.length * 0.33
+                        l2 = length + 60
+                        if audio.info.length > l2:
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        else:
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
                     bot.sendMessage(chat_id,"Here you go!")
                 except Exception, e:
@@ -151,21 +161,32 @@ def handle(msg):
                         bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                         url = msg['text']
                         filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
+                        fname = filename
                         os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
                         bot.sendMessage(chat_id, "Sending the file...")
                         audio = eyed3.load(filename)
                         tt = audio.tag.title
                         artist = audio.tag.artist
-                        filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                        os.rename("output.mp3", filename)
-                        sendAudio(chat_id, filename, artist, tt)
-                        audio = MP3(filename)
-                        length = audio.info.length * 0.33
-                        l2 = length + 60
-                        if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        try:
+                            filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
+                            os.rename("output.mp3", filename)
+                            sendAudio(chat_id, filename, artist, tt)
+                            audio = MP3(filename)
+                            length = audio.info.length * 0.33
+                            l2 = length + 60
+                            if audio.info.length > l2:
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                            else:
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        except:
+                            sendAudio(chat_id, fname, artist, tt)
+                            audio = MP3(filename)
+                            length = audio.info.length * 0.33
+                            l2 = length + 60
+                            if audio.info.length > l2:
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                            else:
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)",disable_web_page_preview=True)
                     except Exception, e:
@@ -176,21 +197,32 @@ def handle(msg):
                         input_text = msg['text']
                         url = subprocess.check_output(["node", "--no-warnings", "download.js", input_text]).split('\n')[0]
                         filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
+                        fname = filename
                         os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
                         bot.sendMessage(chat_id, "Sending the file...")
                         audio = eyed3.load(filename)
                         tt = audio.tag.title
                         artist = audio.tag.artist
-                        filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                        os.rename("output.mp3", filename)
-                        sendAudio(chat_id, filename, artist, tt)
-                        audio = MP3(filename)
-                        length = audio.info.length * 0.33
-                        l2 = length + 60
-                        if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        try:
+                            filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
+                            os.rename("output.mp3", filename)
+                            sendAudio(chat_id, filename, artist, tt)
+                            audio = MP3(filename)
+                            length = audio.info.length * 0.33
+                            l2 = length + 60
+                            if audio.info.length > l2:
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                            else:
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        except:
+                            sendAudio(chat_id, fname, artist, tt)
+                            audio = MP3(filename)
+                            length = audio.info.length * 0.33
+                            l2 = length + 60
+                            if audio.info.length > l2:
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                            else:
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)",disable_web_page_preview=True)
                     except:
