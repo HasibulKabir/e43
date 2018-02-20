@@ -63,4 +63,5 @@ typings/
 
 # Bot output
 *.mp3
+*.video
 output.ogg
