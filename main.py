@@ -21,7 +21,7 @@ from mutagen.mp4 import MP4
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-TOKEN = "481910499:AAGsn85q4ZHFeGCBIr1Q_GtWVIHursfCgmo"
+TOKEN = ""
 f = open("random.txt", "w+")
 f.write(str(random.randint(20,30)))
 f.close()
@@ -61,7 +61,7 @@ def handle(msg):
     if content_type == "text":
         if msg['text'].startswith("/isopen"):
             if time.strftime("%H") == "15":
-                bot.sendMessage(chat_id,"koyu.space Social is open!!\nYou can register here: https://social.koyu.space/", disable_web_page_preview=False)
+                bot.sendMessage(chat_id,"koyu.space Social is open!!\nYou can register here: https://social.koyu.space/",disable_web_page_preview=False)
             else:
                 bot.sendMessage(chat_id,"koyu.space Social is closed 😢\nMessage @Sommerlichter if you're interested in opening up an account!")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
@@ -84,8 +84,8 @@ def handle(msg):
                     os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                 else:
                     os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                    sendVoice(chat_id, "output.ogg")
-                    bot.sendMessage(chat_id,"Here you go!")
+                sendVoice(chat_id, "output.ogg")
+                bot.sendMessage(chat_id,"Here you go!")
             except Exception, e:
                 bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.\n\n```\n" + str(e) + "\n```", "Markdown")
         else:
@@ -164,14 +164,16 @@ def handle(msg):
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
-                    bot.sendMessage(chat_id,"Here you go!")
+                    bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)",disable_web_page_preview=True)
                 except Exception, e:
                     bot.sendMessage(chat_id, "Uh-oh, something bad happened. Note that Telegram limits bot uploads to 50MB. Otherwise contact @Sommerlichter for further assistance.\n\n```\n" + str(e) + "\n```", "Markdown")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv") and not msg['text'].startswith("/isopen"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
-                    metadata = subprocess.check_output(["node", "--no-warnings", "download.js", msg['text']]).split('\n')[0]
-                    filename = subprocess.check_output(["node", "--no-warnings" "download-url.js", metadata]).split('\n')[0]
+                    input_text = msg['text']
+                    url = subprocess.check_output(["node", "--no-warnings", "download.js", input_text]).split('\n')[0]
+                    filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
+                    os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
                     bot.sendMessage(chat_id, "Sending the file...")
                     audio = eyed3.load(filename)
                     tt = audio.tag.title
@@ -181,13 +183,13 @@ def handle(msg):
                     sendAudio(chat_id, filename, artist, tt)
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
-                    l2 = (audio.info.length * 0.33) + 60
+                    l2 = length + 60
                     if audio.info.length > l2:
                         os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
-                    bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)")
+                    bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)",disable_web_page_preview=True)
                 except:
                     bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
 

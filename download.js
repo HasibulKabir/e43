@@ -1,7 +1,7 @@
 var args = "";
 
 process.argv.forEach(function (val, index, array) {
-  if (index != 0 && index != 1 && index != 2) {
+  if (index != 0 && index != 1) {
     args = args + " " + val;
   }
 });
