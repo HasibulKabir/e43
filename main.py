@@ -88,7 +88,7 @@ def handle(msg):
                         artist = tag.tag.artist
                     #bot.sendMessage(chat_id,artist+" - "+title)
                     subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
-                    subprocess.Popen(["lame", "-V", "0", "-b", "128", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                    subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                     bot.sendMessage(chat_id,"Sending the file...")
                     filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
                     try:
@@ -221,7 +221,7 @@ def handle(msg):
                             artist = tag.tag.artist
                         #bot.sendMessage(chat_id,artist+" - "+title)
                         subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
-                        subprocess.Popen(["lame", "-V", "0", "-b", "128", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                        subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         bot.sendMessage(chat_id,"Sending the file...")
                         filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
                         try:
