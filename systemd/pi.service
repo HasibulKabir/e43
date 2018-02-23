@@ -1,0 +1,16 @@
+[Unit]
+Description=koyu.space EverythingBot
+After=network.target
+
+[Service]
+User=pi
+WorkingDirectory=/home/pi/everythingbot/
+Environment="HOME=/home/pi"
+ExecStart=/usr/bin/python2 main.py
+ExecReload=/bin/kill $MAINPID
+KillMode=process
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+Alias=everythingbot.service
