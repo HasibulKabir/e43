@@ -59,8 +59,6 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "text":
-        if msg['text'].startswith("/isopen"):
-            bot.sendMessage(chat_id,"koyu.space Social is open!!\nYou can register here: https://social.koyu.space/",disable_web_page_preview=False)
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             try:
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
