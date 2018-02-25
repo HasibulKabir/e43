@@ -4,6 +4,7 @@ WORKDIR /app
 ADD . /app
 
 RUN apt-get update
+RUN apt-get install -y --no-install-recommends apt-utils
 RUN apt-get install -y git curl python python-pip python3 python3-pip lame ffmpeg libchromaprint-dev libchromaprint-tools libchromaprint1 wget
 RUN curl -sL https://deb.nodesource.com/setup_9.x | bash -
 RUN apt-get install -y nodejs
