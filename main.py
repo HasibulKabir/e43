@@ -21,7 +21,10 @@ from mutagen.mp4 import MP4
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
-TOKEN = ""
+if 'TOKEN' in os.environ:
+    TOKEN = os.environ.get('TOKEN')
+else:
+    TOKEN = ""
 f = open("random.txt", "w+")
 f.write(str(random.randint(20,30)))
 f.close()
