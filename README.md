@@ -37,13 +37,19 @@ Done! :)
 
 #### Docker instructions
 
+Build your own image with (if you changed the source code)
+
 ```
 sudo docker build .
 sudo docker images
 ```
 
-Find the recent built image name and run it with `sudo docker run [YOUR-IMAGE]`
+and find the recent built image name with `sudo docker images` and run it with `sudo docker run -d -t -i -e TOKEN='[YOUR-TOKEN]' [YOUR-IMAGE]` (you can remember the command line arguments with a mnemonic like "DeTie" or "Daemon Tie")
 
 You can remove old images with `sudo docker rmi -f [YOUR-IMAGE]`
+
+You can also list currently running containers with `sudo docker container ls` and stop them with ``sudo docker stop [CONTAINER] && sudo docker rm -f [CONTAINER]`
+
+The official image can be found at `koyuawsmbrtn/everythingbot` on Docker Hub. It's recommended if you haven't modified the source-code, because it's already pre-built. (I would recommend to modify the source-code to your needs anyway)
 
 **License: DBAD Public License**
