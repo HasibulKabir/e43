@@ -193,6 +193,19 @@ def handle(msg):
                 f.close()
                 if sum % rnumber == 0:
                     bot.sendMessage(chat_id, "lol level is now: " + str(sum))
+            if "pp" in msg['text']:
+                count = len(msg['text'].split("pp")) - 1
+                f = open("counters/pp.txt", "r")
+                s = f.read()
+                f.close()
+                if s == "":
+                    s = "0"
+                sum = int(count) + int(s)
+                f = open("counters/pp.txt", "w")
+                f.write(str(sum))
+                f.close()
+                if sum % rnumber == 0:
+                    bot.sendMessage(chat_id, "pp level is now: " + str(sum))
             if msg['text'].startswith("/start") and chat_type == "private":
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):

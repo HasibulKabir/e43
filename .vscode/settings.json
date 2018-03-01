@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "/usr/bin/python2",
+    "python.pythonPath": "C:\\Python27\\python.exe",
     "python.linting.pylintEnabled": false,
     "terminal.integrated.env.linux": {
         "PATH": "/usr/local/bin:/usr/bin:/bin"
