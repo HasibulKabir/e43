@@ -48,7 +48,7 @@ and find the recent built image name with `sudo docker images` and run it with `
 
 You can remove old images with `sudo docker rmi -f [YOUR-IMAGE]`
 
-You can also list currently running containers with `sudo docker container ls` and stop them with ``sudo docker stop [CONTAINER] && sudo docker rm -f [CONTAINER]`
+You can also list currently running containers with `sudo docker container ls` and stop them with `sudo docker stop [CONTAINER] && sudo docker rm -f [CONTAINER]`
 
 The official image can be found at `koyuawsmbrtn/everythingbot` on Docker Hub. It's recommended if you haven't modified the source-code, because it's already pre-built. (I would recommend to modify the source-code to your needs anyway)
 
