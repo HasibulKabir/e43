@@ -4,7 +4,6 @@ This Telegram bot can download almost anything :)
 
 [koyu.space](http://koyu.space)
 
-## Installation
 
 ### Used Libraries/Applications
 
@@ -20,7 +19,7 @@ This Telegram bot can download almost anything :)
 - wget
 - Sacad
 
-### How to install
+## Installation
 
 Instructions can be found on the [Wiki](https://github.com/koyuawsmbrtn/everythingbot/wiki).
 
