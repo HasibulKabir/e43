@@ -206,6 +206,8 @@ def handle(msg):
                 f.close()
                 if sum % rnumber == 0:
                     bot.sendMessage(chat_id, "pp level is now: " + str(sum))
+            if msg['text'].startswith("/ping"):
+                bot.sendMessage(chat_id, "Pong!")
             if msg['text'].startswith("/start") and chat_type == "private":
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
@@ -286,7 +288,7 @@ def handle(msg):
                         bot.sendMessage(chat_id,"Here you go!\nConsider a small donation at https://koyu.space/support if you like this bot :)",disable_web_page_preview=True)
                 except:
                     bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
                     input_text = msg['text']
