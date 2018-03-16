@@ -2,3 +2,5 @@ telepot
 eyed3
 mutagen
 requests
+soundcloud
+youtube-dl
