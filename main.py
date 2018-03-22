@@ -70,6 +70,7 @@ def handle(msg):
             try:
                 bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                 input_text = msg['text'].split("/conv ")[1]
+                input_text = input_text.split('&')[0]
                 if "soundcloud" in input_text:
                     try:
                         track = client.get('/resolve', url=input_text)
@@ -257,6 +258,7 @@ def handle(msg):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                     input_text = msg['text']
+                    input_text = input_text.split('&')[0]
                     if "soundcloud" in input_text:
                         try:
                             track = client.get('/resolve', url=input_text)
