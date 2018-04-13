@@ -24,3 +24,5 @@ This Telegram bot can download almost anything :)
 Instructions can be found on the [Wiki](https://github.com/koyuawsmbrtn/everythingbot/wiki).
 
 **License: DBAD Public License**
+
+blank.jpg icon by [Gregor Cresnar](https://www.flaticon.com/authors/gregor-cresnar)
