@@ -19,11 +19,20 @@ from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 import soundcloud
 import string
+import pylast
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
+API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
+API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
+lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
+
+if 'BOTTAG' in os.environ:
+    bottag = os.environ.get('BOTTAG')
+else:
+    bottag = "@keverythingbot"
 
 if 'TOKEN' in os.environ:
     TOKEN = os.environ.get('TOKEN')
@@ -32,6 +41,7 @@ else:
 f = open("random.txt", "w+")
 f.write(str(random.randint(20,30)))
 f.close()
+bottag = bottag.replace("@", "")
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -105,7 +115,7 @@ def handle(msg):
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
-                    filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
+                    filename = u' '.join((thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_"), ".mp3")).encode('utf-8').strip()
                     stream_url = client.get(thist.stream_url, allow_redirects=False)
                     artist = None
                     title = None
@@ -116,7 +126,23 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        year = ""
+                        albumtitle = ""
+                        try:
+                            track = client.get('/tracks', q=artist + " " + title)[0]
+                            year = track.created_at.split('/')[0]
+                        except:
+                            year = ""
+
+                        album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                        try:
+                            albumtitle = str(album.title).split(" / ")[1]
+                        except:
+                            try:
+                                albumtitle = str(album.title).split(" - ")[1]
+                            except:
+                                albumtitle = str(album.title)
+                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     except:
                         printable = set(string.printable)
                         artist = filter(lambda x: x in printable, thist.user['username'])
@@ -124,7 +150,21 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title)
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        try:
+                            track = client.get('/tracks', q=artist + " " + title)[0]
+                            year = track.created_at.split('/')[0]
+                        except:
+                            year = ""
+
+                        album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                        try:
+                            albumtitle = str(album.title).split(" / ")[1]
+                        except:
+                            try:
+                                albumtitle = str(album.title).split(" - ")[1]
+                            except:
+                                albumtitle = str(album.title)
+                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     try:
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
@@ -170,7 +210,21 @@ def handle(msg):
                             artist = tag.tag.artist
                         #bot.sendMessage(chat_id,artist+" - "+title)
                         subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
-                        subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                        try:
+                            track = client.get('/tracks', q=artist + " " + title)[0]
+                            year = track.created_at.split('/')[0]
+                        except:
+                            year = ""
+
+                        album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                        try:
+                            albumtitle = str(album.title).split(" / ")[1]
+                        except:
+                            try:
+                                albumtitle = str(album.title).split(" - ")[1]
+                            except:
+                                albumtitle = str(album.title)
+                        subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--ty", year, "--tl", albumtitle, "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         try:
                             f = open("audio.jpg")
                             bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
@@ -236,10 +290,10 @@ def handle(msg):
                     try:
                         track = client.get('/resolve', url=input_text)
                         thist = track
-                        filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
                         stream_url = client.get(thist.stream_url, allow_redirects=False)
                         artist = None
                         title = None
+                        filename = u' '.join((thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_"), ".mp3")).encode('utf-8').strip()
                         try:
                             printable = set(string.printable)
                             artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
@@ -247,7 +301,23 @@ def handle(msg):
                             title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            year = ""
+                            albumtitle = ""
+                            try:
+                                track = client.get('/tracks', q=artist + " " + title)[0]
+                                year = track.created_at.split('/')[0]
+                            except:
+                                year = ""
+
+                            album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                            try:
+                                albumtitle = str(album.title).split(" / ")[1]
+                            except:
+                                try:
+                                    albumtitle = str(album.title).split(" - ")[1]
+                                except:
+                                    albumtitle = str(album.title)
+                            os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             printable = set(string.printable)
                             artist = filter(lambda x: x in printable, thist.user['username'])
@@ -255,7 +325,21 @@ def handle(msg):
                             title = filter(lambda x: x in printable, thist.title)
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            try:
+                                track = client.get('/tracks', q=artist + " " + title)[0]
+                                year = track.created_at.split('/')[0]
+                            except:
+                                year = ""
+
+                            album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                            try:
+                                albumtitle = str(album.title).split(" / ")[1]
+                            except:
+                                try:
+                                    albumtitle = str(album.title).split(" - ")[1]
+                                except:
+                                    albumtitle = str(album.title)
+                            os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         os.system("rm -f audio.jpg")
                         bot.sendMessage(chat_id, "Sending the file...")
                         print(filename)
@@ -295,7 +379,21 @@ def handle(msg):
                             artist = tag.tag.artist
                         #bot.sendMessage(chat_id,artist+" - "+title)
                         subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
-                        subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                        try:
+                            track = client.get('/tracks', q=artist + " " + title)[0]
+                            year = track.created_at.split('/')[0]
+                        except:
+                            year = ""
+
+                        album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                        try:
+                            albumtitle = str(album.title).split(" / ")[1]
+                        except:
+                            try:
+                                albumtitle = str(album.title).split(" - ")[1]
+                            except:
+                                albumtitle = str(album.title)
+                        subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--ty", year, "--tl", albumtitle, "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         os.system("rm -f audio.jpg")
                         bot.sendMessage(chat_id,"Sending the file...")
                         filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
@@ -426,7 +524,7 @@ def handle(msg):
                         try:
                             track = client.get('/resolve', url=input_text)
                             thist = track
-                            filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
+                            filename = u' '.join((thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_"), ".mp3")).encode('utf-8').strip()
                             stream_url = client.get(thist.stream_url, allow_redirects=False)
                             artist = None
                             title = None
@@ -437,7 +535,23 @@ def handle(msg):
                                 title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                                 os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                                 os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                                os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                                year = ""
+                                albumtitle = ""
+                                try:
+                                    track = client.get('/tracks', q=artist + " " + title)[0]
+                                    year = track.created_at.split('/')[0]
+                                except:
+                                    year = ""
+
+                                album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                                try:
+                                    albumtitle = str(album.title).split(" / ")[1]
+                                except:
+                                    try:
+                                        albumtitle = str(album.title).split(" - ")[1]
+                                    except:
+                                        albumtitle = str(album.title)
+                                os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                             except:
                                 printable = set(string.printable)
                                 artist = filter(lambda x: x in printable, thist.user['username'])
@@ -445,11 +559,27 @@ def handle(msg):
                                 title = filter(lambda x: x in printable, thist.title)
                                 os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                                 os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                                os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                                try:
+                                    track = client.get('/tracks', q=artist + " " + title)[0]
+                                    year = track.created_at.split('/')[0]
+                                except:
+                                    year = ""
+
+                                album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                                try:
+                                    albumtitle = str(album.title).split(" / ")[1]
+                                except:
+                                    try:
+                                        albumtitle = str(album.title).split(" - ")[1]
+                                    except:
+                                        albumtitle = str(album.title)
+                                os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                             os.system("rm -f audio.jpg")
                             bot.sendMessage(chat_id, "Sending the file...")
                             print(filename)
-                            sendAudio(chat_id,filename,artist,title)
+                            f = open(filename, "r")
+                            bot.sendAudio(chat_id,f,performer=artist,title=title)
+                            f.close()
                             audio = MP3(filename)
                             length = audio.info.length * 0.33
                             l2 = length + 60
@@ -485,7 +615,21 @@ def handle(msg):
                                 artist = tag.tag.artist
                             #bot.sendMessage(chat_id,artist+" - "+title)
                             subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
-                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                            try:
+                                track = client.get('/tracks', q=artist + " " + title)[0]
+                                year = track.created_at.split('/')[0]
+                            except:
+                                year = ""
+
+                            album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
+                            try:
+                                albumtitle = str(album.title).split(" / ")[1]
+                            except:
+                                try:
+                                    albumtitle = str(album.title).split(" - ")[1]
+                                except:
+                                    albumtitle = str(album.title)
+                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                             os.system("rm audio.jpg")
                             bot.sendMessage(chat_id,"Sending the file...")
                             filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"

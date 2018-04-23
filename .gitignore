@@ -66,6 +66,7 @@ typings/
 *.video
 output.ogg
 audio.jpg
+*.part
 
 # IDEs
 .vscode/
