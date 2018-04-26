@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -9,7 +9,6 @@ import os
 import re
 import requests
 import subprocess
-import urlparse
 import time
 import re
 import eyed3
@@ -20,9 +19,6 @@ from mutagen.mp4 import MP4
 import soundcloud
 import string
 import pylast
-
-reload(sys)
-sys.setdefaultencoding("utf-8")
 
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
 API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
@@ -681,7 +677,7 @@ def handle(msg):
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                 except:
                     bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            '''if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
                     input_text = msg['text']
@@ -716,7 +712,7 @@ def handle(msg):
                     sendVoice(chat_id, "output.ogg")
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                 except:
-                    bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
+                    bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")'''
 
 def sendAudio(chat_id,file_name,performer,title):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
