@@ -7,8 +7,7 @@ User=koyu
 WorkingDirectory=/home/koyu/everythingbot/
 Environment="HOME=/home/koyu"
 Environment="TOKEN="
-Environment="BOTTAG=everythingbot"
-ExecStart=/usr/local/bin/pypy3 main.py
+ExecStart=/usr/bin/python2 main.py
 ExecReload=/bin/kill $MAINPID
 KillMode=process
 Restart=on-failure
