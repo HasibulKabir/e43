@@ -564,7 +564,7 @@ def handle(msg):
                                         albumtitle = str(album.title).split(" - ")[1]
                                     except:
                                         albumtitle = str(album.title)
-                                bot.editMessageText(msgid, "Downloading...")
+                                bot.editMessageText(msgid, "Converting...")
                                 subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                             except:
                                 pass
