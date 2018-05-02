@@ -75,6 +75,7 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "text":
+        os.system("rm -f audio.jpg")
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: `" + str(chat_id) + "`", "Markdown")
         if msg['text'].startswith("/settag"):
@@ -110,7 +111,6 @@ def handle(msg):
                     username = line.split(":")[1]
                     username = "\n🆔 @" + username
             if input_text.startswith("http"):
-                os.system("rm -f audio.jpg")
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
@@ -473,7 +473,6 @@ def handle(msg):
             if msg['text'].startswith("/start") and chat_type == "private":
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
-                os.system("rm -f audio.jpg")
                 try:
                     bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
                     input_text = msg['text']
@@ -505,11 +504,11 @@ def handle(msg):
                             bot.sendMessage(chat_id, "Sending the file...")
                             try:
                                 f = open("audio.jpg")
-                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                                 f.close()
                             except:
                                 f = open("blank.jpg")
-                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                                 f.close()
                             print(filename)
                             sendAudio(chat_id,filename,artist,title)
@@ -569,11 +568,11 @@ def handle(msg):
                             bot.sendMessage(chat_id, "Sending the file...")
                             try:
                                 f = open("audio.jpg")
-                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                                 f.close()
                             except:
                                 f = open("blank.jpg")
-                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                                 f.close()
                             filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
                             try:
