@@ -142,7 +142,6 @@ def handle(msg):
                         f = open("blank.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                         f.close()
-                    os.system("rm -f audio.jpg")
                     print(filename)
                     sendAudioChan(chat_id,filename,artist,title,username)
                     audio = MP3(filename)
@@ -188,7 +187,6 @@ def handle(msg):
                             f = open("blank.jpg")
                             bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                             f.close()
-                        os.system("rm -f audio.jpg")
                         filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
                         try:
                             os.rename("audio.mp3.mp3", filename)
@@ -298,7 +296,6 @@ def handle(msg):
                                 subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                             except:
                                 pass
-                        os.system("rm -f audio.jpg")
                         bot.sendMessage(chat_id, "Sending the file...")
                         print(filename)
                         sendAudio(chat_id,filename,artist,title)
@@ -355,7 +352,6 @@ def handle(msg):
                             subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         except:
                             pass
-                        os.system("rm -f audio.jpg")
                         bot.sendMessage(chat_id,"Sending the file...")
                         filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
                         try:
@@ -514,7 +510,6 @@ def handle(msg):
                                 f = open("blank.jpg")
                                 bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                                 f.close()
-                            os.system("rm -f audio.jpg")
                             print(filename)
                             sendAudio(chat_id,filename,artist,title)
                             audio = MP3(filename)
@@ -579,7 +574,6 @@ def handle(msg):
                                 f = open("blank.jpg")
                                 bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                                 f.close()
-                            os.system("rm -f audio.jpg")
                             filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
                             try:
                                 os.rename("audio.mp3.mp3", filename)
