@@ -295,7 +295,7 @@ def handle(msg):
                                 except:
                                     albumtitle = str(album.title)
                             bot.editMessageText(msgid, "Converting...")
-                            os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ty", year, "--tl", albumtitle, "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         except:
                             pass
                     bot.editMessageText(msgid, "Sending...")
@@ -350,7 +350,7 @@ def handle(msg):
                                 except:
                                     albumtitle = str(album.title)
                             bot.editMessageText(msgid, "Converting...")
-                            os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ty", year, "--tl", albumtitle, "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         except:
                             pass
                         bot.editMessageText(msgid, "Sending...")
@@ -568,7 +568,7 @@ def handle(msg):
                                     except:
                                         albumtitle = str(album.title)
                                 bot.editMessageText(msgid, "Converting...")
-                                os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                                subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ty", year, "--tl", albumtitle, "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                             except:
                                 pass
                             bot.editMessageText(msgid, "Sending...")
