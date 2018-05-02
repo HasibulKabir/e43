@@ -677,7 +677,7 @@ def handle(msg):
                     try:
                         bot.editMessageText(msgid, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
                     except:
-                        bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from."))
+                        bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
 
 def sendAudio(chat_id,file_name,performer,title):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
