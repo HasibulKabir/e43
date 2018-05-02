@@ -473,56 +473,58 @@ def handle(msg):
             if msg['text'].startswith("/start") and chat_type == "private":
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
+                msgid = None
                 try:
-                    bot.sendMessage(chat_id, "Converting...")
+                    message = bot.sendMessage(chat_id, "Downloading...")
+                    msgid = telepot.message_identifier(message)
                     input_text = msg['text']
                     input_text = input_text.split('&')[0]
                     if "soundcloud" in input_text:
+                        track = client.get('/resolve', url=input_text)
+                        thist = track
+                        filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
+                        stream_url = client.get(thist.stream_url, allow_redirects=False)
+                        artist = None
+                        title = None
                         try:
-                            track = client.get('/resolve', url=input_text)
-                            thist = track
-                            filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
-                            stream_url = client.get(thist.stream_url, allow_redirects=False)
-                            artist = None
-                            title = None
-                            try:
-                                printable = set(string.printable)
-                                artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
-                                printable = set(string.printable)
-                                title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
-                                os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                                os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                                os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                            except:
-                                printable = set(string.printable)
-                                artist = filter(lambda x: x in printable, thist.user['username'])
-                                printable = set(string.printable)
-                                title = filter(lambda x: x in printable, thist.title)
-                                os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                                os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                                os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                            bot.sendMessage(chat_id, "Sending the file...")
-                            try:
-                                f = open("audio.jpg")
-                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
-                                f.close()
-                            except:
-                                f = open("blank.jpg")
-                                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
-                                f.close()
-                            print(filename)
-                            sendAudio(chat_id,filename,artist,title)
-                            audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = length + 60
-                            if audio.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                            else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
-                            sendVoice(chat_id, "output.ogg")
-                            bot.sendMessage(chat_id,"Here you go!")
+                            printable = set(string.printable)
+                            artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
+                            printable = set(string.printable)
+                            title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
+                            os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                            os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                            bot.editMessageText(msgid, "Converting...")
+                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
-                            bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                            printable = set(string.printable)
+                            artist = filter(lambda x: x in printable, thist.user['username'])
+                            printable = set(string.printable)
+                            title = filter(lambda x: x in printable, thist.title)
+                            os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                            os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                            bot.editMessageText(msgid, "Converting...")
+                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        bot.editMessageText(msgid, "Sending...")
+                        try:
+                            f = open("audio.jpg")
+                            bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                            f.close()
+                        except:
+                            f = open("blank.jpg")
+                            bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                            f.close()
+                        print(filename)
+                        sendAudio(chat_id,filename,artist,title)
+                        audio = MP3(filename)
+                        length = audio.info.length * 0.33
+                        l2 = length + 60
+                        if audio.info.length > l2:
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        else:
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
+                        sendVoice(chat_id, "output.ogg")
+                        bot.deleteMessage(msgid)
+                        bot.sendMessage(chat_id,"Here you go!")
                     else:
                         if "youtu" in input_text:
                             cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
@@ -562,10 +564,11 @@ def handle(msg):
                                         albumtitle = str(album.title).split(" - ")[1]
                                     except:
                                         albumtitle = str(album.title)
+                                bot.editMessageText(msgid, "Downloading...")
                                 subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                             except:
                                 pass
-                            bot.sendMessage(chat_id, "Sending the file...")
+                            bot.editMessageText(msgid, "Sending...")
                             try:
                                 f = open("audio.jpg")
                                 bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
@@ -600,12 +603,14 @@ def handle(msg):
                             else:
                                 os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                             sendVoice(chat_id, "output.ogg")
+                            bot.deleteMessage(msgid)
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                         else:
                             url = msg['text']
                             filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
+                            bot.editMessageText(msgid, "Converting...")
                             os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
-                            bot.sendMessage(chat_id, "Sending the file...")
+                            bot.editMessageText(msgid, "Sending...")
                             audio = eyed3.load(filename)
                             tt = audio.tag.title
                             artist = audio.tag.artist
@@ -620,18 +625,25 @@ def handle(msg):
                             else:
                                 os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                             sendVoice(chat_id, "output.ogg")
+                            bot.deleteMessage(msgid)
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                 except:
-                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                    try:
+                        bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                    except:
+                        bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
-                    bot.sendMessage(chat_id, "Converting...")
+                    msgid = None
+                    message = bot.sendMessage(chat_id, "Downloading...")
+                    msgid = telepot.message_identifier(message)
                     input_text = msg['text']
                     url = subprocess.check_output(["node", "--no-warnings", "download.js", input_text]).split('\n')[0]
                     filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
                     fname = filename
+                    bot.editMessageText(msgid, "Converting...")
                     os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
-                    bot.sendMessage(chat_id, "Sending the file...")
+                    bot.editMessageText(msgid, "Sending...")
                     audio = eyed3.load(filename)
                     tt = audio.tag.title
                     artist = audio.tag.artist
@@ -656,6 +668,7 @@ def handle(msg):
                         else:
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                     sendVoice(chat_id, "output.ogg")
+                    bot.deleteMessage(msgid)
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                 except:
                     bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
