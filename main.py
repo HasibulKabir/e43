@@ -236,7 +236,7 @@ def handle(msg):
                         sendVoice(chat_id, "output.ogg")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             try:
-                bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
+                bot.sendMessage(chat_id, "Converting...")
                 input_text = msg['text'].split("/conv ")[1]
                 input_text = input_text.split('&')[0]
                 if "soundcloud" in input_text:
@@ -474,7 +474,7 @@ def handle(msg):
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
                 try:
-                    bot.sendMessage(chat_id, "Please wait...I'm converting the URL to an MP3 file")
+                    bot.sendMessage(chat_id, "Converting...")
                     input_text = msg['text']
                     input_text = input_text.split('&')[0]
                     if "soundcloud" in input_text:
@@ -625,7 +625,7 @@ def handle(msg):
                     bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
-                    bot.sendMessage(chat_id, "Please wait...I'm converting the song to an MP3 file")
+                    bot.sendMessage(chat_id, "Converting...")
                     input_text = msg['text']
                     url = subprocess.check_output(["node", "--no-warnings", "download.js", input_text]).split('\n')[0]
                     filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
