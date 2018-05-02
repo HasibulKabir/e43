@@ -295,7 +295,7 @@ def handle(msg):
                                 except:
                                     albumtitle = str(album.title)
                             bot.editMessageText(msgid, "Converting...")
-                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                            os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             pass
                     bot.editMessageText(msgid, "Sending...")
@@ -350,7 +350,7 @@ def handle(msg):
                                 except:
                                     albumtitle = str(album.title)
                             bot.editMessageText(msgid, "Converting...")
-                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                            os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             pass
                         bot.editMessageText(msgid, "Sending...")
@@ -568,7 +568,7 @@ def handle(msg):
                                     except:
                                         albumtitle = str(album.title)
                                 bot.editMessageText(msgid, "Converting...")
-                                subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                                os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                             except:
                                 pass
                             bot.editMessageText(msgid, "Sending...")
