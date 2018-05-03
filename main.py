@@ -19,6 +19,7 @@ from mutagen.mp4 import MP4
 import soundcloud
 import string
 import pylast
+from moviepy.editor import VideoFileClip
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -85,10 +86,10 @@ def handle(msg):
         print(bot.getFile(file_id=fileid))
         filename = bot.getFile(file_id=fileid)['file_path']
         os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
-        video = MP4(filename)
-        length = video.info.length * 0.33
-        l2 = (video.info.length * 0.33) + 60
-        if video.info.length > l2:
+        video = VideoFileClip(filename)
+        length = video.duration * 0.33
+        l2 = (video.duration * 0.33) + 60
+        if video.duration > l2:
             os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
         else:
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
@@ -267,14 +268,14 @@ def handle(msg):
                 cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 -strict -2 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
                 subprocess.Popen(cmd_conv.split(), shell=False).wait()
-                video = MP4("out.mp4")
-                length = video.info.length * 0.33
-                l2 = (video.info.length * 0.33) + 60
-                if video.info.length > l2:
-                    os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i out.mp4 -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
+                filename = "out.mp4"
+                video = VideoFileClip(filename)
+                length = video.duration * 0.33
+                l2 = (video.duration * 0.33) + 60
+                if video.duration > l2:
+                    os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
                 else:
-                    os.system("ffmpeg -ss 0 -t 60 -y -i out.mp4 -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
-                bot.editMessageText(msgid, "Sending...")
+                    os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
                 f = open("vm.mp4", "r")
                 bot.sendVideoNote(chat_id, f)
                 f.close()

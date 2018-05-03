@@ -5,3 +5,4 @@ requests
 soundcloud
 youtube-dl
 pylast
+moviepy
