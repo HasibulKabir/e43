@@ -93,7 +93,7 @@ def handle(msg):
             os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
         else:
             os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-        sendVN("vm.mp4")
+        sendVideoNote(chat_id, "vm.mp4")
     if content_type == "text":
         os.system("rm -f audio.jpg")
         if msg['text'].startswith("/chatid"):
@@ -274,7 +274,7 @@ def handle(msg):
                     os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
                 else:
                     os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-                sedVN("vm.mp4")
+                sendVideoNote(chat_id, "vm.mp4")
                 bot.editMessageText(msgid, "Sending...")
                 f = open("out.mp4", "r")
                 bot.sendVideo(chat_id, f)
@@ -738,7 +738,7 @@ def sendAudio(chat_id,file_name,performer,title):
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
 
-def sendVN(chat_id,file_name):
+def sendVideoNote(chat_id,file_name):
     url = "https://api.telegram.org/bot%s/sendVideoNote"%(TOKEN)
     files = {'video_note': open(file_name, 'rb')}
     data = {'chat_id' : chat_id}
