@@ -242,10 +242,10 @@ def handle(msg):
                 msgid = telepot.message_identifier(message)
                 os.system("rm -f *.mp4")
                 cmd_download = "youtube-dl -f mp4 -o \"video.%(ext)s\" " + input_text
-                subprocess.Popen(cmd_download.split(' '), shell=False).wait()
+                subprocess.check_call(cmd_download.split(), shell=False)
                 cmd_conv = "ffmpeg -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
-                subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
+                subprocess.check_call(cmd_conv.split(), shell=False)
                 bot.editMessageText(msgid, "Sending...")
                 f = open("out.mp4", "r")
                 bot.sendVideo(chat_id, f)
@@ -658,7 +658,7 @@ def handle(msg):
                         bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
                     except:
                         bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("/video") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
                     message = bot.sendMessage(chat_id, "Downloading...")
