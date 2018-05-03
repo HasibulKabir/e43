@@ -90,9 +90,9 @@ def handle(msg):
         length = video.duration * 0.33
         l2 = (video.duration * 0.33) + 60
         if video.duration > l2:
-            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
+            os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
         else:
-            os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
+            os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
         f = open("vm.mp4", "r")
         bot.sendVideoNote(chat_id, f)
         f.close()
@@ -273,9 +273,9 @@ def handle(msg):
                 length = video.duration * 0.33
                 l2 = (video.duration * 0.33) + 60
                 if video.duration > l2:
-                    os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
+                    os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
                 else:
-                    os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
+                    os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
                 f = open("vm.mp4", "r")
                 bot.sendVideoNote(chat_id, f)
                 f.close()
