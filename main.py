@@ -75,6 +75,7 @@ def handle(msg):
         else:
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
+        #TODO: Making encoding video notes properly working, so that it will be displayed correctly in the client
     '''if content_type == "video":
         os.system("rm -f *.mp4")
         videofile = msg['video']
@@ -268,6 +269,7 @@ def handle(msg):
                 cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 -strict -2 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
                 subprocess.Popen(cmd_conv.split(), shell=False).wait()
+                #TODO: Making encoding video notes properly working, so that it will be displayed correctly in the client
                 '''filename = "out.mp4"
                 video = VideoFileClip(filename)
                 length = video.duration * 0.33
