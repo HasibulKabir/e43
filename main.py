@@ -1,4 +1,4 @@
-#!/usr/bin/python2
+#!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
 import sys
@@ -234,6 +234,29 @@ def handle(msg):
                         else:
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                         sendVoice(chat_id, "output.ogg")
+        if msg['text'].startswith("/video http://") or msg['text'].startswith("/video https://") and not chat_type == "channel":
+            try:
+                message = bot.sendMessage(chat_id, "Downloading...")
+                input_text = msg['text'].split("/video ")[1]
+                input_text = input_text.split('&')[0]
+                msgid = telepot.message_identifier(message)
+                os.system("rm -f *.mp4")
+                cmd_download = "youtube-dl -f mp4 -o \"video.%(ext)s\" " + input_text
+                subprocess.Popen(cmd_download.split(' '), shell=False).wait()
+                cmd_conv = "ffmpeg -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 out.mp4"
+                bot.editMessageText(msgid, "Converting...")
+                subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
+                bot.editMessageText(msgid, "Sending...")
+                f = open("out.mp4", "r")
+                bot.sendVideo(chat_id, f)
+                f.close()
+                bot.deleteMessage(msgid)
+                bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+            except:
+                try:
+                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                except:
+                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
