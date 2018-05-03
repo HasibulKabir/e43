@@ -75,7 +75,7 @@ def handle(msg):
         else:
             os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
-    if content_type == "video":
+    '''if content_type == "video":
         os.system("rm -f *.mp4")
         videofile = msg['video']
         fileid = msg['video']['file_id']
@@ -95,7 +95,7 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
         f = open("vm.mp4", "r")
         bot.sendVideoNote(chat_id, f)
-        f.close()
+        f.close()'''
     if content_type == "text":
         os.system("rm -f audio.jpg")
         if msg['text'].startswith("/chatid"):
@@ -268,7 +268,7 @@ def handle(msg):
                 cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 -strict -2 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
                 subprocess.Popen(cmd_conv.split(), shell=False).wait()
-                filename = "out.mp4"
+                '''filename = "out.mp4"
                 video = VideoFileClip(filename)
                 length = video.duration * 0.33
                 l2 = (video.duration * 0.33) + 60
@@ -278,7 +278,8 @@ def handle(msg):
                     os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=640:-1 vm.mp4")
                 f = open("vm.mp4", "r")
                 bot.sendVideoNote(chat_id, f)
-                f.close()
+                f.close()'''
+                bot.editMessageText(msgid, "Sending...")
                 f = open("out.mp4", "r")
                 bot.sendVideo(chat_id, f)
                 f.close()
