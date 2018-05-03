@@ -241,10 +241,10 @@ def handle(msg):
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
                 cmd_download = "youtube-dl -f mp4 -o video.%(ext)s " + input_text
-                subprocess.check_call(cmd_download.split(), shell=False)
+                subprocess.Popen(cmd_download.split(), shell=False).wait()
                 cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
-                subprocess.check_call(cmd_conv.split(), shell=False)
+                subprocess.Popen(cmd_conv.split(), shell=False).wait()
                 bot.editMessageText(msgid, "Sending...")
                 f = open("out.mp4", "r")
                 bot.sendVideo(chat_id, f)
