@@ -146,7 +146,7 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        if os.path.isfile("audio.jpg"):
+                        if not os.path.isfile("audio.jpg"):
                             os.system("wget \"" + track.artwork_url + "\" -O audio.jpg")
                         os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     except:
@@ -156,7 +156,7 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title)
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        if os.path.isfile("audio.jpg"):
+                        if not os.path.isfile("audio.jpg"):
                             os.system("wget \"" + track.artwork_url + "\" -O audio.jpg")
                         os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     try:
@@ -554,7 +554,7 @@ def handle(msg):
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             bot.editMessageText(msgid, "Converting...")
-                            if os.path.isfile("audio.jpg"):
+                            if not os.path.isfile("audio.jpg"):
                                 os.system("wget \"" + track.artwork_url + "\" -O audio.jpg")
                             os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
@@ -565,7 +565,7 @@ def handle(msg):
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             bot.editMessageText(msgid, "Converting...")
-                            if os.path.isfile("audio.jpg"):
+                            if not os.path.isfile("audio.jpg"):
                                 os.system("wget \"" + track.artwork_url + "\" -O audio.jpg")
                             os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         bot.editMessageText(msgid, "Sending...")
