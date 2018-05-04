@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python2
 # -*- coding: utf-8 -*-
 
 import sys
@@ -6,6 +6,7 @@ import time
 import telepot
 import requests
 import os
+import os.path
 import re
 import requests
 import subprocess
@@ -549,7 +550,10 @@ def handle(msg):
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             bot.editMessageText(msgid, "Converting...")
-                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            if os.path.isfile("audio.jpg"):
+                                os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            else:
+                                os.system("lame -V0 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             printable = set(string.printable)
                             artist = filter(lambda x: x in printable, thist.user['username'])
@@ -558,7 +562,10 @@ def handle(msg):
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             bot.editMessageText(msgid, "Converting...")
-                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            if os.path.isfile("audio.jpg"):
+                                os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            else:
+                                os.system("lame -V0 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         bot.editMessageText(msgid, "Sending...")
                         try:
                             f = open("audio.jpg")
