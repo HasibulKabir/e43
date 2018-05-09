@@ -283,13 +283,14 @@ def handle(msg):
                     os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
                 else:
                     os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-                sendVideoNote(chat_id, "vm.mp4")
                 bot.editMessageText(msgid, "Sending...")
+                sendVideoNote(chat_id, "vm.mp4")
                 f = open("out.mp4", "r")
                 bot.sendVideo(chat_id, f)
                 f.close()
                 bot.deleteMessage(msgid)
-                bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+                if chat_type == "private":
+                    bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
             except:
                 try:
                     bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
