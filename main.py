@@ -20,6 +20,7 @@ from mutagen.mp4 import MP4
 import soundcloud
 import string
 import pylast
+import pygn
 from moviepy.editor import VideoFileClip
 
 reload(sys)
@@ -29,6 +30,8 @@ client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
 API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
 API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
+clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
+userID = pygn.register(clientID)
 
 if 'BOTTAG' in os.environ:
     bottag = os.environ.get('BOTTAG')
@@ -146,6 +149,11 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                         if not os.path.isfile("audio.jpg"):
                             os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                             os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
@@ -158,6 +166,11 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title)
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                         if not os.path.isfile("audio.jpg"):
                             os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                             os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
@@ -190,23 +203,28 @@ def handle(msg):
                         subprocess.check_call(cmd.split(), shell=False)
                         tag = eyed3.load("audio.mp3")
                         try:
-                            title = tag.tag.title.split(" - ")[1]
+                            title = tag.tag.title.split(" - ")[1].replace("\"", "")
                             artist = tag.tag.title.split(" - ")[0]
                             title = title.replace(artist + " - ","")
                             try:
                                 if not "Remix" in title and not "Mix" in title:
-                                    title = title.split(" (")[0]
+                                    title = title.split(" (")[0].replace("\"", "")
                             except:
                                 pass
                             try:
-                                title = title.split(" [")[0]
+                                title = title.split(" [")[0].replace("\"", "")
                             except:
                                 pass
                         except:
-                            title = tag.tag.title
+                            title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
                         #bot.sendMessage(chat_id,artist+" - "+title)
                         subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                         subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                         try:
                             f = open("audio.jpg")
@@ -263,10 +281,10 @@ def handle(msg):
                         else:
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vbr off output.ogg")
                         sendVoice(chat_id, "output.ogg")
-        if msg['text'].startswith("/video http://") or msg['text'].startswith("/video https://") and not chat_type == "channel":
+        if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://") and not chat_type == "channel":
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
-                input_text = msg['text'].split("/video ")[1]
+                input_text = msg['text'].split("/vid ")[1]
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
                 os.system("rm -f *.mp4")
@@ -316,6 +334,11 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                         year = ""
                         albumtitle = ""
                         try:
@@ -341,6 +364,11 @@ def handle(msg):
                         title = filter(lambda x: x in printable, thist.title)
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                         try:
                             try:
                                 track = client.get('/tracks', q=artist + " " + title)[0]
@@ -379,23 +407,28 @@ def handle(msg):
                         subprocess.check_call(cmd.split(), shell=False)
                         tag = eyed3.load("audio.mp3")
                         try:
-                            title = tag.tag.title.split(" - ")[1]
+                            title = tag.tag.title.split(" - ")[1].replace("\"", "")
                             artist = tag.tag.title.split(" - ")[0]
                             title = title.replace(artist + " - ","")
                             try:
                                 if not "Remix" in title and not "Mix" in title:
-                                    title = title.split(" (")[0]
+                                    title = title.split(" (")[0].replace("\"", "")
                             except:
                                 pass
                             try:
-                                title = title.split(" [")[0]
+                                title = title.split(" [")[0].replace("\"", "")
                             except:
                                 pass
                         except:
-                            title = tag.tag.title
+                            title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
                         #bot.sendMessage(chat_id,artist+" - "+title)
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                         try:
                             try:
                                 track = client.get('/tracks', q=artist + " " + title)[0]
@@ -558,6 +591,11 @@ def handle(msg):
                             title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                            try:
+                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                            except:
+                                pass
                             bot.editMessageText(msgid, "Converting...")
                             if not os.path.isfile("audio.jpg"):
                                 os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
@@ -571,6 +609,11 @@ def handle(msg):
                             title = filter(lambda x: x in printable, thist.title)
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                            try:
+                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                            except:
+                                pass
                             bot.editMessageText(msgid, "Converting...")
                             if not os.path.isfile("audio.jpg"):
                                 os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
@@ -605,23 +648,28 @@ def handle(msg):
                             subprocess.check_call(cmd.split(), shell=False)
                             tag = eyed3.load("audio.mp3")
                             try:
-                                title = tag.tag.title.split(" - ")[1]
+                                title = tag.tag.title.split(" - ")[1].replace("\"", "")
                                 artist = tag.tag.title.split(" - ")[0]
                                 title = title.replace(artist + " - ","")
                                 try:
                                     if not "Remix" in title and not "Mix" in title:
-                                        title = title.split(" (")[0]
+                                        title = title.split(" (")[0].replace("\"", "")
                                 except:
                                     pass
                                 try:
-                                    title = title.split(" [")[0]
+                                    title = title.split(" [")[0].replace("\"", "")
                                 except:
                                     pass
                             except:
-                                title = tag.tag.title
+                                title = tag.tag.title.replace("\"", "")
                                 artist = tag.tag.artist
                             #bot.sendMessage(chat_id,artist+" - "+title)
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                            try:
+                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                            except:
+                                pass
                             try:
                                 try:
                                     track = client.get('/tracks', q=artist + " " + title)[0]
@@ -705,7 +753,7 @@ def handle(msg):
                         bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
                     except:
                         bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("/video") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
                     message = bot.sendMessage(chat_id, "Downloading...")
