@@ -802,6 +802,9 @@ def handle(msg):
                     if "voice" in str(msga):
                         fileid = msga['voice']['file_id']
                         bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "video_note" in str(msga):
+                        fileid = msga['video_note']['file_id']
+                        bot.sendVideoNote(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "video" in str(msga):
                         fileid = msga['video']['file_id']
                         bot.sendVideo(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
@@ -811,9 +814,6 @@ def handle(msg):
                     if "audio" in str(msga):
                         fileid = msga['audio']['file_id']
                         bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                    if "video_note" in str(msga):
-                        fileid = msga['video_note']['file_id']
-                        bot.sendVideoNote(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "photo" in str(msga):
                         fileid = msga['photo']['file_id']
                         bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
