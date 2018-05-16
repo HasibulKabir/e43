@@ -753,7 +753,84 @@ def handle(msg):
                         bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
                     except:
                         bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/ping") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if msg['text'].startswith("/addextra"):
+                reply = None
+                extraname = None
+                try:
+                    extraname = msg['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
+                    f = open("voices.txt", "r")
+                    s = f.read().split('\n')
+                    f.close()
+                    proceed = True
+                    try:
+                        for x in s:
+                            fname = x.split(':')[0]
+                            ename = x.split(':')[1]
+                            if ename == extraname:
+                                proceed = False
+                    except:
+                        pass
+                    if proceed == True:
+                        fileid = msg['reply_to_message']['voice']['file_id']
+                        filename = bot.getFile(file_id=fileid)['file_path']
+                        print(filename)
+                        os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
+                        f = open("voices.txt", "a")
+                        f.write(filename + ":" + extraname + "\n")
+                        f.close()
+                        f = open("extralist.txt", "a")
+                        f.write(extraname + "\r\n")
+                        f.close()
+                        bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                    else:
+                        bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                except:
+                    bot.sendMessage(chat_id, "Message not a reply to a voice message or no name defined! Reply to a voice message with /addextra [name]", reply_to_message_id=str(telepot.message_identifier(msg)))
+            if msg['text'].startswith('#'):
+                extraname = msg['text'].split('#')[1].split('\n')[0]
+                f = open("voices.txt", "r")
+                s = f.read().split('\n')
+                f.close()
+                fname = None
+                try:
+                    for x in s:
+                        filename = x.split(':')[0]
+                        ename = x.split(':')[1]
+                        if ename == extraname:
+                            fname = filename
+                except:
+                    pass
+                f = open(fname, "r")
+                sendVoice(chat_id, fname)
+                f.close()
+                try:
+                    bot.deleteMessage(telepot.message_identifier(msg))
+                except:
+                    pass
+            if msg['text'].startswith("/extra "):
+                extraname = msg['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
+                f = open("voices.txt", "r")
+                s = f.read().split('\n')
+                f.close()
+                fname = None
+                try:
+                    for x in s:
+                        filename = x.split(':')[0]
+                        ename = x.split(':')[1]
+                        if ename == extraname:
+                            fname = filename
+                except:
+                    pass
+                sendVoice(chat_id, fname)
+                try:
+                    bot.deleteMessage(telepot.message_identifier(msg))
+                except:
+                    pass
+            if msg['text'] == "/extralist" or msg['text'] == "/extras":
+                f = open("extralist.txt", "r")
+                bot.sendDocument(chat_id, f, reply_to_message_id=str(telepot.message_identifier(msg)))
+                f.close()
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
                     message = bot.sendMessage(chat_id, "Downloading...")
