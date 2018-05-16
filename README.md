@@ -31,6 +31,7 @@ conv - Convert in groups
 ping - Sends back a "Pong!"
 vid - Convert URL to video
 addextra - Add extra
+delextra - Delete extra
 extra - Send extra (also works with hashtags)
 extralist - Send extras as text file
 extras - Alias of /extralist

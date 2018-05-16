@@ -848,6 +848,41 @@ def handle(msg):
                 f = open("extralist.txt", "r")
                 bot.sendDocument(chat_id, f, reply_to_message_id=str(telepot.message_identifier(msg)))
                 f.close()
+            if msg['text'].startswith("/delextra"):
+                if " " in msg['text']:
+                    try:
+                        extraname = msg['text'].split('/delextra ').replace('#', '')[1].split('\n')[0]
+                        if chat_type == "private":
+                            f = open("extras/" + str(chat_id) + ".txt", "r")
+                            lines = f.readlines()
+                            f.close()
+                            f = open("extras/" + str(chat_id) + ".txt", "r")
+                            for line in lines:
+                                if not line.split(':')[1] == extraname
+                                    f.write(line + "\n")
+                            f.close()
+                            bot.sendMessage(chat_id, "Extra deleted!")
+                        if not chat_type == "private":
+                            admins = bot.getChatAdministrators(chat_id)
+                            isAdmin = False
+                            msgfrom = str(msg['from'])
+                            for user in admins:
+                                if str(user['user']) == msgfrom:
+                                    isAdmin = True
+                            if isAdmin == True:
+                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                lines = f.readlines()
+                                f.close()
+                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                for line in lines:
+                                    if not line.split(':')[1] == extraname
+                                        f.write(line + "\n")
+                                f.close()
+                                bot.sendMessage(chat_id, "Success: Extra deleted!")
+                            else:
+                                bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
+                    else:
+                        bot.sendMessage(chat_id, "Error: Missing parameter!")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/extras") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
