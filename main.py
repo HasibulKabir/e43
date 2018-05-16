@@ -858,7 +858,7 @@ def handle(msg):
                             f.close()
                             f = open("extras/" + str(chat_id) + ".txt", "r")
                             for line in lines:
-                                if not line.split(':')[1] == extraname
+                                if not line.split(':')[1] == extraname:
                                     f.write(line + "\n")
                             f.close()
                             bot.sendMessage(chat_id, "Extra deleted!")
@@ -875,14 +875,16 @@ def handle(msg):
                                 f.close()
                                 f = open("extras/" + str(chat_id) + ".txt", "r")
                                 for line in lines:
-                                    if not line.split(':')[1] == extraname
+                                    if not line.split(':')[1] == extraname:
                                         f.write(line + "\n")
                                 f.close()
                                 bot.sendMessage(chat_id, "Success: Extra deleted!")
                             else:
                                 bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
-                    else:
-                        bot.sendMessage(chat_id, "Error: Missing parameter!")
+                    except:
+                      pass
+                else:
+                    bot.sendMessage(chat_id, "Error: Missing parameter!")
             if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/extras") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
