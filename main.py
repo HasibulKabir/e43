@@ -756,57 +756,75 @@ def handle(msg):
             if msg['text'].startswith("/addextra"):
                 reply = None
                 extraname = None
+                #try:
+                extraname = msg['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
+                proceed = True
                 try:
-                    extraname = msg['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
-                    f = open("voices.txt", "r")
+                    f = open("extras/" + str(chat_id) + ".txt", "r")
                     s = f.read().split('\n')
                     f.close()
-                    proceed = True
-                    try:
-                        for x in s:
-                            fname = x.split(':')[0]
-                            ename = x.split(':')[1]
-                            if ename == extraname:
-                                proceed = False
-                    except:
-                        pass
-                    if proceed == True:
-                        fileid = msg['reply_to_message']['voice']['file_id']
-                        filename = bot.getFile(file_id=fileid)['file_path']
-                        print(filename)
-                        os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
-                        f = open("voices.txt", "a")
-                        f.write(filename + ":" + extraname + "\n")
-                        f.close()
-                        f = open("extralist.txt", "a")
-                        f.write(extraname + "\r\n")
-                        f.close()
-                        bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=str(telepot.message_identifier(msg)))
-                    else:
-                        bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                    for x in s:
+                        mid = x.split(':')[0]
+                        ename = x.split(':')[1]
+                        cid = x.split(':')[2]
+                        if ename == extraname:
+                            proceed = False
                 except:
-                    bot.sendMessage(chat_id, "Message not a reply to a voice message or no name defined! Reply to a voice message with /addextra [name]", reply_to_message_id=str(telepot.message_identifier(msg)))
+                    pass
+                if proceed == True:
+                    f = open("extras/" + str(chat_id) + ".txt", "a+")
+                    f.write(str(telepot.message_identifier(msg['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
+                    f.close()
+                    f = open("extralist.txt", "a")
+                    f.write(extraname + "\r\n")
+                    f.close()
+                    bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                else:
+                    bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                #except:
+                #    bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=str(telepot.message_identifier(msg)))
             if msg['text'].startswith('#'):
                 extraname = msg['text'].split('#')[1].split('\n')[0]
-                f = open("voices.txt", "r")
+                f = open("extras/" + str(chat_id) + ".txt", "r")
                 s = f.read().split('\n')
                 f.close()
-                fname = None
+                mid = None
                 try:
                     for x in s:
-                        filename = x.split(':')[0]
                         ename = x.split(':')[1]
                         if ename == extraname:
-                            fname = filename
+                            mid = x.split(':')[0].split(', ')[1].replace(')', '')
+                            cid = x.split(':')[2]
                 except:
                     pass
-                f = open(fname, "r")
-                sendVoice(chat_id, fname)
-                f.close()
+                msga = bot.forwardMessage(chat_id, chat_id, int(mid))
                 try:
-                    bot.deleteMessage(telepot.message_identifier(msg))
+                    if "voice" in str(msga):
+                        fileid = msga['voice']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "video" in str(msga):
+                        fileid = msga['video']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "sticker" in str(msga):
+                        fileid = msga['sticker']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "audio" in str(msga):
+                        fileid = msga['audio']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "video_note" in str(msga):
+                        fileid = msga['video_note']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "photo" in str(msga):
+                        fileid = msga['photo']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "location" in str(msga):
+                        fileid = msga['location']['file_id']
+                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                    if "text" in str(msga):
+                        bot.sendMessage(chat_id, msga['text'], reply_to_message_id=str(telepot.message_identifier(msg)))
                 except:
                     pass
+                bot.deleteMessage(telepot.message_identifier(msga))
             if msg['text'].startswith("/extra "):
                 extraname = msg['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
                 f = open("voices.txt", "r")
@@ -908,6 +926,11 @@ def sendVoice(chat_id,file_name):
     data = {'chat_id' : chat_id}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
+
+def removekey(d, key):
+    r = dict(d)
+    del r[key]
+    return r
 
 bot = telepot.Bot(TOKEN)
 bot.message_loop(handle)
