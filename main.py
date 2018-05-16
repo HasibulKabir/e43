@@ -804,22 +804,19 @@ def handle(msg):
                         bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "video" in str(msga):
                         fileid = msga['video']['file_id']
-                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                        bot.sendVideo(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "sticker" in str(msga):
                         fileid = msga['sticker']['file_id']
-                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                        bot.sendSticker(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "audio" in str(msga):
                         fileid = msga['audio']['file_id']
-                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                        bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "video_note" in str(msga):
                         fileid = msga['video_note']['file_id']
-                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                        bot.sendVideoNote(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "photo" in str(msga):
                         fileid = msga['photo']['file_id']
-                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                    if "location" in str(msga):
-                        fileid = msga['location']['file_id']
-                        bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                        bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                     if "text" in str(msga):
                         bot.sendMessage(chat_id, msga['text'], reply_to_message_id=str(telepot.message_identifier(msg)))
                 except:
