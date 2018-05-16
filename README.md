@@ -24,6 +24,18 @@ This Telegram bot can download almost anything :)
 
 Instructions can be found on the [Wiki](https://github.com/koyuawsmbrtn/everythingbot/wiki).
 
+## Command list
+
+```
+conv - Convert in groups
+ping - Sends back a "Pong!"
+vid - Convert URL to video
+addextra - Add extra
+extra - Send extra (also works with hashtags)
+extralist - Send extras as text file
+extras - Alias of /extralist
+``
+
 **License: DBAD Public License**
 
 blank.jpg icon by [Gregor Cresnar](https://www.flaticon.com/authors/gregor-cresnar)

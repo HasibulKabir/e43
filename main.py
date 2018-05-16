@@ -830,7 +830,7 @@ def handle(msg):
                 f = open("extralist.txt", "r")
                 bot.sendDocument(chat_id, f, reply_to_message_id=str(telepot.message_identifier(msg)))
                 f.close()
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/extras") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
                     message = bot.sendMessage(chat_id, "Downloading...")
