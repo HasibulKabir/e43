@@ -35,7 +35,7 @@ delextra - Delete extra
 extra - Send extra (also works with hashtags)
 extralist - Send extras as text file
 extras - Alias of /extralist
-``
+```
 
 **License: DBAD Public License**
 
