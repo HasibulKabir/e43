@@ -849,19 +849,25 @@ def handle(msg):
                         lines = f.readlines()
                         f.close()
                         f = open("extras/" + str(chat_id) + ".txt", "w")
+                        actuallyDidIt = False
                         for line in lines:
                             if not line.split(':')[1] == extraname:
                                 f.write(line)
                         f.close()
                         f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
-                        lines = f.readlines()
+                        linesb = f.readlines()
                         f.close()
                         f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
-                        for line in lines:
-                            if line!=extraname+"\n":
+                        for line in linesb:
+                            if not line == extraname+"\r\n":
                                 f.write(line)
+                            else:
+                                actuallyDidIt = True
                         f.close()
-                        bot.sendMessage(chat_id, "Extra deleted!")
+                        if actuallyDidIt == True:
+                            bot.sendMessage(chat_id, "Success: Extra deleted!")
+                        else:
+                            bot.sendMessage(chat_id, "Error: Extra doesn't exist.")
                     if not chat_type == "private":
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
@@ -897,7 +903,7 @@ def handle(msg):
                             bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
                 else:
                     bot.sendMessage(chat_id, "Error: Missing parameter!")
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/extras") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
+            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/delextra") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/extras") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
                 try:
                     msgid = None
                     message = bot.sendMessage(chat_id, "Downloading...")
