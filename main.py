@@ -501,7 +501,7 @@ def handle(msg):
                 except:
                     bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
         else:
-            if not chat_type == "channel" and not chat_type == "private"
+            if not chat_type == "channel" and not chat_type == "private":
                 if "😂" in msg['text']:
                     count = len(msg['text'].split("😂")) - 1
                     f = open("counters/joy.txt", "r")
