@@ -501,71 +501,72 @@ def handle(msg):
                 except:
                     bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
         else:
-            if "😂" in msg['text']:
-                count = len(msg['text'].split("😂")) - 1
-                f = open("counters/joy.txt", "r")
-                s = f.read()
-                f.close()
-                if s == "":
-                    s = "0"
-                sum = int(count) + int(s)
-                f = open("counters/joy.txt", "w")
-                f.write(str(sum))
-                f.close()
-                if sum % rnumber == 0:
-                    bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
-            if "bro" in msg['text']:
-                count = len(msg['text'].split("bro")) - 1
-                f = open("counters/bro.txt", "r")
-                s = f.read()
-                f.close()
-                if s == "":
-                    s = "0"
-                sum = int(count) + int(s)
-                f = open("counters/bro.txt", "w")
-                f.write(str(sum))
-                f.close()
-                if sum % rnumber == 0:
-                    bot.sendMessage(chat_id, "bro level is now: " + str(sum))
-            if "Hi" in msg['text']:
-                count = len(msg['text'].split("Hi")) - 1
-                f = open("counters/hi.txt", "r")
-                s = f.read()
-                f.close()
-                if s == "":
-                    s = "0"
-                sum = int(count) + int(s)
-                f = open("counters/hi.txt", "w")
-                f.write(str(sum))
-                f.close()
-                if sum % rnumber == 0:
-                    bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
-            if "lol" in msg['text']:
-                count = len(msg['text'].split("lol")) - 1
-                f = open("counters/lol.txt", "r")
-                s = f.read()
-                f.close()
-                if s == "":
-                    s = "0"
-                sum = int(count) + int(s)
-                f = open("counters/lol.txt", "w")
-                f.write(str(sum))
-                f.close()
-                if sum % rnumber == 0:
-                    bot.sendMessage(chat_id, "lol level is now: " + str(sum))
-            if "pp" in msg['text']:
-                count = len(msg['text'].split("pp")) - 1
-                f = open("counters/pp.txt", "r")
-                s = f.read()
-                f.close()
-                if s == "":
-                    s = "0"
-                sum = int(count) + int(s)
-                f = open("counters/pp.txt", "w")
-                f.write(str(sum))
-                f.close()
-                if sum % rnumber == 0:
-                    bot.sendMessage(chat_id, "pp level is now: " + str(sum))
+            if not chat_type == "channel" and not chat_type == "private"
+                if "😂" in msg['text']:
+                    count = len(msg['text'].split("😂")) - 1
+                    f = open("counters/joy.txt", "r")
+                    s = f.read()
+                    f.close()
+                    if s == "":
+                        s = "0"
+                    sum = int(count) + int(s)
+                    f = open("counters/joy.txt", "w")
+                    f.write(str(sum))
+                    f.close()
+                    if sum % rnumber == 0:
+                        bot.sendMessage(chat_id, "😂 level is now: " + str(sum))
+                if "bro" in msg['text']:
+                    count = len(msg['text'].split("bro")) - 1
+                    f = open("counters/bro.txt", "r")
+                    s = f.read()
+                    f.close()
+                    if s == "":
+                        s = "0"
+                    sum = int(count) + int(s)
+                    f = open("counters/bro.txt", "w")
+                    f.write(str(sum))
+                    f.close()
+                    if sum % rnumber == 0:
+                        bot.sendMessage(chat_id, "bro level is now: " + str(sum))
+                if "Hi" in msg['text']:
+                    count = len(msg['text'].split("Hi")) - 1
+                    f = open("counters/hi.txt", "r")
+                    s = f.read()
+                    f.close()
+                    if s == "":
+                        s = "0"
+                    sum = int(count) + int(s)
+                    f = open("counters/hi.txt", "w")
+                    f.write(str(sum))
+                    f.close()
+                    if sum % rnumber == 0:
+                        bot.sendMessage(chat_id, "Hi level is now: " + str(sum))
+                if "lol" in msg['text']:
+                    count = len(msg['text'].split("lol")) - 1
+                    f = open("counters/lol.txt", "r")
+                    s = f.read()
+                    f.close()
+                    if s == "":
+                        s = "0"
+                    sum = int(count) + int(s)
+                    f = open("counters/lol.txt", "w")
+                    f.write(str(sum))
+                    f.close()
+                    if sum % rnumber == 0:
+                        bot.sendMessage(chat_id, "lol level is now: " + str(sum))
+                if "pp" in msg['text']:
+                    count = len(msg['text'].split("pp")) - 1
+                    f = open("counters/pp.txt", "r")
+                    s = f.read()
+                    f.close()
+                    if s == "":
+                        s = "0"
+                    sum = int(count) + int(s)
+                    f = open("counters/pp.txt", "w")
+                    f.write(str(sum))
+                    f.close()
+                    if sum % rnumber == 0:
+                        bot.sendMessage(chat_id, "pp level is now: " + str(sum))
             if msg['text'].startswith("/ping"):
                 bot.sendMessage(chat_id, "Pong!")
             if msg['text'].startswith("/start") and chat_type == "private":
