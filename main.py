@@ -43,7 +43,7 @@ if 'TOKEN' in os.environ:
 else:
     TOKEN = ""
 f = open("random.txt", "w+")
-f.write(str(random.randint(20,30)))
+f.write(str(random.randint(10,30)))
 f.close()
 bottag = bottag.replace("@", "")
 
