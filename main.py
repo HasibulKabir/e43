@@ -218,7 +218,6 @@ def handle(msg):
                         except:
                             title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
-                        #bot.sendMessage(chat_id,artist+" - "+title)
                         subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
                         try:
                             metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
@@ -422,7 +421,6 @@ def handle(msg):
                         except:
                             title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
-                        #bot.sendMessage(chat_id,artist+" - "+title)
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                         try:
                             metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
@@ -664,7 +662,6 @@ def handle(msg):
                             except:
                                 title = tag.tag.title.replace("\"", "")
                                 artist = tag.tag.artist
-                            #bot.sendMessage(chat_id,artist+" - "+title)
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             try:
                                 metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
