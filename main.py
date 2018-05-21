@@ -75,9 +75,9 @@ def handle(msg):
             length = audio.info.length * 0.33
             l2 = (audio.info.length * 0.33) + 60
         if audio.info.length > l2:
-            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         else:
-            os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+            os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "video":
         os.system("rm -f *.mp4")
@@ -190,9 +190,9 @@ def handle(msg):
                     length = audio.info.length * 0.33
                     l2 = length + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
@@ -255,9 +255,9 @@ def handle(msg):
                         length = ad.info.length * 0.33
                         l2 = length + 60
                         if ad.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"audio.mp3\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"audio.mp3\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"audio.mp3\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"audio.mp3\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         f = open("output.ogg", "r")
                         bot.sendVoice(chat_id,f,username)
                         f.close()
@@ -276,9 +276,9 @@ def handle(msg):
                         length = audio.info.length * 0.33
                         l2 = length + 60
                         if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
         if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://") and not chat_type == "channel":
             try:
@@ -394,9 +394,9 @@ def handle(msg):
                     length = audio.info.length * 0.33
                     l2 = length + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     sendVoice(chat_id, "output.ogg")
                     bot.deleteMessage(msgid)
                 else:
@@ -469,9 +469,9 @@ def handle(msg):
                         length = ad.info.length * 0.33
                         l2 = length + 60
                         if ad.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
                     else:
@@ -489,9 +489,9 @@ def handle(msg):
                         length = audio.info.length * 0.33
                         l2 = length + 60
                         if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
             except:
                 try:
@@ -634,9 +634,9 @@ def handle(msg):
                         length = audio.info.length * 0.33
                         l2 = length + 60
                         if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!")
@@ -718,9 +718,9 @@ def handle(msg):
                             length = ad.info.length * 0.33
                             l2 = length + 60
                             if ad.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                             else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                             sendVoice(chat_id, "output.ogg")
                             bot.deleteMessage(msgid)
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
@@ -740,9 +740,9 @@ def handle(msg):
                             length = audio.info.length * 0.33
                             l2 = length + 60
                             if audio.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                             else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                             sendVoice(chat_id, "output.ogg")
                             bot.deleteMessage(msgid)
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
@@ -958,18 +958,18 @@ def handle(msg):
                         length = audio.info.length * 0.33
                         l2 = length + 60
                         if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     except:
                         sendAudio(chat_id, fname, artist, tt)
                         audio = MP3(fname)
                         length = audio.info.length * 0.33
                         l2 = length + 60
                         if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + fname + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -map 0:a -strict -2 -acodec opus -b:a 128k output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     sendVoice(chat_id, "output.ogg")
                     bot.deleteMessage(msgid)
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
