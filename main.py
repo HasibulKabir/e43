@@ -934,51 +934,6 @@ def handle(msg):
                             bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
                 else:
                     bot.sendMessage(chat_id, "Error: Missing parameter!")
-            '''
-            if chat_type == "private" and not msg['text'].startswith("/start") and not msg['text'].startswith("/delextra") and not msg['text'].startswith('#') and not msg['text'].startswith("/ping") and not msg['text'].startswith("/extra") and not msg['text'].startswith("/addextra") and not msg['text'].startswith("/extras") and not msg['text'].startswith("/vid") and not msg['text'].startswith("http") and not msg['text'].startswith("/conv"):
-                try:
-                    msgid = None
-                    message = bot.sendMessage(chat_id, "Downloading...")
-                    msgid = telepot.message_identifier(message)
-                    input_text = msg['text']
-                    url = subprocess.check_output(["node", "--no-warnings", "download.js", input_text]).split('\n')[0]
-                    filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
-                    fname = filename
-                    bot.editMessageText(msgid, "Converting...")
-                    os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
-                    bot.editMessageText(msgid, "Sending...")
-                    audio = eyed3.load(filename)
-                    tt = audio.tag.title
-                    artist = audio.tag.artist
-                    try:
-                        filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                        os.rename("output.mp3", filename)
-                        sendAudio(chat_id, filename, artist, tt)
-                        audio = MP3(filename)
-                        length = audio.info.length * 0.33
-                        l2 = length + 60
-                        if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                    except:
-                        sendAudio(chat_id, fname, artist, tt)
-                        audio = MP3(fname)
-                        length = audio.info.length * 0.33
-                        l2 = length + 60
-                        if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + fname + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                    sendVoice(chat_id, "output.ogg")
-                    bot.deleteMessage(msgid)
-                    bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
-                except:
-                    try:
-                        bot.editMessageText(msgid, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
-                    except:
-                        bot.sendMessage(chat_id, "I cannot find the song you're looking for. Go find yourself a link and enter it here, so I know where to start from.")
-            '''
 
 def sendAudio(chat_id,file_name,performer,title):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
