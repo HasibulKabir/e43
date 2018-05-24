@@ -32,9 +32,9 @@ API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
 clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
 userID = pygn.register(clientID)
-# If that token doesn't work try to open: https://accounts.spotify.com/authorize?client_id=b985bfd32abc4fb1a0168547a048c25a&response_type=token&redirect_uri=https://www.google.de
+# If that token doesn't work try to open: https://accounts.spotify.com/authorize?client_id=b985bfd32abc4fb1a0168547a048c25a&response_type=code&redirect_uri=https://www.google.de
 # and generate a token. You will be redirected to Google, but the token is in the address bar. Paste this token into the variable below.
-spotiauth = "BQD0EvPb9MiDeww50zsKFfZFr4YaWufh4f9tjWxAPbZ61131diVz4mP6zf2grvcfMvCVVieGJUUXOyVmcCY_DElRc851YJ3i03dE8DPBT03NVn2x3s5_VdvKsjHeoiGQdJBISh4wvbzWDpCVx6UmNLM1"
+spotiauth = "AQBH5tcN1uh_chZsyvo0pZhxajZsCiEZrGFAiwjsMnxyEtEGW41N0UFUKHSgKQocMjHjaISY5hZeAzGwxDbMNQyCqoJiz66ZKm0gBwZ4c5Ol_K0O8bZFwHTmpXMMrmUDGHQ2e5_VR0LFuXlcskyBhXm2dFlXwr-tmMM4_xZwfbwcXA6w92nzvjgJvA"
 
 if 'BOTTAG' in os.environ:
     bottag = os.environ.get('BOTTAG')
