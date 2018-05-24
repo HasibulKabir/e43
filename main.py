@@ -844,7 +844,7 @@ def handle(msg):
                             else:
                                 bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
                         else:
-                            bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
+                            bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!")
                 except:
                     bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=str(telepot.message_identifier(msg)))
             if msg['text'].startswith('#') or msg['text'].startswith("/extra "):
