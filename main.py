@@ -21,7 +21,7 @@ import soundcloud
 import string
 import pylast
 import pygn
-from moviepy.editor import VideoFileClip
+import json
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -32,6 +32,9 @@ API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
 clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
 userID = pygn.register(clientID)
+# If that token doesn't work try to open: https://accounts.spotify.com/authorize?client_id=b985bfd32abc4fb1a0168547a048c25a&response_type=token&redirect_uri=https://www.google.de
+# and generate a token. You will be redirected to Google, but the token is in the address bar. Paste this token into the variable below.
+spotiauth = "BQD0EvPb9MiDeww50zsKFfZFr4YaWufh4f9tjWxAPbZ61131diVz4mP6zf2grvcfMvCVVieGJUUXOyVmcCY_DElRc851YJ3i03dE8DPBT03NVn2x3s5_VdvKsjHeoiGQdJBISh4wvbzWDpCVx6UmNLM1"
 
 if 'BOTTAG' in os.environ:
     bottag = os.environ.get('BOTTAG')
@@ -90,13 +93,7 @@ def handle(msg):
         print(bot.getFile(file_id=fileid))
         filename = bot.getFile(file_id=fileid)['file_path']
         os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
-        video = VideoFileClip(filename)
-        length = video.duration * 0.33
-        l2 = (video.duration * 0.33) + 60
-        if video.duration > l2:
-            os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-        else:
-            os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
+        os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
         sendVideoNote(chat_id, "vm.mp4")
     if content_type == "text":
         os.system("rm -f audio.jpg")
@@ -135,6 +132,36 @@ def handle(msg):
                     username = line.split(":")[1]
                     username = "\n🆔 @" + username
             if input_text.startswith("http"):
+                if "spotify" in input_text:
+                    try:
+                        trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
+                    except:
+                        trackid = input_text.replace("https://open.spotify.com/track/", "")
+                    print(trackid)
+                    track = requests.get("https://api.spotify.com/v1/tracks/" + trackid, headers={"Authorization": "Bearer " + spotiauth}).json()
+                    albumcover_url = track["album"]["images"][0]["url"]
+                    os.system("wget -O audio.jpg \"" + albumcover_url + "\"")
+                    albumtitle = track["album"]["name"]
+                    artist = track["artists"][0]["name"]
+                    title = track["name"]
+                    year = track["album"]["release_date"].split("-")[0]
+                    query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                    cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                    subprocess.check_call(cmd, shell=True)
+                    filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    audio = MP3(filename)
+                    length = audio.info.length * 0.33
+                    l2 = (audio.info.length * 0.33) + 60
+                    if audio.info.length > l2:
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                    else:
+                        os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                    f = open("audio.jpg")
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                    f.close()
+                    sendAudio(chat_id, filename, artist, title)
+                    sendVoice(chat_id, "output.ogg")
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
@@ -261,25 +288,6 @@ def handle(msg):
                         f = open("output.ogg", "r")
                         bot.sendVoice(chat_id,f,username)
                         f.close()
-                    else:
-                        url = msg['text']
-                        filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
-                        os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
-                        bot.sendMessage(chat_id, "Sending the file...")
-                        audio = eyed3.load(filename)
-                        tt = audio.tag.title
-                        artist = audio.tag.artist
-                        filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                        os.rename("output.mp3", filename)
-                        sendAudio(chat_id, filename, artist, tt)
-                        audio = MP3(filename)
-                        length = audio.info.length * 0.33
-                        l2 = length + 60
-                        if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        sendVoice(chat_id, "output.ogg")
         if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://") and not chat_type == "channel":
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
@@ -293,13 +301,7 @@ def handle(msg):
                 bot.editMessageText(msgid, "Converting...")
                 subprocess.Popen(cmd_conv.split(), shell=False).wait()
                 filename = "out.mp4"
-                video = VideoFileClip(filename)
-                length = video.duration * 0.33
-                l2 = (video.duration * 0.33) + 60
-                if video.duration > l2:
-                    os.system("ffmpeg -ss " + str(length) + " -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-                else:
-                    os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
+                os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
                 bot.editMessageText(msgid, "Sending...")
                 sendVideoNote(chat_id, "vm.mp4")
                 f = open("out.mp4", "r")
@@ -319,6 +321,39 @@ def handle(msg):
                 input_text = msg['text'].split("/conv ")[1]
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
+                if "spotify" in input_text:
+                    try:
+                        trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
+                    except:
+                        trackid = input_text.replace("https://open.spotify.com/track/", "")
+                    print(trackid)
+                    track = requests.get("https://api.spotify.com/v1/tracks/" + trackid, headers={"Authorization": "Bearer " + spotiauth}).json()
+                    albumcover_url = track["album"]["images"][0]["url"]
+                    os.system("wget -O audio.jpg \"" + albumcover_url + "\"")
+                    albumtitle = track["album"]["name"]
+                    artist = track["artists"][0]["name"]
+                    title = track["name"]
+                    year = track["album"]["release_date"].split("-")[0]
+                    query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                    cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                    subprocess.check_call(cmd, shell=True)
+                    bot.editMessageText(msgid, "Converting...")
+                    filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    audio = MP3(filename)
+                    length = audio.info.length * 0.33
+                    l2 = (audio.info.length * 0.33) + 60
+                    if audio.info.length > l2:
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                    else:
+                        os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                    bot.editMessageText(msgid, "Sending...")
+                    f = open("audio.jpg")
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                    f.close()
+                    sendAudio(chat_id, filename, artist, title)
+                    sendVoice(chat_id, "output.ogg")
+                    bot.deleteMessage(msgid)
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
@@ -474,25 +509,6 @@ def handle(msg):
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
-                    else:
-                        url = msg['text'].split("/conv ")[1]
-                        filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
-                        os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
-                        bot.sendMessage(chat_id, "Sending the file...")
-                        audio = eyed3.load(filename)
-                        tt = audio.tag.title
-                        artist = audio.tag.artist
-                        filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                        os.rename("output.mp3", filename)
-                        sendAudio(chat_id, filename, artist, tt)
-                        audio = MP3(filename)
-                        length = audio.info.length * 0.33
-                        l2 = length + 60
-                        if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        sendVoice(chat_id, "output.ogg")
             except:
                 try:
                     bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
@@ -576,6 +592,40 @@ def handle(msg):
                     msgid = telepot.message_identifier(message)
                     input_text = msg['text']
                     input_text = input_text.split('&')[0]
+                    if "spotify" in input_text:
+                        try:
+                            trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
+                        except:
+                            trackid = input_text.replace("https://open.spotify.com/track/", "")
+                        print(trackid)
+                        track = requests.get("https://api.spotify.com/v1/tracks/" + trackid, headers={"Authorization": "Bearer " + spotiauth}).json()
+                        albumcover_url = track["album"]["images"][0]["url"]
+                        os.system("wget -O audio.jpg \"" + albumcover_url + "\"")
+                        albumtitle = track["album"]["name"]
+                        artist = track["artists"][0]["name"]
+                        title = track["name"]
+                        year = track["album"]["release_date"].split("-")[0]
+                        query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                        cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                        subprocess.check_call(cmd, shell=True)
+                        bot.editMessageText(msgid, "Converting...")
+                        filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        audio = MP3(filename)
+                        length = audio.info.length * 0.33
+                        l2 = (audio.info.length * 0.33) + 60
+                        if audio.info.length > l2:
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        else:
+                            os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        bot.editMessageText(msgid, "Sending...")
+                        f = open("audio.jpg")
+                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                        f.close()
+                        sendAudio(chat_id, filename, artist, title)
+                        sendVoice(chat_id, "output.ogg")
+                        bot.deleteMessage(msgid)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                     if "soundcloud" in input_text:
                         track = client.get('/resolve', url=input_text)
                         thist = track
@@ -718,28 +768,6 @@ def handle(msg):
                             length = ad.info.length * 0.33
                             l2 = length + 60
                             if ad.info.length > l2:
-                                os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                            else:
-                                os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                            sendVoice(chat_id, "output.ogg")
-                            bot.deleteMessage(msgid)
-                            bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
-                        else:
-                            url = msg['text']
-                            filename = subprocess.check_output(["node", "--no-warnings", "download-url.js", url]).split('\n')[0]
-                            bot.editMessageText(msgid, "Converting...")
-                            os.system("ffmpeg -y -i \"" + filename + "\" -codec:a libmp3lame -qscale:a 0 -map_metadata 0:g output.mp3")
-                            bot.editMessageText(msgid, "Sending...")
-                            audio = eyed3.load(filename)
-                            tt = audio.tag.title
-                            artist = audio.tag.artist
-                            filename = artist.replace(" ", "_") + "-" + tt.replace(" ", "_") + ".mp3"
-                            os.rename("output.mp3", filename)
-                            sendAudio(chat_id, filename, artist, tt)
-                            audio = MP3(filename)
-                            length = audio.info.length * 0.33
-                            l2 = length + 60
-                            if audio.info.length > l2:
                                 os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                             else:
                                 os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")

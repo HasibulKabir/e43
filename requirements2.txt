@@ -3,6 +3,5 @@ eyed3
 mutagen
 requests
 soundcloud
-youtube-dl
 pylast
-moviepy
+spotify-api
