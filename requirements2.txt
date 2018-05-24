@@ -4,4 +4,3 @@ mutagen
 requests
 soundcloud
 pylast
-spotify-api

@@ -32,9 +32,6 @@ API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
 clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
 userID = pygn.register(clientID)
-# If that token doesn't work try to open: https://accounts.spotify.com/authorize?client_id=b985bfd32abc4fb1a0168547a048c25a&response_type=code&redirect_uri=https://www.google.de
-# and generate a token. You will be redirected to Google, but the token is in the address bar. Paste this token into the variable below.
-spotiauth = "AQBH5tcN1uh_chZsyvo0pZhxajZsCiEZrGFAiwjsMnxyEtEGW41N0UFUKHSgKQocMjHjaISY5hZeAzGwxDbMNQyCqoJiz66ZKm0gBwZ4c5Ol_K0O8bZFwHTmpXMMrmUDGHQ2e5_VR0LFuXlcskyBhXm2dFlXwr-tmMM4_xZwfbwcXA6w92nzvjgJvA"
 
 if 'BOTTAG' in os.environ:
     bottag = os.environ.get('BOTTAG')
@@ -131,25 +128,27 @@ def handle(msg):
                 if chanid == str(chat_id):
                     username = line.split(":")[1]
                     username = "\n🆔 @" + username
-            if input_text.startswith("http"):
                 if "spotify" in input_text:
                     try:
                         trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
                     except:
                         trackid = input_text.replace("https://open.spotify.com/track/", "")
                     print(trackid)
-                    track = requests.get("https://api.spotify.com/v1/tracks/" + trackid, headers={"Authorization": "Bearer " + spotiauth}).json()
-                    albumcover_url = track["album"]["images"][0]["url"]
-                    os.system("wget -O audio.jpg \"" + albumcover_url + "\"")
-                    albumtitle = track["album"]["name"]
-                    artist = track["artists"][0]["name"]
-                    title = track["name"]
-                    year = track["album"]["release_date"].split("-")[0]
+                    r = requests.get(input_text)
+                    title = r.content.split('<title>')[1].split('</title>')[0]
+                    stitle = title.split(',')[0]
+                    artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                    title = stitle
+                    data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
+                    cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                    year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
+                    albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
+                    os.system("wget -O audio.jpg \"" + cover + "\"")
                     query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
                     cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
@@ -158,9 +157,9 @@ def handle(msg):
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     f = open("audio.jpg")
-                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                     f.close()
-                    sendAudio(chat_id, filename, artist, title)
+                    sendAudioChan(chat_id,filename,artist,title,username)
                     sendVoice(chat_id, "output.ogg")
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
@@ -327,19 +326,22 @@ def handle(msg):
                     except:
                         trackid = input_text.replace("https://open.spotify.com/track/", "")
                     print(trackid)
-                    track = requests.get("https://api.spotify.com/v1/tracks/" + trackid, headers={"Authorization": "Bearer " + spotiauth}).json()
-                    albumcover_url = track["album"]["images"][0]["url"]
-                    os.system("wget -O audio.jpg \"" + albumcover_url + "\"")
-                    albumtitle = track["album"]["name"]
-                    artist = track["artists"][0]["name"]
-                    title = track["name"]
-                    year = track["album"]["release_date"].split("-")[0]
+                    r = requests.get(input_text)
+                    title = r.content.split('<title>')[1].split('</title>')[0]
+                    stitle = title.split(',')[0]
+                    artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                    title = stitle
+                    data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
+                    cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                    year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
+                    albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
+                    os.system("wget -O audio.jpg \"" + cover + "\"")
                     query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
                     cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     bot.editMessageText(msgid, "Converting...")
                     filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
@@ -598,19 +600,22 @@ def handle(msg):
                         except:
                             trackid = input_text.replace("https://open.spotify.com/track/", "")
                         print(trackid)
-                        track = requests.get("https://api.spotify.com/v1/tracks/" + trackid, headers={"Authorization": "Bearer " + spotiauth}).json()
-                        albumcover_url = track["album"]["images"][0]["url"]
-                        os.system("wget -O audio.jpg \"" + albumcover_url + "\"")
-                        albumtitle = track["album"]["name"]
-                        artist = track["artists"][0]["name"]
-                        title = track["name"]
-                        year = track["album"]["release_date"].split("-")[0]
+                        r = requests.get(input_text)
+                        title = r.content.split('<title>')[1].split('</title>')[0]
+                        stitle = title.split(',')[0]
+                        artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                        title = stitle
+                        data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
+                        cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                        year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
+                        albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
+                        os.system("wget -O audio.jpg \"" + cover + "\"")
                         query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
                         cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                         subprocess.check_call(cmd, shell=True)
                         bot.editMessageText(msgid, "Converting...")
                         filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         audio = MP3(filename)
                         length = audio.info.length * 0.33
                         l2 = (audio.info.length * 0.33) + 60
