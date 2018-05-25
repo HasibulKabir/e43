@@ -27,6 +27,7 @@ Instructions can be found on the [Wiki](https://github.com/koyuawsmbrtn/everythi
 ## Command list
 
 ```
+help - Show help
 conv - Convert in groups
 ping - Sends back a "Pong!"
 vid - Convert URL to video
