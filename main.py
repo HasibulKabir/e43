@@ -136,7 +136,7 @@ def handle(msg):
                     print(trackid)
                     r = requests.get(input_text)
                     title = r.content.split('<title>')[1].split('</title>')[0]
-                    stitle = title.split(',')[0]
+                    stitle = title.split(',')[0].replace("&#039;", "'")
                     artist = title.split(', a song by ')[1].split(' on Spotify')[0]
                     title = stitle
                     data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
@@ -328,7 +328,7 @@ def handle(msg):
                     print(trackid)
                     r = requests.get(input_text)
                     title = r.content.split('<title>')[1].split('</title>')[0]
-                    stitle = title.split(',')[0]
+                    stitle = title.split(',')[0].replace("&#039;", "'")
                     artist = title.split(', a song by ')[1].split(' on Spotify')[0]
                     title = stitle
                     data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
@@ -602,7 +602,7 @@ def handle(msg):
                         print(trackid)
                         r = requests.get(input_text)
                         title = r.content.split('<title>')[1].split('</title>')[0]
-                        stitle = title.split(',')[0]
+                        stitle = title.split(',')[0].replace("&#039;", "'")
                         artist = title.split(', a song by ')[1].split(' on Spotify')[0]
                         title = stitle
                         data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
