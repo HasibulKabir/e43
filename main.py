@@ -75,9 +75,9 @@ def handle(msg):
             length = audio.info.length * 0.33
             l2 = (audio.info.length * 0.33) + 60
         if audio.info.length > l2:
-            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         else:
-            os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "video":
         os.system("rm -f *.mp4")
@@ -145,7 +145,7 @@ def handle(msg):
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
                     query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
-                    cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                    cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
                     os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
@@ -153,9 +153,9 @@ def handle(msg):
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                     f.close()
@@ -224,7 +224,7 @@ def handle(msg):
                     f.close()
                 else:
                     if "youtu" in input_text:
-                        cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
+                        cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                             --output audio.%%(ext)s %summary'%(input_text)
                         subprocess.check_call(cmd.split(), shell=False)
                         tag = eyed3.load("audio.mp3")
@@ -294,7 +294,7 @@ def handle(msg):
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
                 os.system("rm -f *.mp4")
-                cmd_download = "youtube-dl -f mp4 -o video.%(ext)s " + input_text
+                cmd_download = "youtube-dl --geo-bypass -f mp4 -o video.%(ext)s " + input_text
                 subprocess.Popen(cmd_download.split(), shell=False).wait()
                 cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 -strict -2 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
@@ -337,7 +337,7 @@ def handle(msg):
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
                     query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
-                    cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                    cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     bot.editMessageText(msgid, "Converting...")
                     filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
@@ -346,9 +346,9 @@ def handle(msg):
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
@@ -438,7 +438,7 @@ def handle(msg):
                     bot.deleteMessage(msgid)
                 else:
                     if "youtu" in input_text:
-                        cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
+                        cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                             --output audio.%%(ext)s %summary'%(input_text)
                         subprocess.check_call(cmd.split(), shell=False)
                         tag = eyed3.load("audio.mp3")
@@ -611,7 +611,7 @@ def handle(msg):
                         albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                         os.system("wget -O audio.jpg \"" + cover + "\"")
                         query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
-                        cmd = "youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                        cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                         subprocess.check_call(cmd, shell=True)
                         bot.editMessageText(msgid, "Converting...")
                         filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
@@ -620,9 +620,9 @@ def handle(msg):
                         length = audio.info.length * 0.33
                         l2 = (audio.info.length * 0.33) + 60
                         if audio.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                            os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         bot.editMessageText(msgid, "Sending...")
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
@@ -697,7 +697,7 @@ def handle(msg):
                         bot.sendMessage(chat_id,"Here you go!")
                     else:
                         if "youtu" in input_text:
-                            cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
+                            cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                                 --output audio.%%(ext)s %summary'%(input_text)
                             subprocess.check_call(cmd.split(), shell=False)
                             tag = eyed3.load("audio.mp3")
