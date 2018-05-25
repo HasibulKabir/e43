@@ -1,0 +1,9 @@
+This is %bottag% 0.5
+A bot created by @Sommerlichter
+Source code is on https://github.com/koyuawsmbrtn/everythingbot
+Current engines: YayDown4E, VoiceBot4E, Video4E, SoundCLI4E, Spotify4E
+Deprecated engines: AllToMP3
+Supported websites: YouTube, SoundCloud, Spotify
+Supported files: M4A, MP3, MP4
+
+© koyu, Pifge and ponies 2018
