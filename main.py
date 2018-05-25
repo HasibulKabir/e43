@@ -94,6 +94,12 @@ def handle(msg):
         sendVideoNote(chat_id, "vm.mp4")
     if content_type == "text":
         os.system("rm -f audio.jpg")
+        if msg['text'].startswith("/help") and not chat_type == "channel":
+            f = open("help.txt", "r")
+            s = f.read()
+            f.close()
+            s = s.replace("%bottag%", bottag)
+            bot.sendMessage(chat_id, s)
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: `" + str(chat_id) + "`", "Markdown")
         if msg['text'].startswith("/settag"):
