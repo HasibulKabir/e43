@@ -8,4 +8,5 @@ rm -f *.part
 rm -f *.pyc
 rm -f music/file_*
 rm -f videos/file_*
+git checkout -- random.txt
 echo "Done!"

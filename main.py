@@ -98,7 +98,7 @@ def handle(msg):
             f = open("help.txt", "r")
             s = f.read()
             f.close()
-            s = s.replace("%bottag%", bottag)
+            s = s.replace("%bottag%", "@" + bottag)
             bot.sendMessage(chat_id, s)
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: `" + str(chat_id) + "`", "Markdown")
