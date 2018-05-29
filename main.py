@@ -131,83 +131,132 @@ def handle(msg):
             username = ""
             for line in s:
                 chanid = line.split(":")[0]
-                if chanid == str(chat_id):
-                    username = line.split(":")[1]
-                    username = "\n🆔 @" + username
-                if "spotify" in input_text:
+            if chanid == str(chat_id):
+                username = line.split(":")[1]
+                username = "\n🆔 @" + username
+            if "spotify" in input_text:
+                try:
+                    trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
+                except:
+                    trackid = input_text.replace("https://open.spotify.com/track/", "")
+                print(trackid)
+                r = requests.get(input_text)
+                title = r.content.split('<title>')[1].split('</title>')[0]
+                stitle = title.split(',')[0].replace("&#039;", "'")
+                artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                title = stitle
+                data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
+                cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
+                albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
+                os.system("wget -O audio.jpg \"" + cover + "\"")
+                query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                subprocess.check_call(cmd, shell=True)
+                filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                audio = MP3(filename)
+                length = audio.info.length * 0.33
+                l2 = (audio.info.length * 0.33) + 60
+                if audio.info.length > l2:
+                    os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                else:
+                    os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                f = open("audio.jpg")
+                bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                f.close()
+                sendAudioChan(chat_id,filename,artist,title,username)
+                sendVoice(chat_id, "output.ogg")
+            if "soundcloud" in input_text:
+                track = client.get('/resolve', url=input_text)
+                thist = track
+                filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
+                stream_url = client.get(thist.stream_url, allow_redirects=False)
+                artist = None
+                title = None
+                try:
+                    printable = set(string.printable)
+                    artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
+                    printable = set(string.printable)
+                    title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
+                    os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                    os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                     try:
-                        trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
+                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
                     except:
-                        trackid = input_text.replace("https://open.spotify.com/track/", "")
-                    print(trackid)
-                    r = requests.get(input_text)
-                    title = r.content.split('<title>')[1].split('</title>')[0]
-                    stitle = title.split(',')[0].replace("&#039;", "'")
-                    artist = title.split(', a song by ')[1].split(' on Spotify')[0]
-                    title = stitle
-                    data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
-                    cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
-                    year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
-                    albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
-                    os.system("wget -O audio.jpg \"" + cover + "\"")
-                    query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
-                    cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
-                    subprocess.check_call(cmd, shell=True)
-                    filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                    audio = MP3(filename)
-                    length = audio.info.length * 0.33
-                    l2 = (audio.info.length * 0.33) + 60
-                    if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                    else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        pass
+                    if not os.path.isfile("audio.jpg"):
+                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                        os.system("rm -f raw_audio.jpg")
+                    os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                except:
+                    printable = set(string.printable)
+                    artist = filter(lambda x: x in printable, thist.user['username'])
+                    printable = set(string.printable)
+                    title = filter(lambda x: x in printable, thist.title)
+                    os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                    os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                    try:
+                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                    except:
+                        pass
+                    if not os.path.isfile("audio.jpg"):
+                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                        os.system("rm -f raw_audio.jpg")
+                    os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                try:
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                     f.close()
-                    sendAudioChan(chat_id,filename,artist,title,username)
-                    sendVoice(chat_id, "output.ogg")
-                if "soundcloud" in input_text:
-                    track = client.get('/resolve', url=input_text)
-                    thist = track
-                    filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
-                    stream_url = client.get(thist.stream_url, allow_redirects=False)
-                    artist = None
-                    title = None
+                except:
+                    f = open("blank.jpg")
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                    f.close()
+                print(filename)
+                sendAudioChan(chat_id,filename,artist,title,username)
+                audio = MP3(filename)
+                length = audio.info.length * 0.33
+                l2 = length + 60
+                if audio.info.length > l2:
+                    os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                else:
+                    os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                f = open("output.ogg", "r")
+                bot.sendVoice(chat_id,f,username)
+                f.close()
+            else:
+                if "youtu" in input_text:
+                    cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
+                        --output audio.%%(ext)s %summary'%(input_text)
+                    subprocess.check_call(cmd.split(), shell=False)
+                    tag = eyed3.load("audio.mp3")
                     try:
-                        printable = set(string.printable)
-                        artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
-                        printable = set(string.printable)
-                        title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
-                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                        os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        title = tag.tag.title.split(" - ")[1].replace("\"", "")
+                        artist = tag.tag.title.split(" - ")[0]
+                        title = title.replace(artist + " - ","")
                         try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                            if not "Remix" in title and not "Mix" in title:
+                                title = title.split(" (")[0].replace("\"", "")
                         except:
                             pass
-                        if not os.path.isfile("audio.jpg"):
-                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                            os.system("rm -f raw_audio.jpg")
-                        os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        try:
+                            title = title.split(" [")[0].replace("\"", "")
+                        except:
+                            pass
                     except:
-                        printable = set(string.printable)
-                        artist = filter(lambda x: x in printable, thist.user['username'])
-                        printable = set(string.printable)
-                        title = filter(lambda x: x in printable, thist.title)
-                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                        os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                        except:
-                            pass
-                        if not os.path.isfile("audio.jpg"):
-                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                            os.system("rm -f raw_audio.jpg")
-                        os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        title = tag.tag.title.replace("\"", "")
+                        artist = tag.tag.artist
+                    subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
+                    try:
+                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                    except:
+                        pass
+                    subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                     try:
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
@@ -216,83 +265,34 @@ def handle(msg):
                         f = open("blank.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                         f.close()
-                    print(filename)
+                    filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
+                    try:
+                        os.rename("audio.mp3.mp3", filename)
+                    except:
+                        try:
+                            os.rename("audio.mp3", filename)
+                        except:
+                            try:
+                                filename = "audio.mp3.mp3"
+                            except:
+                                try:
+                                    filename = "audio.mp3"
+                                except:
+                                    pass
                     sendAudioChan(chat_id,filename,artist,title,username)
-                    audio = MP3(filename)
-                    length = audio.info.length * 0.33
+                    audio = eyed3.load("audio.mp3")
+                    tt = audio.tag.title
+                    artist = audio.tag.artist
+                    ad = MP3("audio.mp3")
+                    length = ad.info.length * 0.33
                     l2 = length + 60
-                    if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                    if ad.info.length > l2:
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"audio.mp3\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"audio.mp3\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
-                else:
-                    if "youtu" in input_text:
-                        cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
-                            --output audio.%%(ext)s %summary'%(input_text)
-                        subprocess.check_call(cmd.split(), shell=False)
-                        tag = eyed3.load("audio.mp3")
-                        try:
-                            title = tag.tag.title.split(" - ")[1].replace("\"", "")
-                            artist = tag.tag.title.split(" - ")[0]
-                            title = title.replace(artist + " - ","")
-                            try:
-                                if not "Remix" in title and not "Mix" in title:
-                                    title = title.split(" (")[0].replace("\"", "")
-                            except:
-                                pass
-                            try:
-                                title = title.split(" [")[0].replace("\"", "")
-                            except:
-                                pass
-                        except:
-                            title = tag.tag.title.replace("\"", "")
-                            artist = tag.tag.artist
-                        subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
-                        try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                        except:
-                            pass
-                        subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
-                        try:
-                            f = open("audio.jpg")
-                            bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
-                            f.close()
-                        except:
-                            f = open("blank.jpg")
-                            bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
-                            f.close()
-                        filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
-                        try:
-                            os.rename("audio.mp3.mp3", filename)
-                        except:
-                            try:
-                                os.rename("audio.mp3", filename)
-                            except:
-                                try:
-                                    filename = "audio.mp3.mp3"
-                                except:
-                                    try:
-                                        filename = "audio.mp3"
-                                    except:
-                                        pass
-                        sendAudioChan(chat_id,filename,artist,title,username)
-                        audio = eyed3.load("audio.mp3")
-                        tt = audio.tag.title
-                        artist = audio.tag.artist
-                        ad = MP3("audio.mp3")
-                        length = ad.info.length * 0.33
-                        l2 = length + 60
-                        if ad.info.length > l2:
-                            os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"audio.mp3\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        else:
-                            os.system("ffmpeg -ss 0 -t 60 -y -i \"audio.mp3\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                        f = open("output.ogg", "r")
-                        bot.sendVoice(chat_id,f,username)
-                        f.close()
         if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://") and not chat_type == "channel":
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
