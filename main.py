@@ -279,7 +279,10 @@ def handle(msg):
                                     filename = "audio.mp3"
                                 except:
                                     pass
-                    sendAudioChan(chat_id,filename,artist,title,username)
+                    try:
+                        sendAudioChan(chat_id,filename,artist,title,username)
+                    except:
+                        sendAudioChan(chat_id,"audio.mp3",artist,title,username)
                     audio = eyed3.load("audio.mp3")
                     tt = audio.tag.title
                     artist = audio.tag.artist
@@ -504,7 +507,10 @@ def handle(msg):
                                         filename = "audio.mp3"
                                     except:
                                         bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @Sommerlichter, he might fix this.")
-                        sendAudio(chat_id, filename, artist, title)
+                        try:
+                            sendAudio(chat_id, filename, artist, title)
+                        except:
+                            sendAudio(chat_id, "audio.mp3", artist, title)
                         audio = eyed3.load(filename)
                         tt = audio.tag.title
                         artist = audio.tag.artist
@@ -771,7 +777,10 @@ def handle(msg):
                                             filename = "audio.mp3"
                                         except:
                                             bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @Sommerlichter, he might fix this.")
-                            sendAudio(chat_id, filename, artist, title)
+                            try:
+                                sendAudio(chat_id, filename, artist, title)
+                            except:
+                                sendAudio(chat_id, "audio.mp3", artist, title)
                             audio = eyed3.load(filename)
                             tt = audio.tag.title
                             artist = audio.tag.artist
