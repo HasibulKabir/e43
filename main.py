@@ -282,7 +282,8 @@ def handle(msg):
                     try:
                         sendAudioChan(chat_id,filename,artist,title,username)
                     except:
-                        sendAudioChan(chat_id,"audio.mp3",artist,title,username)
+                        filename = "audio.mp3"
+                        sendAudioChan(chat_id,filename,artist,title,username)
                     audio = eyed3.load("audio.mp3")
                     tt = audio.tag.title
                     artist = audio.tag.artist
@@ -510,7 +511,8 @@ def handle(msg):
                         try:
                             sendAudio(chat_id, filename, artist, title)
                         except:
-                            sendAudio(chat_id, "audio.mp3", artist, title)
+                            filename = "audio.mp3"
+                            sendAudio(chat_id, filename, artist, title)
                         audio = eyed3.load(filename)
                         tt = audio.tag.title
                         artist = audio.tag.artist
@@ -780,7 +782,8 @@ def handle(msg):
                             try:
                                 sendAudio(chat_id, filename, artist, title)
                             except:
-                                sendAudio(chat_id, "audio.mp3", artist, title)
+                                filename = "audio.mp3"
+                                sendAudio(chat_id, filename, artist, title)
                             audio = eyed3.load(filename)
                             tt = audio.tag.title
                             artist = audio.tag.artist
