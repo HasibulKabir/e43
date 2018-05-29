@@ -131,9 +131,9 @@ def handle(msg):
             username = ""
             for line in s:
                 chanid = line.split(":")[0]
-            if chanid == str(chat_id):
-                username = line.split(":")[1]
-                username = "\n🆔 @" + username
+                if chanid == str(chat_id):
+                    username = line.split(":")[1]
+                    username = "\n🆔 @" + username
             if "spotify" in input_text:
                 try:
                     trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
