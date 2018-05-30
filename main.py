@@ -22,6 +22,7 @@ import string
 import pylast
 import pygn
 import json
+import html
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -142,7 +143,7 @@ def handle(msg):
                 print(trackid)
                 r = requests.get(input_text)
                 title = r.content.split('<title>')[1].split('</title>')[0]
-                stitle = title.split(',')[0].replace("&#039;", "'")
+                stitle = html.unescape(title.split(',')[0])
                 artist = title.split(', a song by ')[1].split(' on Spotify')[0]
                 title = stitle
                 data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
@@ -338,7 +339,7 @@ def handle(msg):
                     print(trackid)
                     r = requests.get(input_text)
                     title = r.content.split('<title>')[1].split('</title>')[0]
-                    stitle = title.split(',')[0].replace("&#039;", "'")
+                    stitle = html.unescape(title.split(',')[0])
                     artist = title.split(', a song by ')[1].split(' on Spotify')[0]
                     title = stitle
                     data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
@@ -616,7 +617,7 @@ def handle(msg):
                         print(trackid)
                         r = requests.get(input_text)
                         title = r.content.split('<title>')[1].split('</title>')[0]
-                        stitle = title.split(',')[0].replace("&#039;", "'")
+                        stitle = html.unescape(title.split(',')[0])
                         artist = title.split(', a song by ')[1].split(' on Spotify')[0]
                         title = stitle
                         data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
