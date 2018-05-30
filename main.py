@@ -145,12 +145,12 @@ def handle(msg):
                 r = requests.get(input_text)
                 title = r.content.split('<title>')[1].split('</title>')[0]
                 stitle = html.unescape(title.split(',')[0])
-                artist = title.split(', a song by ')[1].split(' on Spotify')[0]
-                if " (feat." in artist:
-                    artist = artist.split(' (')[0]
+                artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0].split(',')[0])
+                if " (feat." in stitle:
+                    stitle = stitle.split(' (')[0]
                 title = stitle
                 data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
-                cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                cover = data.split('"url":"')[1].split("\"")[0].replace("\\", "")
                 year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                 albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                 os.system("wget -O audio.jpg \"" + cover + "\"")
@@ -343,12 +343,12 @@ def handle(msg):
                     r = requests.get(input_text)
                     title = r.content.split('<title>')[1].split('</title>')[0]
                     stitle = html.unescape(title.split(',')[0])
-                    artist = title.split(', a song by ')[1].split(' on Spotify')[0]
-                    if " (feat." in artist:
-                        artist = artist.split(' (')[0]
+                    artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0].split(',')[0])
+                    if " (feat." in stitle:
+                        stitle = stitle.split(' (')[0]
                     title = stitle
                     data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
-                    cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                    cover = data.split('"url":"')[1].split("\"")[0].replace("\\", "")
                     year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
@@ -623,12 +623,12 @@ def handle(msg):
                         r = requests.get(input_text)
                         title = r.content.split('<title>')[1].split('</title>')[0]
                         stitle = html.unescape(title.split(',')[0])
-                        artist = title.split(', a song by ')[1].split(' on Spotify')[0]
-                        if " (feat." in artist:
-                            artist = artist.split(' (')[0]
+                        artist = html.unescape(title.split(', a song by ')[1].split(' on Spotify')[0].split(',')[0])
+                        if " (feat." in stitle:
+                            stitle = stitle.split(' (')[0]
                         title = stitle
                         data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
-                        cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
+                        cover = data.split('"url":"')[1].split("\"")[0].replace("\\", "")
                         year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                         albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                         os.system("wget -O audio.jpg \"" + cover + "\"")
