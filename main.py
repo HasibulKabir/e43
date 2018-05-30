@@ -22,7 +22,7 @@ import string
 import pylast
 import pygn
 import json
-import html
+from HTMLParser import HTMLParser
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -33,6 +33,7 @@ API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
 clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
 userID = pygn.register(clientID)
+html = HTMLParser()
 
 if 'BOTTAG' in os.environ:
     bottag = os.environ.get('BOTTAG')
@@ -145,6 +146,8 @@ def handle(msg):
                 title = r.content.split('<title>')[1].split('</title>')[0]
                 stitle = html.unescape(title.split(',')[0])
                 artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                if " (feat." in artist:
+                    artist = artist.split(' (')[0]
                 title = stitle
                 data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
                 cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
@@ -341,6 +344,8 @@ def handle(msg):
                     title = r.content.split('<title>')[1].split('</title>')[0]
                     stitle = html.unescape(title.split(',')[0])
                     artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                    if " (feat." in artist:
+                        artist = artist.split(' (')[0]
                     title = stitle
                     data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
                     cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
@@ -619,6 +624,8 @@ def handle(msg):
                         title = r.content.split('<title>')[1].split('</title>')[0]
                         stitle = html.unescape(title.split(',')[0])
                         artist = title.split(', a song by ')[1].split(' on Spotify')[0]
+                        if " (feat." in artist:
+                            artist = artist.split(' (')[0]
                         title = stitle
                         data = r.content.split('Spotify.Entity = ')[1].split(';')[0]
                         cover = data.split('640,"url":"')[1].split("\"")[0].replace("\\", "")
