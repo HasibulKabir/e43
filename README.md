@@ -7,12 +7,9 @@ This Telegram bot can download almost anything :)
 
 ### Used Libraries/Applications
 
-- NodeJS (latest version)
 - FFMPEG
 - LAME
 - eyeD3
-- node-acoustid
-- chromaprint
 - Python 2
 - Python 3
 - youtube-dl
@@ -22,7 +19,7 @@ This Telegram bot can download almost anything :)
 
 ## Installation
 
-Instructions can be found on the [Wiki](https://github.com/koyuawsmbrtn/everythingbot/wiki).
+Instructions can be found on the [Wiki](https://git.koyu.space/koyu/everythingbot/wiki).
 
 ## Command list
 
