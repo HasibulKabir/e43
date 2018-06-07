@@ -158,7 +158,7 @@ def handle(msg):
                 cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                 subprocess.check_call(cmd, shell=True)
                 filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 audio = MP3(filename)
                 length = audio.info.length * 0.33
                 l2 = (audio.info.length * 0.33) + 60
@@ -194,7 +194,7 @@ def handle(msg):
                         os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                         os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
-                    os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 except:
                     printable = set(string.printable)
                     artist = filter(lambda x: x in printable, thist.user['username'])
@@ -211,7 +211,7 @@ def handle(msg):
                         os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                         os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
-                    os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 try:
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
@@ -357,7 +357,7 @@ def handle(msg):
                     subprocess.check_call(cmd, shell=True)
                     bot.editMessageText(msgid, "Converting...")
                     filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                    os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
@@ -408,7 +408,7 @@ def handle(msg):
                             except:
                                 albumtitle = str(album.title)
                         bot.editMessageText(msgid, "Converting...")
-                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     except:
                         printable = set(string.printable)
                         artist = filter(lambda x: x in printable, thist.user['username'])
@@ -637,7 +637,7 @@ def handle(msg):
                         subprocess.check_call(cmd, shell=True)
                         bot.editMessageText(msgid, "Converting...")
                         filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
-                        os.system("lame -V0 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         audio = MP3(filename)
                         length = audio.info.length * 0.33
                         l2 = (audio.info.length * 0.33) + 60
@@ -677,7 +677,7 @@ def handle(msg):
                                 os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                                 os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                                 os.system("rm -f raw_audio.jpg")
-                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             printable = set(string.printable)
                             artist = filter(lambda x: x in printable, thist.user['username'])
@@ -695,7 +695,7 @@ def handle(msg):
                                 os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                                 os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                                 os.system("rm -f raw_audio.jpg")
-                            os.system("lame -V0 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         bot.editMessageText(msgid, "Sending...")
                         try:
                             f = open("audio.jpg")
