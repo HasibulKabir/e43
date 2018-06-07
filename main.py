@@ -212,19 +212,9 @@ def handle(msg):
                     printable = set(string.printable)
                     title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                     os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                    try:
-                        os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                    except:
-                        pass
-                    try:
-                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                    except:
-                        pass
-                    if not os.path.isfile("audio.jpg"):
-                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                        os.system("rm -f raw_audio.jpg")
+                    os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                    os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                    os.system("rm -f raw_audio.jpg")
                     os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 except:
                     printable = set(string.printable)
@@ -232,19 +222,9 @@ def handle(msg):
                     printable = set(string.printable)
                     title = filter(lambda x: x in printable, thist.title)
                     os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                    try:
-                        os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                    except:
-                        pass
-                    try:
-                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                    except:
-                        pass
-                    if not os.path.isfile("audio.jpg"):
-                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                        os.system("rm -f raw_audio.jpg")
+                    os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                    os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                    os.system("rm -f raw_audio.jpg")
                     os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 try:
                     f = open("audio.jpg")
@@ -442,15 +422,9 @@ def handle(msg):
                         printable = set(string.printable)
                         title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                        try:
-                            os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        except:
-                            pass
-                        try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                        except:
-                            pass
+                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                        os.system("rm -f raw_audio.jpg")
                         year = ""
                         albumtitle = ""
                         try:
@@ -475,15 +449,9 @@ def handle(msg):
                         printable = set(string.printable)
                         title = filter(lambda x: x in printable, thist.title)
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                        try:
-                            os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                        except:
-                            pass
-                        try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                        except:
-                            pass
+                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                        os.system("rm -f raw_audio.jpg")
                         try:
                             try:
                                 track = client.get('/tracks', q=artist + " " + title)[0]
@@ -753,20 +721,9 @@ def handle(msg):
                             printable = set(string.printable)
                             title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                            try:
-                                os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                            except:
-                                pass
-                            try:
-                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                            except:
-                                pass
-                            bot.editMessageText(msgid, "Converting...")
-                            if not os.path.isfile("audio.jpg"):
-                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                                os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                                os.system("rm -f raw_audio.jpg")
+                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                            os.system("rm -f raw_audio.jpg")
                             os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             printable = set(string.printable)
@@ -774,20 +731,9 @@ def handle(msg):
                             printable = set(string.printable)
                             title = filter(lambda x: x in printable, thist.title)
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                            try:
-                                os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                            except:
-                                pass
-                            try:
-                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                            except:
-                                pass
-                            bot.editMessageText(msgid, "Converting...")
-                            if not os.path.isfile("audio.jpg"):
-                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                                os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                                os.system("rm -f raw_audio.jpg")
+                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                            os.system("rm -f raw_audio.jpg")
                             os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         bot.editMessageText(msgid, "Sending...")
                         try:
