@@ -183,7 +183,7 @@ def handle(msg):
                 query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
                 cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                 subprocess.check_call(cmd, shell=True)
-                filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                 os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 audio = MP3(filename)
                 length = audio.info.length * 0.33
@@ -407,7 +407,7 @@ def handle(msg):
                     cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     bot.editMessageText(msgid, "Converting...")
-                    filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                    filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
@@ -711,7 +711,7 @@ def handle(msg):
                         cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                         subprocess.check_call(cmd, shell=True)
                         bot.editMessageText(msgid, "Converting...")
-                        filename = artist.replace(" ", "-") + "_" + title.replace(" ", "-") + ".mp3"
+                        filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                         os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         audio = MP3(filename)
                         length = audio.info.length * 0.33
