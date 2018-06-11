@@ -44,6 +44,10 @@ if 'TOKEN' in os.environ:
     TOKEN = os.environ.get('TOKEN')
 else:
     TOKEN = ""
+if 'BOTMASTER' in os.environ:
+    BOTMASTER = os.environ.get('BOTMASTER')
+else:
+    BOTMASTER = 'Sommerlichter'
 f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
@@ -58,6 +62,17 @@ def handle(msg):
     f = open("random.txt", "r")
     rnumber = int(f.read())
     f.close()
+    if chat_type == "private":
+        try:
+            f = open("chatids.txt", "r")
+            s = f.read()
+            f.close()
+            if not str(chat_id) in s:
+                f = open("chatids.txt", "a+")
+                f.write(str(chat_id) + "\n")
+                f.close()
+        except:
+            pass
     if content_type == 'audio':
         audiofile = msg['audio']
         fileid = msg['audio']['file_id']
@@ -100,7 +115,7 @@ def handle(msg):
             f = open("help.txt", "r")
             s = f.read()
             f.close()
-            s = s.replace("%bottag%", "@" + bottag)
+            s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER)
             bot.sendMessage(chat_id, s)
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: `" + str(chat_id) + "`", "Markdown")
@@ -341,9 +356,9 @@ def handle(msg):
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
             except:
                 try:
-                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
                 except:
-                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
@@ -552,7 +567,7 @@ def handle(msg):
                                     try:
                                         filename = "audio.mp3"
                                     except:
-                                        bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @Sommerlichter, he might fix this.")
+                                        bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @" + BOTMASTER + ".")
                         try:
                             sendAudio(chat_id, filename, artist, title)
                         except:
@@ -572,9 +587,9 @@ def handle(msg):
                         bot.deleteMessage(msgid)
             except:
                 try:
-                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
                 except:
-                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
         else:
             if not chat_type == "channel" and not chat_type == "private":
                 if "😂" in msg['text']:
@@ -839,7 +854,7 @@ def handle(msg):
                                         try:
                                             filename = "audio.mp3"
                                         except:
-                                            bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @Sommerlichter, he might fix this.")
+                                            bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @" + BOTMASTER + ".")
                             try:
                                 sendAudio(chat_id, filename, artist, title)
                             except:
@@ -860,9 +875,9 @@ def handle(msg):
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                 except:
                     try:
-                        bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                        bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
                     except:
-                        bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @Sommerlichter and include your URL and other relevant information in your request.")
+                        bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
             if msg['text'].startswith("/addextra"):
                 try:
                     extraname = msg['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
