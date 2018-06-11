@@ -38,7 +38,7 @@ html = HTMLParser()
 if 'BOTTAG' in os.environ:
     bottag = os.environ.get('BOTTAG')
 else:
-    bottag = "@keverythingbot"
+    bottag = "keverythingbot"
 
 if 'TOKEN' in os.environ:
     TOKEN = os.environ.get('TOKEN')
@@ -137,9 +137,8 @@ def handle(msg):
                     username = line.split(":")[1]
                     username = "\n🆔 @" + username
             if "mixcloud" in input_text:
-                filename = "audio.mp3"
-                cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
-                    --output audio.%%(ext)s %summary'%(input_text)
+                cmd = 'youtube-dl --add-metadata -v -x --audio-format mp3 --output audio.%%(ext)s ' + input_text
+                print(cmd)
                 subprocess.check_call(cmd.split(), shell=False)
                 r = requests.get(input_text)
                 c = r.content
@@ -147,10 +146,13 @@ def handle(msg):
                 stitle = html.unescape(title.split(' by ')[0])
                 artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
                 title = stitle
+                filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                 cover = "https://thumbnailer.mixcloud.com/unsafe/800x800/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
                 os.system("wget -O audio.jpg \"" + cover + "\"")
-                message.editMessageText("Converting...")
                 os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                audio = MP3("audio.mp3")
+                length = audio.info.length * 0.33
+                l2 = length + 60
                 if audio.info.length > l2:
                     os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                 else:
@@ -158,7 +160,7 @@ def handle(msg):
                 f = open("audio.jpg")
                 bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                 f.close()
-                sendAudioChan(chat_id,filename,artist,title,username)
+                sendAudioChan(chat_id,"audio.mp3",artist,title,username)
                 f = open("output.ogg", "r")
                 bot.sendVoice(chat_id,f,username)
                 f.close()
@@ -349,28 +351,34 @@ def handle(msg):
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
                 if "mixcloud" in input_text:
-                    filename = "audio.mp3"
-                    cmd = "youtube-dl --add-metadata -x -v --audio-format mp3 " + input_text + "\"audio.%%(ext)\""
-                    subprocess.check_call(cmd, shell=True)
+                    cmd = 'youtube-dl --add-metadata -v -x --audio-format mp3 --output audio.%%(ext)s ' + input_text
+                    print(cmd)
+                    subprocess.check_call(cmd.split(), shell=False)
                     r = requests.get(input_text)
                     c = r.content
                     title = c.split('<title>')[1].split('</title>')[0]
                     stitle = html.unescape(title.split(' by ')[0])
                     artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
                     title = stitle
+                    filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     cover = "https://thumbnailer.mixcloud.com/unsafe/800x800/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                    message.editMessageText("Converting...")
+                    bot.editMessageText(msgid, "Converting...")
                     os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    audio = MP3("audio.mp3")
+                    length = audio.info.length * 0.33
+                    l2 = length + 60
                     if audio.info.length > l2:
                         os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                    bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
-                    sendAudio(chat_id, filename, artist, title)
+                    sendAudio(chat_id, "audio.mp3", artist, title)
                     sendVoice(chat_id, "output.ogg")
+                    bot.deleteMessage(msgid)
                 if "spotify" in input_text:
                     try:
                         trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
@@ -646,9 +654,8 @@ def handle(msg):
                     input_text = msg['text']
                     input_text = input_text.split('&')[0]
                     if "mixcloud" in input_text:
-                        filename = "audio.mp3"
-                        cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
-                            --output audio.%%(ext)s %summary'%(input_text)
+                        cmd = 'youtube-dl --add-metadata -v -x --audio-format mp3 --output audio.%%(ext)s ' + input_text
+                        print(cmd)
                         subprocess.check_call(cmd.split(), shell=False)
                         r = requests.get(input_text)
                         c = r.content
@@ -656,19 +663,26 @@ def handle(msg):
                         stitle = html.unescape(title.split(' by ')[0])
                         artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
                         title = stitle
+                        filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                         cover = "https://thumbnailer.mixcloud.com/unsafe/800x800/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
                         os.system("wget -O audio.jpg \"" + cover + "\"")
-                        message.editMessageText("Converting...")
+                        bot.editMessageText(msgid, "Converting...")
                         os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        audio = MP3("audio.mp3")
+                        length = audio.info.length * 0.33
+                        l2 = length + 60
                         if audio.info.length > l2:
                             os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         else:
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        bot.editMessageText(msgid, "Sending...")
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                         f.close()
-                        sendAudio(chat_id, filename, artist, title)
+                        sendAudio(chat_id, "audio.mp3", artist, title)
                         sendVoice(chat_id, "output.ogg")
+                        bot.deleteMessage(msgid)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                     if "spotify" in input_text:
                         try:
                             trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
