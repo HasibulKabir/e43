@@ -265,6 +265,7 @@ def handle(msg):
                 f.close()
             else:
                 if "youtu" in input_text:
+                    input_text = input_text.replace("music.", "")
                     cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                         --output audio.%%(ext)s %summary'%(input_text)
                     subprocess.check_call(cmd.split(), shell=False)
@@ -286,6 +287,7 @@ def handle(msg):
                         title = tag.tag.title.replace("\"", "")
                         artist = tag.tag.artist
                     subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
+                    artist = artist.replace(" - Topic", "")
                     try:
                         metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
                         os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
@@ -508,6 +510,7 @@ def handle(msg):
                     bot.deleteMessage(msgid)
                 else:
                     if "youtu" in input_text:
+                        input_text = input_text.replace("music.", "")
                         cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                             --output audio.%%(ext)s %summary'%(input_text)
                         subprocess.check_call(cmd.split(), shell=False)
@@ -529,6 +532,7 @@ def handle(msg):
                             title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        artist = artist.replace(" - Topic", "")
                         try:
                             metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
                             os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
@@ -787,6 +791,7 @@ def handle(msg):
                         bot.sendMessage(chat_id,"Here you go!")
                     else:
                         if "youtu" in input_text:
+                            input_text = input_text.replace("music.", "")
                             cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                                 --output audio.%%(ext)s %summary'%(input_text)
                             subprocess.check_call(cmd.split(), shell=False)
@@ -808,6 +813,7 @@ def handle(msg):
                                 title = tag.tag.title.replace("\"", "")
                                 artist = tag.tag.artist
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                            artist = artist.replace(" - Topic", "")
                             try:
                                 metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
                                 os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
