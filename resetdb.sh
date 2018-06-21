@@ -5,7 +5,7 @@ do
   echo "0" > $i
 done
 echo "0" > random.txt
-git checkout -- extras/
-git checkout -- tags.txt
-git checkout -- chatids.txt
+rm -f extras/*.txt
+>tags.txt
+>chatids.txt
 echo "Done!"
