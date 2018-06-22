@@ -116,7 +116,7 @@ def handle(msg):
             s = f.read()
             f.close()
             s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER)
-            bot.sendMessage(chat_id, s)
+            bot.sendMessage(chat_id, s, disable_web_page_preview=True)
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: `" + str(chat_id) + "`", "Markdown")
         if msg['text'].startswith("/settag"):
@@ -919,90 +919,93 @@ def handle(msg):
                             if str(user['user']) == msgfrom:
                                 isAdmin = True
                         if isAdmin == True:
-                            extraname = msg['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
-                            proceed = True
-                            try:
-                                f = open("extras/" + str(chat_id) + ".txt", "r")
-                                s = f.read().split('\n')
-                                f.close()
-                                for x in s:
-                                    mid = x.split(':')[0]
-                                    ename = x.split(':')[1]
-                                    cid = x.split(':')[2]
-                                    if ename == extraname:
-                                        proceed = False
-                            except:
-                                pass
-                            if proceed == True:
-                                f = open("extras/" + str(chat_id) + ".txt", "a+")
-                                f.write(str(telepot.message_identifier(msg['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
-                                f.close()
-                                f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
-                                f.write(extraname + "\r\n")
-                                f.close()
-                                bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                extraname = msg['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
+                                proceed = True
+                                try:
+                                    f = open("extras/" + str(chat_id) + ".txt", "r")
+                                    s = f.read().split('\n')
+                                    f.close()
+                                    for x in s:
+                                        mid = x.split(':')[0]
+                                        ename = x.split(':')[1]
+                                        cid = x.split(':')[2]
+                                        if ename == extraname:
+                                            proceed = False
+                                except:
+                                    pass
+                                if proceed == True:
+                                    f = open("extras/" + str(chat_id) + ".txt", "a+")
+                                    f.write(str(telepot.message_identifier(msg['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
+                                    f.close()
+                                    f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
+                                    f.write(extraname + "\r\n")
+                                    f.close()
+                                    bot.sendMessage(chat_id, "Extra added!", reply_to_message_id=str(telepot.message_identifier(msg)))
+                                else:
+                                    bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
                             else:
-                                bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
-                        else:
-                            bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!")
+                                bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!")
                 except:
                     bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=str(telepot.message_identifier(msg)))
             if msg['text'].startswith('#') or msg['text'].startswith("/extra "):
                 try:
-                    if msg['text'].startswith("/extra "):
-                        extraname = msg['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
-                    else:
-                        extraname = msg['text'].split('#')[1].split('\n')[0]
-                    f = open("extras/" + str(chat_id) + ".txt", "r")
-                    s = f.read().split('\n')
-                    f.close()
-                    mid = None
-                    try:
-                        for x in s:
-                            ename = x.split(':')[1]
-                            if ename == extraname:
-                                mid = x.split(':')[0].split(', ')[1].replace(')', '')
-                                cid = x.split(':')[2]
-                    except:
-                        pass
-                    try:
-                        msga = bot.forwardMessage(chat_id, chat_id, int(mid))
-                    except:
-                        bot.sendMessage(chat_id, "Error: Extra not found!")
-                    try:
-                        if "voice" in str(msga):
-                            fileid = msga['voice']['file_id']
-                            bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                        if "video_note" in str(msga):
-                            fileid = msga['video_note']['file_id']
-                            bot.sendVideoNote(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                        if "video" in str(msga):
-                            fileid = msga['video']['file_id']
-                            bot.sendVideo(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                        if "sticker" in str(msga):
-                            fileid = msga['sticker']['file_id']
-                            bot.sendSticker(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                        if "audio" in str(msga):
-                            fileid = msga['audio']['file_id']
-                            bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                        if "photo" in str(msga):
-                            fileid = msga['photo']['file_id']
-                            bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                        if "text" in str(msga):
-                            bot.sendMessage(chat_id, msga['text'], reply_to_message_id=str(telepot.message_identifier(msg)))
-                    except:
-                        pass
-                    try:
-                        bot.deleteMessage(telepot.message_identifier(msga))
-                    except:
-                        pass
+                    if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                        if msg['text'].startswith("/extra "):
+                            extraname = msg['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
+                        else:
+                            extraname = msg['text'].split('#')[1].split('\n')[0]
+                        f = open("extras/" + str(chat_id) + ".txt", "r")
+                        s = f.read().split('\n')
+                        f.close()
+                        mid = None
+                        try:
+                            for x in s:
+                                ename = x.split(':')[1]
+                                if ename == extraname:
+                                    mid = x.split(':')[0].split(', ')[1].replace(')', '')
+                                    cid = x.split(':')[2]
+                        except:
+                            pass
+                        try:
+                            msga = bot.forwardMessage(chat_id, chat_id, int(mid))
+                        except:
+                            bot.sendMessage(chat_id, "Error: Extra not found!")
+                        try:
+                            if "voice" in str(msga):
+                                fileid = msga['voice']['file_id']
+                                bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "video_note" in str(msga):
+                                fileid = msga['video_note']['file_id']
+                                bot.sendVideoNote(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "video" in str(msga):
+                                fileid = msga['video']['file_id']
+                                bot.sendVideo(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "sticker" in str(msga):
+                                fileid = msga['sticker']['file_id']
+                                bot.sendSticker(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "audio" in str(msga):
+                                fileid = msga['audio']['file_id']
+                                bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "photo" in str(msga):
+                                fileid = msga['photo']['file_id']
+                                bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "text" in str(msga):
+                                bot.sendMessage(chat_id, msga['text'], reply_to_message_id=str(telepot.message_identifier(msg)))
+                        except:
+                            pass
+                        try:
+                            bot.deleteMessage(telepot.message_identifier(msga))
+                        except:
+                            pass
                 except:
                     bot.sendMessage(chat_id, "Error: Extra not found!")
-            if msg['text'] == "/extralist" or msg['text'] == "/extras":
+            if msg['text'].startswith("/extralist") or msg['text'].startswith("/extras"):
                 try:
-                    f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
-                    bot.sendDocument(chat_id, f, reply_to_message_id=str(telepot.message_identifier(msg)))
-                    f.close()
+                    if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                        f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                        bot.sendDocument(chat_id, f, reply_to_message_id=str(telepot.message_identifier(msg)))
+                        f.close()
                 except:
                     bot.sendMessage(chat_id, "Error: No extras available!")
             if msg['text'].startswith("/delextra"):
@@ -1040,33 +1043,54 @@ def handle(msg):
                             if str(user['user']) == msgfrom:
                                 isAdmin = True
                         if isAdmin == True:
-                            f = open("extras/" + str(chat_id) + ".txt", "r")
-                            lines = f.readlines()
-                            f.close()
-                            f = open("extras/" + str(chat_id) + ".txt", "w")
-                            actuallyDidIt = False
-                            for line in lines:
-                                if not line.split(':')[1] == extraname:
-                                    f.write(line)
-                            f.close()
-                            f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
-                            linesb = f.readlines()
-                            f.close()
-                            f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
-                            for line in linesb:
-                                if not line == extraname+"\r\n":
-                                    f.write(line)
+                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                lines = f.readlines()
+                                f.close()
+                                f = open("extras/" + str(chat_id) + ".txt", "w")
+                                actuallyDidIt = False
+                                for line in lines:
+                                    if not line.split(':')[1] == extraname:
+                                        f.write(line)
+                                f.close()
+                                f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
+                                linesb = f.readlines()
+                                f.close()
+                                f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
+                                for line in linesb:
+                                    if not line == extraname+"\r\n":
+                                        f.write(line)
+                                    else:
+                                        actuallyDidIt = True
+                                f.close()
+                                if actuallyDidIt == True:
+                                    bot.sendMessage(chat_id, "Success: Extra deleted!")
                                 else:
-                                    actuallyDidIt = True
-                            f.close()
-                            if actuallyDidIt == True:
-                                bot.sendMessage(chat_id, "Success: Extra deleted!")
-                            else:
-                                bot.sendMessage(chat_id, "Error: Extra doesn't exist.")
+                                    bot.sendMessage(chat_id, "Error: Extra doesn't exist.")
                         else:
                             bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
                 else:
                     bot.sendMessage(chat_id, "Error: Missing parameter!")
+            if not chat_type == "private" and msg["text"].startswith("/disableextras"):
+                admins = bot.getChatAdministrators(chat_id)
+                isAdmin = False
+                msgfrom = str(msg['from'])
+                for user in admins:
+                    if str(user['user']) == msgfrom:
+                        isAdmin = True
+                if isAdmin == True:
+                    os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
+                    bot.sendMessage(chat_id, "Extras disabled!")
+            if not chat_type == "private" and msg["text"].startswith("/enableextras"):
+                admins = bot.getChatAdministrators(chat_id)
+                isAdmin = False
+                msgfrom = str(msg['from'])
+                for user in admins:
+                    if str(user['user']) == msgfrom:
+                        isAdmin = True
+                if isAdmin == True:
+                    os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
+                    bot.sendMessage(chat_id, "Extras enabled!")
 
 def sendAudio(chat_id,file_name,performer,title):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
