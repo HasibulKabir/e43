@@ -22,6 +22,7 @@ for x in s:
   try:
     chat_id = int(x)
     bot.sendMessage(chat_id, b)
+    time.sleep(1.5)
   except:
     pass
 
