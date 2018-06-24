@@ -118,7 +118,7 @@ def handle(msg):
             s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER)
             bot.sendMessage(chat_id, s, disable_web_page_preview=True)
         if msg['text'].startswith("/chatid"):
-            bot.sendMessage(chat_id, "Your chat_id is: `" + str(chat_id) + "`", "Markdown")
+            bot.sendMessage(chat_id, "Your chat_id is: <pre>" + str(chat_id) + "</pre>", parse_mode="HTML")
         if msg['text'].startswith("/settag"):
             if chat_type == "channel":
                 if msg['text'] == "/settag":

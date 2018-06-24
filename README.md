@@ -25,6 +25,7 @@ Instructions can be found on the [Wiki](https://git.koyu.space/koyu/everythingbo
 
 ```
 help - Show help
+chatid - Show your chat_id
 conv - Convert in groups
 ping - Sends back a "Pong!"
 vid - Convert URL to video
