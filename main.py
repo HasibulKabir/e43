@@ -918,6 +918,8 @@ def handle(msg):
                         for user in admins:
                             if str(user['user']) == msgfrom:
                                 isAdmin = True
+                        if msg["from"]["username"] == BOTMASTER:
+                            isAdmin = True
                         if isAdmin == True:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                                 extraname = msg['text'].split('/addextra ')[1].replace(':', '').replace('#', '').split('\n')[0]
@@ -1042,6 +1044,8 @@ def handle(msg):
                         for user in admins:
                             if str(user['user']) == msgfrom:
                                 isAdmin = True
+                        if msg["from"]["username"] == BOTMASTER:
+                            isAdmin = True
                         if isAdmin == True:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                                 f = open("extras/" + str(chat_id) + ".txt", "r")
@@ -1078,6 +1082,8 @@ def handle(msg):
                 for user in admins:
                     if str(user['user']) == msgfrom:
                         isAdmin = True
+                if msg["from"]["username"] == BOTMASTER:
+                    isAdmin = True
                 if isAdmin == True:
                     os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
                     bot.sendMessage(chat_id, "Extras disabled!")
@@ -1088,6 +1094,8 @@ def handle(msg):
                 for user in admins:
                     if str(user['user']) == msgfrom:
                         isAdmin = True
+                if msg["from"]["username"] == BOTMASTER:
+                    isAdmin = True
                 if isAdmin == True:
                     os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
                     bot.sendMessage(chat_id, "Extras enabled!")
