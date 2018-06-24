@@ -974,6 +974,9 @@ def handle(msg):
                         except:
                             bot.sendMessage(chat_id, "Error: Extra not found!")
                         try:
+                            if "photo" in str(msga):
+                                fileid = msga['photo'][0]['file_id']
+                                bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "voice" in str(msga):
                                 fileid = msga['voice']['file_id']
                                 bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
@@ -989,9 +992,6 @@ def handle(msg):
                             if "audio" in str(msga):
                                 fileid = msga['audio']['file_id']
                                 bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                            if "photo" in str(msga):
-                                fileid = msga['photo']['file_id']
-                                bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "text" in str(msga):
                                 bot.sendMessage(chat_id, msga['text'], reply_to_message_id=str(telepot.message_identifier(msg)))
                         except:
