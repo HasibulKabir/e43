@@ -595,7 +595,10 @@ def handle(msg):
                 except:
                     bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
         else:
-            if not chat_type == "channel" and not chat_type == "private":
+            f = open("counters-disabled.txt", "r")
+            s = f.read()
+            f.close()
+            if not chat_type == "channel" and not chat_type == "private" and not str(chat_id) in s:
                 if "😂" in msg['text']:
                     count = len(msg['text'].split("😂")) - 1
                     f = open("counters/joy.txt", "r")
@@ -974,6 +977,9 @@ def handle(msg):
                         except:
                             bot.sendMessage(chat_id, "Error: Extra not found!")
                         try:
+                            if "file" in str(msga):
+                                fileid = msga['document']['file_id']
+                                bot.sendDocument(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "photo" in str(msga):
                                 fileid = msga['photo'][0]['file_id']
                                 bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
@@ -1099,6 +1105,39 @@ def handle(msg):
                 if isAdmin == True:
                     os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
                     bot.sendMessage(chat_id, "Extras enabled!")
+            if not chat_type == "private" and msg['text'].startswith("/disablecounters"):
+                admins = bot.getChatAdministrators(chat_id)
+                isAdmin = False
+                msgfrom = str(msg['from'])
+                for user in admins:
+                    if str(user['user']) == msgfrom:
+                        isAdmin = True
+                if msg["from"]["username"] == BOTMASTER:
+                    isAdmin = True
+                if isAdmin == True:
+                    f = open("counters-disabled.txt", "a+")
+                    f.write(str(chat_id) + "\n")
+                    f.close()
+                    bot.sendMessage(chat_id, "Success: Counters disabled")
+            if not chat_type == "private" and msg['text'].startswith("/enablecounters"):
+                admins = bot.getChatAdministrators(chat_id)
+                isAdmin = False
+                msgfrom = str(msg['from'])
+                for user in admins:
+                    if str(user['user']) == msgfrom:
+                        isAdmin = True
+                if msg["from"]["username"] == BOTMASTER:
+                    isAdmin = True
+                if isAdmin == True:
+                    f = open("counters-disabled.txt", "r")
+                    s = f.readlines()
+                    f.close()
+                    f = open("counters-disabled.txt", "w")
+                    for x in s:
+                        if not x == str(chat_id)+"\n":
+                            f.write(x)
+                    f.close()
+                    bot.sendMessage(chat_id, "Success: Counters enabled!")
 
 def sendAudio(chat_id,file_name,performer,title):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
