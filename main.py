@@ -917,9 +917,9 @@ def handle(msg):
                     else:
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        msgfrom = str(msg['from'])
+                        msgfrom = msg['from']
                         for user in admins:
-                            if str(user['user']) == msgfrom:
+                            if user['user']['username'] == msgfrom['username']:
                                 isAdmin = True
                         if msg["from"]["username"] == BOTMASTER:
                             isAdmin = True
@@ -951,6 +951,8 @@ def handle(msg):
                                     bot.sendMessage(chat_id, "Extra already exists!", reply_to_message_id=str(telepot.message_identifier(msg)))
                             else:
                                 bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!")
+                        else:
+                            bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!")
                 except:
                     bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=str(telepot.message_identifier(msg)))
             if msg['text'].startswith('#') or msg['text'].startswith("/extra "):
@@ -1046,9 +1048,9 @@ def handle(msg):
                     if not chat_type == "private":
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        msgfrom = str(msg['from'])
+                        msgfrom = msg['from']
                         for user in admins:
-                            if str(user['user']) == msgfrom:
+                            if user['user']['username'] == msgfrom['username']:
                                 isAdmin = True
                         if msg["from"]["username"] == BOTMASTER:
                             isAdmin = True
@@ -1077,6 +1079,8 @@ def handle(msg):
                                     bot.sendMessage(chat_id, "Success: Extra deleted!")
                                 else:
                                     bot.sendMessage(chat_id, "Error: Extra doesn't exist.")
+                            else:
+                                bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
                         else:
                             bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
                 else:
@@ -1084,9 +1088,9 @@ def handle(msg):
             if not chat_type == "private" and msg["text"].startswith("/disableextras"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = str(msg['from'])
+                msgfrom = msg['from']
                 for user in admins:
-                    if str(user['user']) == msgfrom:
+                    if user['user']['username'] == msgfrom['username']:
                         isAdmin = True
                 if msg["from"]["username"] == BOTMASTER:
                     isAdmin = True
@@ -1096,9 +1100,9 @@ def handle(msg):
             if not chat_type == "private" and msg["text"].startswith("/enableextras"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = str(msg['from'])
+                msgfrom = msg['from']
                 for user in admins:
-                    if str(user['user']) == msgfrom:
+                    if user['user']['username'] == msgfrom['username']:
                         isAdmin = True
                 if msg["from"]["username"] == BOTMASTER:
                     isAdmin = True
@@ -1108,9 +1112,9 @@ def handle(msg):
             if not chat_type == "private" and msg['text'].startswith("/disablecounters"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = str(msg['from'])
+                msgfrom = msg['from']
                 for user in admins:
-                    if str(user['user']) == msgfrom:
+                    if user['user']['username'] == msgfrom['username']:
                         isAdmin = True
                 if msg["from"]["username"] == BOTMASTER:
                     isAdmin = True
@@ -1122,9 +1126,9 @@ def handle(msg):
             if not chat_type == "private" and msg['text'].startswith("/enablecounters"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = str(msg['from'])
+                msgfrom = msg['from']
                 for user in admins:
-                    if str(user['user']) == msgfrom:
+                    if user['user']['username'] == msgfrom['username']:
                         isAdmin = True
                 if msg["from"]["username"] == BOTMASTER:
                     isAdmin = True
