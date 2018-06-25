@@ -36,6 +36,8 @@ extralist - Send extras as text file
 extras - Alias of /extralist
 disableextras - Disable extras
 enableextras - Enable extras
+enablecounters - Enable counters
+disablecounters - Disable counters
 ```
 
 **License: DBAD Public License**
