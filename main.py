@@ -979,9 +979,12 @@ def handle(msg):
                         except:
                             bot.sendMessage(chat_id, "Error: Extra not found!")
                         try:
-                            if "file" in str(msga):
+                            if "gif" in str(msga):
                                 fileid = msga['document']['file_id']
                                 bot.sendDocument(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "sticker" in str(msga):
+                                fileid = msga['sticker']['file_id']
+                                bot.sendSticker(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "photo" in str(msga):
                                 fileid = msga['photo'][0]['file_id']
                                 bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
@@ -994,12 +997,12 @@ def handle(msg):
                             if "video" in str(msga):
                                 fileid = msga['video']['file_id']
                                 bot.sendVideo(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                            if "sticker" in str(msga):
-                                fileid = msga['sticker']['file_id']
-                                bot.sendSticker(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "audio" in str(msga):
                                 fileid = msga['audio']['file_id']
                                 bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "file" in str(msga):
+                                fileid = msga['document']['file_id']
+                                bot.sendDocument(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "text" in str(msga):
                                 bot.sendMessage(chat_id, msga['text'], reply_to_message_id=str(telepot.message_identifier(msg)))
                         except:
