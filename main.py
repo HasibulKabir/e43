@@ -334,7 +334,7 @@ def handle(msg):
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
-        if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://") and not chat_type == "channel":
+        if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://"):
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
                 input_text = msg['text'].split("/vid ")[1]
