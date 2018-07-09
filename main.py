@@ -979,7 +979,7 @@ def handle(msg):
                         except:
                             bot.sendMessage(chat_id, "Error: Extra not found!")
                         try:
-                            if "gif" in str(msga):
+                            if "gif" or "mp4" in str(msga):
                                 fileid = msga['document']['file_id']
                                 bot.sendDocument(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "sticker" in str(msga):
