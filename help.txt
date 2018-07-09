@@ -1,4 +1,4 @@
-This is %bottag% 0.5.7
+This is %bottag% 0.5.8
 A bot created by @Sommerlichter
 Maintained by %botmaster%
 Source code is on https://git.koyu.space/koyu/everythingbot
