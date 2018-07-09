@@ -20,19 +20,18 @@ from mutagen.mp4 import MP4
 import soundcloud
 import string
 import pylast
-import pygn
 import json
+import urllib
 from HTMLParser import HTMLParser
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
 
+# Initializing APIs
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
 API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
 API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
-clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
-userID = pygn.register(clientID)
 html = HTMLParser()
 
 if 'BOTTAG' in os.environ:
@@ -197,7 +196,8 @@ def handle(msg):
                 year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                 albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                 os.system("wget -O audio.jpg \"" + cover + "\"")
-                query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                query = urllib.quote_plus(artist + " - " + title)
+                print(query)
                 cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                 subprocess.check_call(cmd, shell=True)
                 filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
@@ -288,11 +288,6 @@ def handle(msg):
                         artist = tag.tag.artist
                     subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
                     artist = artist.replace(" - Topic", "")
-                    try:
-                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                    except:
-                        pass
                     subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                     try:
                         f = open("audio.jpg")
@@ -414,7 +409,7 @@ def handle(msg):
                     year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                    query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                    query = urllib.quote_plus(artist + " - " + title)
                     cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     bot.editMessageText(msgid, "Converting...")
@@ -533,11 +528,6 @@ def handle(msg):
                             artist = tag.tag.artist
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                         artist = artist.replace(" - Topic", "")
-                        try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                        except:
-                            pass
                         try:
                             try:
                                 track = client.get('/tracks', q=artist + " " + title)[0]
@@ -723,7 +713,7 @@ def handle(msg):
                         year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                         albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                         os.system("wget -O audio.jpg \"" + cover + "\"")
-                        query = artist.replace(" ", "+") + "+-+" + title.replace(" ", "+")
+                        query = urllib.quote_plus(artist + " - " + title)
                         cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
                         subprocess.check_call(cmd, shell=True)
                         bot.editMessageText(msgid, "Converting...")
@@ -817,11 +807,6 @@ def handle(msg):
                                 artist = tag.tag.artist
                             os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             artist = artist.replace(" - Topic", "")
-                            try:
-                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                            except:
-                                pass
                             try:
                                 try:
                                     track = client.get('/tracks', q=artist + " " + title)[0]
@@ -979,15 +964,13 @@ def handle(msg):
                         except:
                             bot.sendMessage(chat_id, "Error: Extra not found!")
                         try:
-                            if "gif" or "mp4" in str(msga):
+                            # Some stuff is pretty tricky here. You shouldn't change the order here if this function isn't broken.
+                            if "document" in str(msga):
                                 fileid = msga['document']['file_id']
                                 bot.sendDocument(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "sticker" in str(msga):
                                 fileid = msga['sticker']['file_id']
                                 bot.sendSticker(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
-                            if "photo" in str(msga):
-                                fileid = msga['photo'][0]['file_id']
-                                bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "voice" in str(msga):
                                 fileid = msga['voice']['file_id']
                                 bot.sendVoice(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
@@ -997,6 +980,9 @@ def handle(msg):
                             if "video" in str(msga):
                                 fileid = msga['video']['file_id']
                                 bot.sendVideo(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
+                            if "photo" in str(msga):
+                                fileid = msga['photo'][0]['file_id']
+                                bot.sendPhoto(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
                             if "audio" in str(msga):
                                 fileid = msga['audio']['file_id']
                                 bot.sendAudio(chat_id, fileid, reply_to_message_id=str(telepot.message_identifier(msg)))
