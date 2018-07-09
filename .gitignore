@@ -67,6 +67,7 @@ typings/
 output.ogg
 audio.jpg
 *.part
+*.ytdl
 
 # IDEs
 .vscode/
