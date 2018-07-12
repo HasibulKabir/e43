@@ -24,7 +24,6 @@ import pygn
 import json
 import urllib
 from HTMLParser import HTMLParser
-from unidecode import unidecode
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
