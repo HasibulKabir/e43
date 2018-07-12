@@ -1,0 +1,5 @@
+telepot
+mutagen
+requests
+soundcloud
+pylast
