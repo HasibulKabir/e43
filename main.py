@@ -20,9 +20,11 @@ from mutagen.mp4 import MP4
 import soundcloud
 import string
 import pylast
+import pygn
 import json
 import urllib
 from HTMLParser import HTMLParser
+from unidecode import unidecode
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -32,6 +34,8 @@ client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
 API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
 API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
+clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
+userID = pygn.register(clientID)
 html = HTMLParser()
 
 if 'BOTTAG' in os.environ:
@@ -83,7 +87,7 @@ def handle(msg):
         filename = bot.getFile(file_id=fileid)['file_path']
         os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
         if ".mp3" in filename:
-            audio = MP3(filename)
+            audio = MP3(ucode(filename))
             length = audio.info.length * 0.33
             l2 = (audio.info.length * 0.33) + 60
         if ".m4a" in filename:
@@ -202,7 +206,7 @@ def handle(msg):
                 subprocess.check_call(cmd, shell=True)
                 filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                 os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                audio = MP3(filename)
+                audio = MP3(ucode(filename))
                 length = audio.info.length * 0.33
                 l2 = (audio.info.length * 0.33) + 60
                 if audio.info.length > l2:
@@ -251,9 +255,8 @@ def handle(msg):
                     f = open("blank.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                     f.close()
-                print(filename)
                 sendAudioChan(chat_id,filename,artist,title,username)
-                audio = MP3(filename)
+                audio = MP3(ucode(filename))
                 length = audio.info.length * 0.33
                 l2 = length + 60
                 if audio.info.length > l2:
@@ -286,8 +289,14 @@ def handle(msg):
                     except:
                         title = tag.tag.title.replace("\"", "")
                         artist = tag.tag.artist
-                    subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
                     artist = artist.replace(" - Topic", "")
+                    sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
+                    if "unreliable" in str(sacad):
+                        try:
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                        except:
+                            pass
                     subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                     try:
                         f = open("audio.jpg")
@@ -351,11 +360,28 @@ def handle(msg):
                 bot.deleteMessage(msgid)
                 if chat_type == "private":
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
-            except:
+            except Exception, e:
+                f = open("errormsg.txt", "r")
+                s = f.read()
+                f.close()
+                exc_type, exc_obj, tb = sys.exc_info()
+                f = tb.tb_frame
+                lineno = tb.tb_lineno
+                error = str("line " + str(lineno) + ": " + str(e))
+                url = msg["text"]
+                chatid = str(chat_id)
+                release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                s = s.replace("$crashlog$", error)
+                s = s.replace("$url$", url)
+                s = s.replace("$chatid$", chatid)
+                s = s.replace("$release$", release)
+                s = s.replace("$botowner$", BOTMASTER)
+                s = s.replace("$bottag$", bottag)
                 try:
-                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
+                    bot.deleteMessage(msgid)
+                    bot.sendMessage(chat_id, s, parse_mode="HTML")
                 except:
-                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
+                    bot.sendMessage(chat_id, s, parse_mode="HTML")
         if msg['text'].startswith("/conv http://") or msg['text'].startswith("/conv https://") and not chat_type == "channel":
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
@@ -415,7 +441,7 @@ def handle(msg):
                     bot.editMessageText(msgid, "Converting...")
                     filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                    audio = MP3(filename)
+                    audio = MP3(ucode(filename))
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
@@ -426,7 +452,7 @@ def handle(msg):
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
-                    sendAudio(chat_id, filename, artist, title)
+                    sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                     sendVoice(chat_id, "output.ogg")
                     bot.deleteMessage(msgid)
                 if "soundcloud" in input_text:
@@ -492,9 +518,8 @@ def handle(msg):
                         except:
                             pass
                     bot.editMessageText(msgid, "Sending...")
-                    print(filename)
                     sendAudio(chat_id,filename,artist,title)
-                    audio = MP3(filename)
+                    audio = MP3(ucode(filename))
                     length = audio.info.length * 0.33
                     l2 = length + 60
                     if audio.info.length > l2:
@@ -526,7 +551,14 @@ def handle(msg):
                         except:
                             title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
-                        os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        artist = artist.replace(" - Topic", "")
+                        sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
+                        if "unreliable" in str(sacad):
+                            try:
+                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                            except:
+                                pass
                         artist = artist.replace(" - Topic", "")
                         try:
                             try:
@@ -563,14 +595,14 @@ def handle(msg):
                                     except:
                                         bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @" + BOTMASTER + ".")
                         try:
-                            sendAudio(chat_id, filename, artist, title)
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                         except:
                             filename = "audio.mp3"
-                            sendAudio(chat_id, filename, artist, title)
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                         audio = eyed3.load(filename)
                         tt = audio.tag.title
                         artist = audio.tag.artist
-                        ad = MP3(filename)
+                        ad = MP3(ucode(filename))
                         length = ad.info.length * 0.33
                         l2 = length + 60
                         if ad.info.length > l2:
@@ -579,11 +611,28 @@ def handle(msg):
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
-            except:
+            except Exception, e:
+                f = open("errormsg.txt", "r")
+                s = f.read()
+                f.close()
+                exc_type, exc_obj, tb = sys.exc_info()
+                f = tb.tb_frame
+                lineno = tb.tb_lineno
+                error = str("line " + str(lineno) + ": " + str(e))
+                url = msg["text"]
+                chatid = str(chat_id)
+                release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                s = s.replace("$crashlog$", error)
+                s = s.replace("$url$", url)
+                s = s.replace("$chatid$", chatid)
+                s = s.replace("$release$", release)
+                s = s.replace("$botowner$", BOTMASTER)
+                s = s.replace("$bottag$", bottag)
                 try:
-                    bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
+                    bot.deleteMessage(msgid)
+                    bot.sendMessage(chat_id, s, parse_mode="HTML")
                 except:
-                    bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
+                    bot.sendMessage(chat_id, s, parse_mode="HTML")
         else:
             f = open("counters-disabled.txt", "r")
             s = f.read()
@@ -719,7 +768,7 @@ def handle(msg):
                         bot.editMessageText(msgid, "Converting...")
                         filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                         os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                        audio = MP3(filename)
+                        audio = MP3(ucode(filename))
                         length = audio.info.length * 0.33
                         l2 = (audio.info.length * 0.33) + 60
                         if audio.info.length > l2:
@@ -730,7 +779,7 @@ def handle(msg):
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                         f.close()
-                        sendAudio(chat_id, filename, artist, title)
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
@@ -770,9 +819,8 @@ def handle(msg):
                             f = open("blank.jpg")
                             bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                             f.close()
-                        print(filename)
-                        sendAudio(chat_id,filename,artist,title)
-                        audio = MP3(filename)
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                        audio = MP3(ucode(filename))
                         length = audio.info.length * 0.33
                         l2 = length + 60
                         if audio.info.length > l2:
@@ -805,8 +853,14 @@ def handle(msg):
                             except:
                                 title = tag.tag.title.replace("\"", "")
                                 artist = tag.tag.artist
-                            os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                             artist = artist.replace(" - Topic", "")
+                            sacad = os.popen("sacad " + artist + " "  + title + " 800 audio.jpg").read()
+                            if "unreliable" in sacad:
+                                try:
+                                    metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                    os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                                except:
+                                    pass
                             try:
                                 try:
                                     track = client.get('/tracks', q=artist + " " + title)[0]
@@ -822,6 +876,11 @@ def handle(msg):
                                         albumtitle = str(album.title).split(" - ")[1]
                                     except:
                                         albumtitle = str(album.title)
+                                try:
+                                    metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                    os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                                except:
+                                    pass
                                 bot.editMessageText(msgid, "Converting...")
                                 subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ty", year, "--tl", albumtitle, "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                             except:
@@ -850,14 +909,14 @@ def handle(msg):
                                         except:
                                             bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @" + BOTMASTER + ".")
                             try:
-                                sendAudio(chat_id, filename, artist, title)
+                                sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                             except:
                                 filename = "audio.mp3"
-                                sendAudio(chat_id, filename, artist, title)
+                                sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                             audio = eyed3.load(filename)
                             tt = audio.tag.title
                             artist = audio.tag.artist
-                            ad = MP3(filename)
+                            ad = MP3(ucode(filename))
                             length = ad.info.length * 0.33
                             l2 = length + 60
                             if ad.info.length > l2:
@@ -867,11 +926,28 @@ def handle(msg):
                             sendVoice(chat_id, "output.ogg")
                             bot.deleteMessage(msgid)
                             bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
-                except:
+                except Exception, e:
+                    f = open("errormsg.txt", "r")
+                    s = f.read()
+                    f.close()
+                    exc_type, exc_obj, tb = sys.exc_info()
+                    f = tb.tb_frame
+                    lineno = tb.tb_lineno
+                    error = str("line " + str(lineno) + ": " + str(e))
+                    url = msg["text"]
+                    chatid = str(chat_id)
+                    release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                    s = s.replace("$crashlog$", error)
+                    s = s.replace("$url$", url)
+                    s = s.replace("$chatid$", chatid)
+                    s = s.replace("$release$", release)
+                    s = s.replace("$botowner$", BOTMASTER)
+                    s = s.replace("$bottag$", bottag)
                     try:
-                        bot.editMessageText(msgid, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
+                        bot.deleteMessage(msgid)
+                        bot.sendMessage(chat_id, s, parse_mode="HTML")
                     except:
-                        bot.sendMessage(chat_id, "Oh no, something bad happened! Please contact @" + BOTMASTER + " and include your URL and other relevant information in your request.")
+                        bot.sendMessage(chat_id, s, parse_mode="HTML")
             if msg['text'].startswith("/addextra"):
                 try:
                     extraname = msg['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
@@ -1171,6 +1247,9 @@ def removekey(d, key):
     r = dict(d)
     del r[key]
     return r
+
+def ucode(text):
+    return text.decode().encode('utf-8')
 
 bot = telepot.Bot(TOKEN)
 bot.message_loop(handle)
