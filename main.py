@@ -37,11 +37,6 @@ clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
 userID = pygn.register(clientID)
 html = HTMLParser()
 
-if 'BOTTAG' in os.environ:
-    bottag = os.environ.get('BOTTAG')
-else:
-    bottag = "keverythingbot"
-
 if 'TOKEN' in os.environ:
     TOKEN = os.environ.get('TOKEN')
 else:
@@ -53,9 +48,9 @@ else:
 f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
-bottag = bottag.replace("@", "")
 
 def handle(msg):
+    bottag = bot.getMe()["username"]
     content_type, chat_type, chat_id = telepot.glance(msg)
     print(chat_type)
     flavor = telepot.flavor(msg)
