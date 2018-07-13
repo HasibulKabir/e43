@@ -3,7 +3,7 @@
 <b>Relevant Information:</b>
 <pre>
 Error: $crashlog$
-URL: $url$
+Message: $message$
 chat_id: $chatid$
 bottag: $bottag$
 release: $release$

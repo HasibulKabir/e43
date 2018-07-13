@@ -371,7 +371,7 @@ def handle(msg):
                 chatid = str(chat_id)
                 release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                 s = s.replace("$crashlog$", error)
-                s = s.replace("$url$", url)
+                s = s.replace("$message$", url)
                 s = s.replace("$chatid$", chatid)
                 s = s.replace("$release$", release)
                 s = s.replace("$botowner$", BOTMASTER)
@@ -622,7 +622,7 @@ def handle(msg):
                 chatid = str(chat_id)
                 release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                 s = s.replace("$crashlog$", error)
-                s = s.replace("$url$", url)
+                s = s.replace("$message$", url)
                 s = s.replace("$chatid$", chatid)
                 s = s.replace("$release$", release)
                 s = s.replace("$botowner$", BOTMASTER)
@@ -703,7 +703,8 @@ def handle(msg):
                     if sum % rnumber == 0:
                         bot.sendMessage(chat_id, "pp level is now: " + str(sum))
             if msg['text'].startswith("/ping"):
-                bot.sendMessage(chat_id, "Pong!")
+                ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
+                await self.sender.sendMessage("Pong! (" + ping + " ms)")
             if msg['text'].startswith("/start") and chat_type == "private":
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
@@ -937,7 +938,7 @@ def handle(msg):
                     chatid = str(chat_id)
                     release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                     s = s.replace("$crashlog$", error)
-                    s = s.replace("$url$", url)
+                    s = s.replace("$message$", url)
                     s = s.replace("$chatid$", chatid)
                     s = s.replace("$release$", release)
                     s = s.replace("$botowner$", BOTMASTER)
