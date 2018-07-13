@@ -704,7 +704,7 @@ def handle(msg):
                         bot.sendMessage(chat_id, "pp level is now: " + str(sum))
             if msg['text'].startswith("/ping"):
                 ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
-                await self.sender.sendMessage("Pong! (" + ping + " ms)")
+                bot.sendMessage(chat_id, "Pong! (" + ping + " ms)")
             if msg['text'].startswith("/start") and chat_type == "private":
                 bot.sendMessage(chat_id,"Hello, please send me the name of the song or an URL from Soundcloud, YouTube and many more I have to convert :)")
             if chat_type == "private" and msg["text"].startswith("http"):
