@@ -237,19 +237,29 @@ def handle(msg):
                     printable = set(string.printable)
                     title = filter(lambda x: x in printable, thist.title)
                     os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                    os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                    os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                    try:
+                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                    except:
+                        pass
                     os.system("rm -f raw_audio.jpg")
-                    os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    try:
+                        os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    except:
+                        os.system("lame -b 320 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                 try:
                     f = open("audio.jpg")
-                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
                 except:
                     f = open("blank.jpg")
-                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
-                sendAudioChan(chat_id,filename,artist,title,username)
+                try:
+                    sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username)
+                except:
+                    filename = "audio.mp3"
+                    sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username)
                 audio = MP3(ucode(filename))
                 length = audio.info.length * 0.33
                 l2 = length + 60
@@ -452,10 +462,10 @@ def handle(msg):
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
+                    filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
                     stream_url = client.get(thist.stream_url, allow_redirects=False)
                     artist = None
                     title = None
-                    filename = u' '.join((thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_"), ".mp3")).encode('utf-8').strip()
                     try:
                         printable = set(string.printable)
                         artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
@@ -465,54 +475,37 @@ def handle(msg):
                         os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                         os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
-                        year = ""
-                        albumtitle = ""
-                        try:
-                            track = client.get('/tracks', q=artist + " " + title)[0]
-                            year = track.created_at.split('/')[0]
-                        except:
-                            year = ""
-
-                        album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
-                        try:
-                            albumtitle = str(album.title).split(" / ")[1]
-                        except:
-                            try:
-                                albumtitle = str(album.title).split(" - ")[1]
-                            except:
-                                albumtitle = str(album.title)
-                        bot.editMessageText(msgid, "Converting...")
-                        os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     except:
                         printable = set(string.printable)
                         artist = filter(lambda x: x in printable, thist.user['username'])
                         printable = set(string.printable)
                         title = filter(lambda x: x in printable, thist.title)
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                        os.system("rm -f raw_audio.jpg")
                         try:
-                            try:
-                                track = client.get('/tracks', q=artist + " " + title)[0]
-                                year = track.created_at.split('/')[0]
-                            except:
-                                year = ""
-
-                            album = lastfm.get_album(artist, lastfm.get_track(artist, title).get_album())
-                            try:
-                                albumtitle = str(album.title).split(" / ")[1]
-                            except:
-                                try:
-                                    albumtitle = str(album.title).split(" - ")[1]
-                                except:
-                                    albumtitle = str(album.title)
-                            bot.editMessageText(msgid, "Converting...")
-                            subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ty", year, "--tl", albumtitle, "--ti", "audio.jpg", "--tc", "@" + bottag, "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         except:
                             pass
+                        os.system("rm -f raw_audio.jpg")
+                        try:
+                            os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        except:
+                            os.system("lame -b 320 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     bot.editMessageText(msgid, "Sending...")
-                    sendAudio(chat_id,filename,artist,title)
+                    try:
+                        f = open("audio.jpg")
+                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                        f.close()
+                    except:
+                        f = open("blank.jpg")
+                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
+                        f.close()
+                    try:
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                    except:
+                        filename = "audio.mp3"
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                     audio = MP3(ucode(filename))
                     length = audio.info.length * 0.33
                     l2 = length + 60
@@ -801,10 +794,16 @@ def handle(msg):
                             printable = set(string.printable)
                             title = filter(lambda x: x in printable, thist.title)
                             os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                            try:
+                                os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                                os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                            except:
+                                pass
                             os.system("rm -f raw_audio.jpg")
-                            os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            try:
+                                os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            except:
+                                os.system("lame -b 320 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         bot.editMessageText(msgid, "Sending...")
                         try:
                             f = open("audio.jpg")
@@ -814,7 +813,11 @@ def handle(msg):
                             f = open("blank.jpg")
                             bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                             f.close()
-                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                        try:
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                        except:
+                            filename = "audio.mp3"
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
                         audio = MP3(ucode(filename))
                         length = audio.info.length * 0.33
                         l2 = length + 60
@@ -824,7 +827,7 @@ def handle(msg):
                             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
-                        bot.sendMessage(chat_id,"Here you go!")
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                     else:
                         if "youtu" in input_text:
                             input_text = input_text.replace("music.", "")
