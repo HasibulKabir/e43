@@ -294,13 +294,13 @@ def handle(msg):
                         title = tag.tag.title.replace("\"", "")
                         artist = tag.tag.artist
                     artist = artist.replace(" - Topic", "")
-                    sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
-                    if "unreliable" in str(sacad):
-                        try:
-                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                        except:
-                            pass
+                    #sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
+                    #if "unreliable" in str(sacad):
+                    try:
+                        metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                        os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                    except:
+                        pass
                     subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
                     try:
                         f = open("audio.jpg")
