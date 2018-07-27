@@ -293,7 +293,10 @@ def handle(msg):
                     except:
                         title = tag.tag.title.replace("\"", "")
                         artist = tag.tag.artist
-                    artist = artist.replace(" - Topic", "")
+                    try:
+                        artist = artist.replace(" - Topic", "")
+                    except:
+                        pass
                     #sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
                     #if "unreliable" in str(sacad):
                     try:
@@ -538,7 +541,10 @@ def handle(msg):
                         except:
                             title = tag.tag.title.replace("\"", "")
                             artist = tag.tag.artist
-                        artist = artist.replace(" - Topic", "")
+                        try:
+                            artist = artist.replace(" - Topic", "")
+                        except:
+                            pass
                         sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
                         if "unreliable" in str(sacad):
                             try:
@@ -546,7 +552,10 @@ def handle(msg):
                                 os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
                             except:
                                 pass
-                        artist = artist.replace(" - Topic", "")
+                        try:
+                            artist = artist.replace(" - Topic", "")
+                        except:
+                            pass
                         try:
                             try:
                                 track = client.get('/tracks', q=artist + " " + title)[0]
@@ -851,7 +860,10 @@ def handle(msg):
                             except:
                                 title = tag.tag.title.replace("\"", "")
                                 artist = tag.tag.artist
-                            artist = artist.replace(" - Topic", "")
+                            try:
+                                artist = artist.replace(" - Topic", "")
+                            except:
+                                pass
                             sacad = os.popen("sacad " + artist + " "  + title + " 800 audio.jpg").read()
                             if "unreliable" in sacad:
                                 try:
