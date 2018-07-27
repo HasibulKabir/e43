@@ -988,11 +988,11 @@ def handle(msg):
                     else:
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        msgfrom = msg['from']
+                        msgfrom = str(msg['from']['username'])
                         for user in admins:
-                            if user['user']['username'] == msgfrom['username']:
+                            if user['user']['username'] == msgfrom:
                                 isAdmin = True
-                        if msg["from"]["username"] == BOTMASTER:
+                        if msgfrom == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
@@ -1123,11 +1123,11 @@ def handle(msg):
                     if not chat_type == "private":
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        msgfrom = msg['from']
+                        msgfrom = str(msg['from']['username'])
                         for user in admins:
-                            if user['user']['username'] == msgfrom['username']:
+                            if user['user']['username'] == msgfrom:
                                 isAdmin = True
-                        if msg["from"]["username"] == BOTMASTER:
+                        if msgfrom == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
@@ -1163,11 +1163,11 @@ def handle(msg):
             if not chat_type == "private" and msg["text"].startswith("/disableextras"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = msg['from']
+                msgfrom = str(msg['from']['username'])
                 for user in admins:
-                    if user['user']['username'] == msgfrom['username']:
+                    if user['user']['username'] == msgfrom:
                         isAdmin = True
-                if msg["from"]["username"] == BOTMASTER:
+                if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
                     os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
@@ -1175,11 +1175,11 @@ def handle(msg):
             if not chat_type == "private" and msg["text"].startswith("/enableextras"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = msg['from']
+                msgfrom = str(msg['from']['username'])
                 for user in admins:
-                    if user['user']['username'] == msgfrom['username']:
+                    if user['user']['username'] == msgfrom:
                         isAdmin = True
-                if msg["from"]["username"] == BOTMASTER:
+                if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
                     os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
@@ -1187,11 +1187,11 @@ def handle(msg):
             if not chat_type == "private" and msg['text'].startswith("/disablecounters"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = msg['from']
+                msgfrom = str(msg['from']['username'])
                 for user in admins:
-                    if user['user']['username'] == msgfrom['username']:
+                    if user['user']['username'] == msgfrom:
                         isAdmin = True
-                if msg["from"]["username"] == BOTMASTER:
+                if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
                     f = open("counters-disabled.txt", "a+")
@@ -1201,11 +1201,11 @@ def handle(msg):
             if not chat_type == "private" and msg['text'].startswith("/enablecounters"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
-                msgfrom = msg['from']
+                msgfrom = msg['from']['username']
                 for user in admins:
-                    if user['user']['username'] == msgfrom['username']:
+                    if user['user']['username'] == msgfrom:
                         isAdmin = True
-                if msg["from"]["username"] == BOTMASTER:
+                if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
                     f = open("counters-disabled.txt", "r")
