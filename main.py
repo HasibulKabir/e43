@@ -990,8 +990,11 @@ def handle(msg):
                         isAdmin = False
                         msgfrom = str(msg['from']['username'])
                         for user in admins:
-                            if user['user']['username'] == msgfrom:
-                                isAdmin = True
+                            try:
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                                    isAdmin = True
+                            except:
+                                pass
                         if msgfrom == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
@@ -1125,8 +1128,11 @@ def handle(msg):
                         isAdmin = False
                         msgfrom = str(msg['from']['username'])
                         for user in admins:
-                            if user['user']['username'] == msgfrom:
-                                isAdmin = True
+                            try:
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                                    isAdmin = True
+                            except:
+                                pass
                         if msgfrom == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
@@ -1165,8 +1171,11 @@ def handle(msg):
                 isAdmin = False
                 msgfrom = str(msg['from']['username'])
                 for user in admins:
-                    if user['user']['username'] == msgfrom:
-                        isAdmin = True
+                    try:
+                        if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                            isAdmin = True
+                    except:
+                        pass
                 if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
@@ -1177,8 +1186,11 @@ def handle(msg):
                 isAdmin = False
                 msgfrom = str(msg['from']['username'])
                 for user in admins:
-                    if user['user']['username'] == msgfrom:
-                        isAdmin = True
+                    try:
+                        if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                            isAdmin = True
+                    except:
+                        pass
                 if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
@@ -1189,8 +1201,11 @@ def handle(msg):
                 isAdmin = False
                 msgfrom = str(msg['from']['username'])
                 for user in admins:
-                    if user['user']['username'] == msgfrom:
-                        isAdmin = True
+                    try:
+                        if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                            isAdmin = True
+                    except:
+                        pass
                 if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
@@ -1203,8 +1218,11 @@ def handle(msg):
                 isAdmin = False
                 msgfrom = msg['from']['username']
                 for user in admins:
-                    if user['user']['username'] == msgfrom:
-                        isAdmin = True
+                    try:
+                        if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                            isAdmin = True
+                    except:
+                        pass
                 if msgfrom == BOTMASTER:
                     isAdmin = True
                 if isAdmin == True:
