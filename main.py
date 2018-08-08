@@ -314,8 +314,6 @@ def handle(msg):
                         artist = artist.replace(" - Topic", "")
                     except:
                         pass
-                    #sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
-                    #if "unreliable" in str(sacad):
                     try:
                         metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
                         os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
@@ -578,15 +576,9 @@ def handle(msg):
                             artist = artist.replace(" - Topic", "")
                         except:
                             pass
-                        sacad = os.popen("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg").read()
-                        if "unreliable" in str(sacad):
-                            try:
-                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                            except:
-                                pass
                         try:
-                            artist = artist.replace(" - Topic", "")
+                            metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                            os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
                         except:
                             pass
                         try:
@@ -913,13 +905,11 @@ def handle(msg):
                                 artist = artist.replace(" - Topic", "")
                             except:
                                 pass
-                            sacad = os.popen("sacad " + artist + " "  + title + " 800 audio.jpg").read()
-                            if "unreliable" in sacad:
-                                try:
-                                    metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
-                                    os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
-                                except:
-                                    pass
+                            try:
+                                metadata = pygn.search(clientID=clientID, userID=userID, artist=artist, track=title)
+                                os.system("wget \"" + metadata["album_art_url"] + "\" -O audio.jpg")
+                            except:
+                                pass
                             try:
                                 try:
                                     track = client.get('/tracks', q=artist + " " + title)[0]
