@@ -66,6 +66,7 @@ typings/
 *.video
 output.ogg
 audio.jpg
+thumb.jpg
 *.part
 *.ytdl
 

@@ -36,6 +36,7 @@ lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
 clientID = '112607930-491F6225E76B61D9801FDF1D0F484DC3'
 userID = pygn.register(clientID)
 html = HTMLParser()
+thumb = "thumb.jpg"
 
 if 'TOKEN' in os.environ:
     TOKEN = os.environ.get('TOKEN')
@@ -107,7 +108,11 @@ def handle(msg):
         os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
         sendVideoNote(chat_id, "vm.mp4")
     if content_type == "text":
-        os.system("rm -f audio.jpg")
+        try:
+            os.system("rm -f audio.jpg")
+            os.system("rm -f thumb.jpg")
+        except:
+            pass
         if msg['text'].startswith("/help") and not chat_type == "channel":
             f = open("help.txt", "r")
             s = f.read()
@@ -172,7 +177,11 @@ def handle(msg):
                 f = open("audio.jpg")
                 bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                 f.close()
-                sendAudioChan(chat_id,"audio.mp3",artist,title,username)
+                if os.path.exists("audio.jpg"):
+                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                else:
+                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                sendAudioChan(chat_id,"audio.mp3",artist,title,username,thumb)
                 f = open("output.ogg", "r")
                 bot.sendVoice(chat_id,f,username)
                 f.close()
@@ -210,7 +219,11 @@ def handle(msg):
                 f = open("audio.jpg")
                 bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
                 f.close()
-                sendAudioChan(chat_id,filename,artist,title,username)
+                if os.path.exists("audio.jpg"):
+                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                else:
+                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                sendAudioChan(chat_id,filename,artist,title,username,thumb)
                 f = open("output.ogg", "r")
                 bot.sendVoice(chat_id,f,username)
                 f.close()
@@ -255,11 +268,15 @@ def handle(msg):
                     f = open("blank.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
+                if os.path.exists("audio.jpg"):
+                    os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                else:
+                    os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                 try:
-                    sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username)
+                    sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username, thumb)
                 except:
                     filename = "audio.mp3"
-                    sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username)
+                    sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username, thumb)
                 audio = MP3(ucode(filename))
                 length = audio.info.length * 0.33
                 l2 = length + 60
@@ -327,11 +344,15 @@ def handle(msg):
                                     filename = "audio.mp3"
                                 except:
                                     pass
+                    if os.path.exists("audio.jpg"):
+                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                    else:
+                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                     try:
-                        sendAudioChan(chat_id,filename,artist,title,username)
+                        sendAudioChan(chat_id,filename,artist,title,username,thumb)
                     except:
                         filename = "audio.mp3"
-                        sendAudioChan(chat_id,filename,artist,title,username)
+                        sendAudioChan(chat_id,filename,artist,title,username,thumb)
                     audio = eyed3.load("audio.mp3")
                     tt = audio.tag.title
                     artist = audio.tag.artist
@@ -421,7 +442,11 @@ def handle(msg):
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
-                    sendAudio(chat_id, "audio.mp3", artist, title)
+                    if os.path.exists("audio.jpg"):
+                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                    else:
+                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                    sendAudio(chat_id, "audio.mp3", artist, title,thumb)
                     sendVoice(chat_id, "output.ogg")
                     bot.deleteMessage(msgid)
                 if "spotify" in input_text:
@@ -459,7 +484,11 @@ def handle(msg):
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                     f.close()
-                    sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                    if os.path.exists("audio.jpg"):
+                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                    else:
+                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                    sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                     sendVoice(chat_id, "output.ogg")
                     bot.deleteMessage(msgid)
                 if "soundcloud" in input_text:
@@ -504,11 +533,15 @@ def handle(msg):
                         f = open("blank.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                         f.close()
+                    if os.path.exists("audio.jpg"):
+                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                    else:
+                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                     try:
-                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                     except:
                         filename = "audio.mp3"
-                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                     audio = MP3(ucode(filename))
                     length = audio.info.length * 0.33
                     l2 = length + 60
@@ -590,11 +623,15 @@ def handle(msg):
                                         filename = "audio.mp3"
                                     except:
                                         bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @" + BOTMASTER + ".")
+                        if os.path.exists("audio.jpg"):
+                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                        else:
+                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                         try:
-                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                         except:
                             filename = "audio.mp3"
-                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                         audio = eyed3.load(filename)
                         tt = audio.tag.title
                         artist = audio.tag.artist
@@ -737,7 +774,11 @@ def handle(msg):
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                         f.close()
-                        sendAudio(chat_id, "audio.mp3", artist, title)
+                        if os.path.exists("audio.jpg"):
+                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                        else:
+                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                        sendAudio(chat_id, "audio.mp3", artist, title,thumb)
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
@@ -776,7 +817,11 @@ def handle(msg):
                         f = open("audio.jpg")
                         bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                         f.close()
-                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                        if os.path.exists("audio.jpg"):
+                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                        else:
+                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                        sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                         sendVoice(chat_id, "output.ogg")
                         bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
@@ -822,11 +867,15 @@ def handle(msg):
                             f = open("blank.jpg")
                             bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
                             f.close()
+                        if os.path.exists("audio.jpg"):
+                            os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                        else:
+                            os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                         try:
-                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                         except:
                             filename = "audio.mp3"
-                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                            sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                         audio = MP3(ucode(filename))
                         length = audio.info.length * 0.33
                         l2 = length + 60
@@ -918,11 +967,15 @@ def handle(msg):
                                             filename = "audio.mp3"
                                         except:
                                             bot.sendMessage(chat_id, "Uh-oh, something miserably bad happened. Contact @" + BOTMASTER + ".")
+                            if os.path.exists("audio.jpg"):
+                                os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                            else:
+                                os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                             try:
-                                sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                                sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                             except:
                                 filename = "audio.mp3"
-                                sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title))
+                                sendAudio(chat_id, ucode(filename), ucode(artist), ucode(title),thumb)
                             audio = eyed3.load(filename)
                             tt = audio.tag.title
                             artist = audio.tag.artist
@@ -1236,9 +1289,9 @@ def handle(msg):
                     f.close()
                     bot.sendMessage(chat_id, "Success: Counters enabled!")
 
-def sendAudio(chat_id,file_name,performer,title):
+def sendAudio(chat_id,file_name,performer,title,thumb):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
-    files = {'audio': open(file_name, 'rb')}
+    files = {'audio': open(file_name, 'rb'), 'thumb': open(thumb, 'rb')}
     data = {'chat_id' : chat_id, 'performer' : performer, 'title' : title}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
@@ -1250,16 +1303,16 @@ def sendVideoNote(chat_id,file_name):
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
 
-def sendAudio2(chat_id,file_name):
+def sendAudio2(chat_id,file_name,thumb):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
-    files = {'audio': open(file_name, 'rb')}
+    files = {'audio': open(file_name, 'rb'), 'thumb': open(thumb, 'rb')}
     data = {'chat_id' : chat_id}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
 
-def sendAudioChan(chat_id,file_name,performer,title,caption):
+def sendAudioChan(chat_id,file_name,performer,title,caption,thumb):
     url = "https://api.telegram.org/bot%s/sendAudio"%(TOKEN)
-    files = {'audio': open(file_name, 'rb')}
+    files = {'audio': open(file_name, 'rb'), 'thumb': open(thumb, 'rb')}
     data = {'chat_id' : chat_id, 'performer' : performer, 'title' : title, 'caption' : caption}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
