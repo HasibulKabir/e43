@@ -149,7 +149,7 @@ def handle(msg):
             else:
                 goon = True
             if goon == True:
-                if not chat_type == "channel":
+                if not chat_type == "channel" and input_text.startswith("http"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
                 f = open("tags.txt","r")
