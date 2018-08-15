@@ -23,6 +23,7 @@ import pylast
 import json
 import urllib
 from HTMLParser import HTMLParser
+from youtube_title_parse import get_artist_title
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
@@ -319,18 +320,8 @@ def handle(msg):
                     subprocess.check_call(cmd.split(), shell=False)
                     tag = eyed3.load("audio.mp3")
                     try:
-                        title = tag.tag.title.split(" - ")[1].replace("\"", "")
-                        artist = tag.tag.title.split(" - ")[0]
-                        title = title.replace(artist + " - ","")
-                        try:
-                            if not "Remix" in title and not "Mix" in title:
-                                title = title.split(" (")[0].replace("\"", "")
-                        except:
-                            pass
-                        try:
-                            title = title.split(" [")[0].replace("\"", "")
-                        except:
-                            pass
+                        title = get_artist_title(tag.tag.title).split(" - ")[1]
+                        artist = get_artist_title(tag.tag.title).split(" - ")[0]
                     except:
                         title = tag.tag.title.replace("\"", "")
                         artist = tag.tag.artist
