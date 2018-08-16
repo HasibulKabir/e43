@@ -27,7 +27,6 @@ from youtube_title_parse import get_artist_title
 
 reload(sys)
 sys.setdefaultencoding("utf-8")
-done = False
 
 # Initializing APIs
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
@@ -50,6 +49,7 @@ f.write(str(random.randint(10,30)))
 f.close()
 
 def handle(msg):
+    done = False
     bottag = bot.getMe()["username"]
     content_type, chat_type, chat_id = telepot.glance(msg)
     print(chat_type)
