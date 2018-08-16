@@ -71,5 +71,5 @@ thumb.jpg
 *.ytdl
 
 # IDEs
-.vscode/
-.idea/
+.vscode/*
+.idea/*
