@@ -38,6 +38,7 @@ disableextras - Disable extras
 enableextras - Enable extras
 enablecounters - Enable counters
 disablecounters - Disable counters
+boxxy - Send "My name is Boxxy"
 ```
 
 **License: DBAD Public License**

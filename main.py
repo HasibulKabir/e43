@@ -107,6 +107,8 @@ def handle(msg):
         os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
         sendVideoNote(chat_id, "vm.mp4")
     if content_type == "text":
+        if msg['text'].startswith("/boxxy"):
+            sendVoice(chat_id, "assets/boxxy.ogg")
         if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://"):
             try:
                 message = bot.sendMessage(chat_id, "Downloading...")
