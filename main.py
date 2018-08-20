@@ -192,14 +192,6 @@ def handle(msg):
         try:
             input_text = msg['text']
             input_text = input_text.split('&')[0]
-            # Apparently some users are so dumb, that they forgot what an URL is
-            # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
-            try:
-                input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url")
-            except:
-                pass
-            # Oh and please replace new lines, so the bot doesn't crash
-            input_text = input_text.replace("\n", " ")
             if "group" in chat_type and "/conv" in input_text:
                 goon = True
                 input_text = input_text.replace("/conv", "").replace(" ", "")
@@ -212,6 +204,14 @@ def handle(msg):
                 if not chat_type == "channel" and input_text.startswith("http"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
+                # Apparently some users are so dumb, that they forgot what an URL is
+                # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
+                try:
+                    input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url")
+                except:
+                    pass
+                # Oh and please replace new lines, so the bot doesn't crash
+                input_text = input_text.replace("\n", " ")
                 f = open("tags.txt","r")
                 s = f.read().split("\n")
                 f.close()
