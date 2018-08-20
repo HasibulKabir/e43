@@ -194,7 +194,10 @@ def handle(msg):
             input_text = input_text.split('&')[0]
             # Apparently some users are so dumb, that they forgot what an URL is
             # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
-            input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url")
+            try:
+                input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url")
+            except:
+                pass
             # Oh and please replace new lines, so the bot doesn't crash
             input_text = input_text.replace("\n", " ")
             if "group" in chat_type and "/conv" in input_text:

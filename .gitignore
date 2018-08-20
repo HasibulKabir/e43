@@ -69,6 +69,7 @@ audio.jpg
 thumb.jpg
 *.part
 *.ytdl
+audio.webm
 
 # IDEs
 .vscode/*

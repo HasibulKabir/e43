@@ -11,4 +11,5 @@ rm -f music/file_*
 rm -f videos/file_*
 rm -f *.ytdl
 rm -f *.mp4
+rm -f audio.webm
 echo "Done!"
