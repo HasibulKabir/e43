@@ -160,7 +160,7 @@ def handle(msg):
             os.system("rm -f thumb.jpg")
         except:
             pass
-        if msg['text'].startswith("/help") and not chat_type == "channel":
+        if msg['text'].startswith("/help") and chat_type == "private":
             f = open("help.txt", "r")
             s = f.read()
             f.close()
