@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Cleaning up..."
-rm -f *.mp3
+rm -f -- *.mp3
 rm -f *.video
 rm -f output.ogg
 rm -f audio.jpg
