@@ -49,6 +49,10 @@ f.write(str(random.randint(10,30)))
 f.close()
 
 def handle(msg):
+    try:
+        os.system("sh clean.sh")
+    except:
+        pass
     done = False
     bottag = bot.getMe()["username"]
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -94,7 +98,6 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "video":
-        os.system("rm -f *.mp4")
         videofile = msg['video']
         fileid = msg['video']['file_id']
         flavor = telepot.flavor(msg)
@@ -115,7 +118,6 @@ def handle(msg):
                 input_text = msg['text'].split("/vid ")[1]
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
-                os.system("rm -f *.mp4")
                 cmd_download = "youtube-dl --geo-bypass -f mp4 -o video.%(ext)s " + input_text
                 subprocess.Popen(cmd_download.split(), shell=False).wait()
                 cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 -strict -2 out.mp4"
@@ -201,17 +203,16 @@ def handle(msg):
                 else:
                     goon = True
             if goon == True and done == False:
-                if not chat_type == "channel" and input_text.startswith("http"):
+                if not chat_type == "channel" and not input_text.startswith("/"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
                 # Apparently some users are so dumb, that they forgot what an URL is
                 # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
                 try:
+                    input_text = input_text.replace("\n", " ")
                     input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url")
                 except:
                     pass
-                # Oh and please replace new lines, so the bot doesn't crash
-                input_text = input_text.replace("\n", " ")
                 f = open("tags.txt","r")
                 s = f.read().split("\n")
                 f.close()
@@ -321,6 +322,11 @@ def handle(msg):
                         artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
                         printable = set(string.printable)
                         title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
+                        try:
+                            artist = artist.split(" [")[0]
+                            title = title.split(" [")[0]
+                        except:
+                            pass
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                         os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
@@ -333,6 +339,11 @@ def handle(msg):
                         artist = filter(lambda x: x in printable, thist.user['username'])
                         printable = set(string.printable)
                         title = filter(lambda x: x in printable, thist.title)
+                        try:
+                            artist = artist.split(" [")[0]
+                            title = title.split(" [")[0]
+                        except:
+                            pass
                         os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         try:
                             os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
@@ -380,7 +391,7 @@ def handle(msg):
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
                 if "youtu" in input_text:
                     input_text = input_text.replace("music.", "")
-                    cmd = 'youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
+                    cmd = 'youtube-dl --geo-bypass --write-thumbnail --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
                         --output audio.%%(ext)s %summary'%(input_text)
                     subprocess.check_call(cmd.split(), shell=False)
                     tag = eyed3.load("audio.mp3")
@@ -396,18 +407,6 @@ def handle(msg):
                         pass
                     try:
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
-                    except:
-                        pass
-                    try:
-                        if not os.path.isfile("audio.jpg"):
-                            proc = subprocess.Popen(['youtube-dl', '--list-thumbnails', input_text], stdout=subprocess.PIPE)
-                            youtubedl_output, err = proc.communicate()
-                            imgurl = re.search("(?P<url>https?://[^\s]+)", youtubedl_output).group('url')
-                            r = requests.get(imgurl)
-                            if r.status_code == 200:
-                                with open('audio.jpg', 'wb') as file:
-                                    for chunk in r.iter_content(1024):
-                                        file.write(chunk)
                     except:
                         pass
                     if not chat_type == "channel":
