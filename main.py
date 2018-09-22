@@ -132,7 +132,7 @@ def handle(msg):
                 f.close()
                 bot.deleteMessage(msgid)
                 if chat_type == "private":
-                    bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+                    bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 done = True
             except Exception, e:
                 done = True
@@ -203,7 +203,7 @@ def handle(msg):
                 else:
                     goon = True
             if goon == True and done == False:
-                if not chat_type == "channel" and not input_text.startswith("/"):
+                if not chat_type == "channel" and not input_text.startswith("/") and not input_text.startswith("#"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
                 # Apparently some users are so dumb, that they forgot what an URL is
@@ -260,7 +260,7 @@ def handle(msg):
                     f.close()
                     if chat_type == "private":
                         bot.deleteMessage(msgid)
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "spotify" in input_text:
                     try:
                         trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
@@ -287,7 +287,7 @@ def handle(msg):
                     if not chat_type == "channel":
                         bot.editMessageText(msgid, "Converting...")
                     os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                    audio = MP3(ucode(filename))
+                    audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
@@ -309,7 +309,7 @@ def handle(msg):
                     f.close()
                     if chat_type == "private":
                         bot.deleteMessage(msgid)
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
@@ -388,7 +388,7 @@ def handle(msg):
                     f.close()
                     if chat_type == "private":
                         bot.deleteMessage(msgid)
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "youtu" in input_text:
                     input_text = input_text.replace("music.", "")
                     cmd = 'youtube-dl --geo-bypass --write-thumbnail --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
@@ -463,7 +463,7 @@ def handle(msg):
                     except:
                         pass
                     if chat_type == "private":
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbots for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
         except Exception, e:
             if chat_type == "private":
                 f = open("errormsg.txt", "r")
