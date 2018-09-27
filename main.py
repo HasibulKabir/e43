@@ -279,9 +279,9 @@ def handle(msg):
                     year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                    query = urllib.quote_plus(artist + " - " + title)
+                    query = urllib.quote_plus(artist + " - " + title + " - " + albumtitle + " " + year)
                     print(query)
-                    cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"gvsearch1:" + query + "\""
+                    cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"ytsearch:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     if not chat_type == "channel":
@@ -784,7 +784,7 @@ def handle(msg):
                     isAdmin = True
                 if isAdmin == True:
                     os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
-                    bot.sendMessage(chat_id, "Extras disabled!")
+                    bot.sendMessage(chat_id, "Success: Extras disabled!")
             if not chat_type == "private" and msg["text"].startswith("/enableextras"):
                 admins = bot.getChatAdministrators(chat_id)
                 isAdmin = False
