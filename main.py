@@ -166,8 +166,9 @@ def handle(msg):
             f = open("help.txt", "r")
             s = f.read()
             f.close()
-            s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER)
-            bot.sendMessage(chat_id, s, disable_web_page_preview=True)
+            release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+            s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER).replace("%release%", release)
+            bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="Markdown")
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: <pre>" + str(chat_id) + "</pre>", parse_mode="HTML")
         if msg['text'].startswith("/settag"):
