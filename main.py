@@ -69,9 +69,14 @@ def handle(msg):
             s = f.read()
             f.close()
             if not str(chat_id) in s:
-                f = open("chatids.txt", "a+")
-                f.write(str(chat_id) + "\n")
-                f.close()
+                try:
+                    f = open("chatids.txt", "a+")
+                    f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
+                    f.close()
+                except:
+                    f = open("chatids.txt", "a+")
+                    f.write(str(chat_id) + "\n")
+                    f.close()
         except:
             pass
     if content_type == 'audio':
@@ -162,13 +167,34 @@ def handle(msg):
             os.system("rm -f thumb.jpg")
         except:
             pass
-        if msg['text'].startswith("/help") and chat_type == "private":
+        if msg['text'].startswith("/help"):
             f = open("help.txt", "r")
             s = f.read()
             f.close()
             release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
             s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER).replace("%release%", release)
-            bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="Markdown")
+            if chat_type == "private":
+                bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="Markdown")
+            else:
+                f = open("chatids.txt", "r")
+                cids = f.read()
+                f.close()
+                if msg["from"]["username"] in cids:
+                    cid = 0
+                    try:
+                        for x in cids.split("\n"):
+                            if x.split(":")[1] == msg["from"]["username"]:
+                                cid = int(x.split(":")[0])
+                    except:
+                        pass
+                    bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="Markdown")
+                    msgid = bot.sendMessage(chat_id, "Hey @" + msg["from"]["username"] + "! I've sent you the help via private message.")
+                    time.sleep(5)
+                    bot.deleteMessage(telepot.message_identifier(msgid))
+                    try:
+                        bot.deleteMessage(telepot.message_identifier(msg))
+                    except:
+                        pass
         if msg['text'].startswith("/chatid"):
             bot.sendMessage(chat_id, "Your chat_id is: <pre>" + str(chat_id) + "</pre>", parse_mode="HTML")
         if msg['text'].startswith("/settag"):
@@ -204,7 +230,7 @@ def handle(msg):
                 else:
                     goon = True
             if goon == True and done == False:
-                if not chat_type == "channel" and not input_text.startswith("/") and not input_text.startswith("#"):
+                if not chat_type == "channel" and input_text.startswith("/") and "http" in msg["text"] and "://" in msg["text"] and not input_text.startswith("#"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
                 # Apparently some users are so dumb, that they forgot what an URL is
