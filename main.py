@@ -230,7 +230,7 @@ def handle(msg):
                 else:
                     goon = True
             if goon == True and done == False:
-                if not chat_type == "channel" and input_text.startswith("/") and "http" in msg["text"] and "://" in msg["text"] and not input_text.startswith("#"):
+                if not chat_type == "channel" and not input_text.startswith("/") and "http" in msg["text"] and "://" in msg["text"] and not input_text.startswith("#"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
                 # Apparently some users are so dumb, that they forgot what an URL is
