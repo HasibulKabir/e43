@@ -306,7 +306,7 @@ def handle(msg):
                     year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                    query = urllib.quote_plus(artist + " - " + title + " - " + albumtitle + " " + year)
+                    query = urllib.quote_plus(artist + " - " + title)
                     print(query)
                     cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"ytsearch:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
