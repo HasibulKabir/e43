@@ -28,12 +28,15 @@ f.close()
 print("Broadcasting...")
 
 for x in s:
-  chat_id = int(x.split(":")[0])
-  print(chat_id)
-  if contents[0].startswith("http"):
-    bot.sendPhoto(chat_id, contents[0], "\n".join(contents[1:]))
-  else:
-    bot.sendMessage(chat_id, b)
-  time.sleep(1.5)
+  try:
+    chat_id = int(x.split(":")[0])
+    print(chat_id)
+    if contents[0].startswith("http"):
+      bot.sendPhoto(chat_id, contents[0], "\n".join(contents[1:]))
+    else:
+      bot.sendMessage(chat_id, b)
+    time.sleep(1.5)
+  except:
+    pass
 
 print("Done!")
