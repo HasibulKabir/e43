@@ -230,9 +230,14 @@ def handle(msg):
                 else:
                     goon = True
             if goon == True and done == False:
-                if not chat_type == "channel" and not input_text.startswith("/") and "http" in msg["text"] and "://" in msg["text"] and not input_text.startswith("#"):
+                if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in msg["text"] and "://" in msg["text"] and not input_text.startswith("#"):
                     message = bot.sendMessage(chat_id, "Downloading...")
                     msgid = telepot.message_identifier(message)
+                else:
+                    try:
+                        bot.deleteMessage(telepot.message_identifier(msg))
+                    except:
+                        pass
                 # Apparently some users are so dumb, that they forgot what an URL is
                 # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
                 try:
@@ -262,7 +267,7 @@ def handle(msg):
                     filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     cover = "https://thumbnailer.mixcloud.com/unsafe/800x800/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
                     os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     audio = MP3("audio.mp3")
@@ -272,7 +277,7 @@ def handle(msg):
                         os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
@@ -286,7 +291,6 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "spotify" in input_text:
                     try:
@@ -311,7 +315,7 @@ def handle(msg):
                     cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"ytsearch:" + query + "\""
                     subprocess.check_call(cmd, shell=True)
                     filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
                     os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     audio = MP3(filename)
@@ -321,7 +325,7 @@ def handle(msg):
                         os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
                     else:
                         os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
                     bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
@@ -335,7 +339,6 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
@@ -358,7 +361,7 @@ def handle(msg):
                         os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
                         os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
-                        if not chat_type == "channel":
+                        if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
                         os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     except:
@@ -378,13 +381,13 @@ def handle(msg):
                         except:
                             pass
                         os.system("rm -f raw_audio.jpg")
-                        if not chat_type == "channel":
+                        if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
                         try:
                             os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                         except:
                             os.system("lame -b 320 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     try:
                         f = open("audio.jpg")
@@ -414,7 +417,6 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.deleteMessage(msgid)
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "youtu" in input_text:
                     input_text = input_text.replace("music.", "")
@@ -436,10 +438,10 @@ def handle(msg):
                         os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
                     except:
                         pass
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
                     subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
-                    if not chat_type == "channel":
+                    if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     try:
                         f = open("audio.jpg")
@@ -485,12 +487,13 @@ def handle(msg):
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
-                    try:
-                        bot.deleteMessage(msgid)
-                    except:
-                        pass
+
                     if chat_type == "private":
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
+                try:
+                    bot.deleteMessage(msgid)
+                except:
+                    pass
         except Exception, e:
             if chat_type == "private":
                 f = open("errormsg.txt", "r")
