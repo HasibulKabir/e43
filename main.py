@@ -141,7 +141,7 @@ def handle(msg):
                 done = True
             except Exception, e:
                 done = True
-                f = open("errormsg.txt", "r")
+                f = open("templates/error", "r")
                 s = f.read()
                 f.close()
                 exc_type, exc_obj, tb = sys.exc_info()
@@ -168,7 +168,7 @@ def handle(msg):
         except:
             pass
         if msg['text'].startswith("/help"):
-            f = open("help.txt", "r")
+            f = open("templates/help", "r")
             s = f.read()
             f.close()
             release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
@@ -496,7 +496,7 @@ def handle(msg):
                     pass
         except Exception, e:
             if chat_type == "private":
-                f = open("errormsg.txt", "r")
+                f = open("templates/error", "r")
                 s = f.read()
                 f.close()
                 exc_type, exc_obj, tb = sys.exc_info()
