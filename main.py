@@ -123,11 +123,11 @@ def handle(msg):
                 msgid = telepot.message_identifier(message)
                 cmd_download = "youtube-dl --geo-bypass -f mp4 -o video.%(ext)s " + input_text
                 subprocess.Popen(cmd_download.split(), shell=False).wait()
-                cmd_conv = "ffmpeg -y -i video.mp4 -c:v libx264 -crf 26 -vf scale=640:-1 -strict -2 out.mp4"
+                cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
                 subprocess.Popen(cmd_conv.split(), shell=False).wait()
                 filename = "out.mp4"
-                os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
+                os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4")
                 bot.editMessageText(msgid, "Sending...")
                 sendVideoNote(chat_id, "vm.mp4")
                 f = open("out.mp4", "r")
