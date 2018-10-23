@@ -80,7 +80,6 @@ def handle(msg):
         except:
             pass
     if content_type == 'audio':
-        audiofile = msg['audio']
         fileid = msg['audio']['file_id']
         flavor = telepot.flavor(msg)
         summary = telepot.glance(msg, flavor=flavor)
@@ -103,7 +102,6 @@ def handle(msg):
             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
     if content_type == "video":
-        videofile = msg['video']
         fileid = msg['video']['file_id']
         flavor = telepot.flavor(msg)
         summary = telepot.glance(msg, flavor=flavor)
@@ -145,6 +143,7 @@ def handle(msg):
                 s = f.read()
                 f.close()
                 exc_type, exc_obj, tb = sys.exc_info()
+                print(exc_type, exc_obj, tb)
                 f = tb.tb_frame
                 lineno = tb.tb_lineno
                 error = str("line " + str(lineno) + ": " + str(e))
@@ -242,7 +241,7 @@ def handle(msg):
                 # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
                 try:
                     input_text = input_text.replace("\n", " ")
-                    input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url")
+                    input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url") # pylint: disable=W1401
                 except:
                     pass
                 f = open("tags.txt","r")
@@ -475,7 +474,6 @@ def handle(msg):
                         filename = "audio.mp3"
                         sendAudioChan(chat_id,filename,artist,title,username,thumb)
                     audio = eyed3.load(filename)
-                    tt = audio.tag.title
                     artist = audio.tag.artist
                     ad = MP3(filename)
                     length = ad.info.length * 0.33
@@ -487,7 +485,6 @@ def handle(msg):
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
-
                     if chat_type == "private":
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 try:
@@ -500,6 +497,7 @@ def handle(msg):
                 s = f.read()
                 f.close()
                 exc_type, exc_obj, tb = sys.exc_info()
+                print(exc_type, exc_obj, tb)
                 f = tb.tb_frame
                 lineno = tb.tb_lineno
                 error = str("line " + str(lineno) + ": " + str(e))
