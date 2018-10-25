@@ -137,7 +137,7 @@ def handle(msg):
                         f.write(line)
                 f.close()
                 bot.sendMessage(chat_id, "Success: Unsubscribed!")
-        if msg["text"].startswith("/sub") and chat_type == "private" or "group" in chat_type:
+        if msg["text"].startswith("/sub"):
             if chat_type == "private" or "group" in chat_type:
                 f = open("subsoff.txt", "r")
                 lines = f.readlines()
