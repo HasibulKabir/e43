@@ -63,12 +63,15 @@ def handle(msg):
     f = open("random.txt", "r")
     rnumber = int(f.read())
     f.close()
-    if chat_type == "private":
+    if chat_type == "private" or "group" in chat_type:
         try:
             f = open("chatids.txt", "r")
-            s = f.read()
+            x = f.read()
             f.close()
-            if not str(chat_id) in s:
+            f = open("subsoff.txt", "r")
+            y = f.read()
+            f.close()
+            if not str(chat_id) in x:
                 try:
                     f = open("chatids.txt", "a+")
                     f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
@@ -77,6 +80,13 @@ def handle(msg):
                     f = open("chatids.txt", "a+")
                     f.write(str(chat_id) + "\n")
                     f.close()
+            if str(chat_id) in y:
+                lines = y.split("\n")
+                f = open("chatids.txt", "w")
+                for line in lines:
+                    if not str(chat_id) in line:
+                        f.write(line)
+                f.close()
         except:
             pass
     if content_type == 'audio':
@@ -113,6 +123,37 @@ def handle(msg):
         os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
         sendVideoNote(chat_id, "vm.mp4")
     if content_type == "text":
+        if msg["text"].startswith("/unsub") and chat_type == "private" or "group" in chat_type:
+            f = open("subsoff.txt", "a")
+            f.write(str(chat_id) + "\n")
+            f.close()
+            f = open("subsoff.txt", "r")
+            lines = f.readlines()
+            f.close()
+            f = open("chatids.txt", "w")
+            for line in lines:
+                if not str(chat_id) in line:
+                    f.write(line)
+            f.close()
+            bot.sendMessage(chat_id, "Success: Unsubscribed!")
+        if msg["text"].startswith("/sub") and chat_type == "private" or "group" in chat_type:
+            f = open("subsoff.txt", "r")
+            lines = f.readlines()
+            f.close()
+            f = open("subsoff.txt", "w")
+            for line in lines:
+                if not line == str(chat_id)+"\n":
+                    f.write(line)
+            f.close()
+            try:
+                f = open("chatids.txt", "a+")
+                f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
+                f.close()
+            except:
+                f = open("chatids.txt", "a+")
+                f.write(str(chat_id) + "\n")
+                f.close()
+            bot.sendMessage(chat_id, "Success: Subscribed!")
         if msg['text'].startswith("/boxxy"):
             sendVoice(chat_id, "assets/boxxy.ogg")
         if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://"):

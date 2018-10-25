@@ -9,4 +9,5 @@ rm -f extras/*.txt
 >tags.txt
 >chatids.txt
 >counters-disabled.txt
+>subsoff.txt
 echo "Done!"

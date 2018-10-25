@@ -38,6 +38,8 @@ disableextras - Disable extras
 enableextras - Enable extras
 enablecounters - Enable counters
 disablecounters - Disable counters
+sub - Subscribe to broadcasts
+unsub - Unsubscribe from broadcasts
 boxxy - Send "My name is Boxxy"
 ```
 
