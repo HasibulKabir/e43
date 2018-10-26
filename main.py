@@ -137,46 +137,82 @@ def handle(msg):
     if content_type == "text":
         if msg["text"].startswith("/unsub"):
             if chat_type == "private" or "group" in chat_type:
-                f = open("subsoff.txt", "a")
-                f.write(str(chat_id) + "\n")
-                f.close()
-                f = open("subsoff.txt", "r")
-                lines = f.readlines()
-                f.close()
-                if chat_type == "private":
-                    f = open("chatids.txt", "w")
+                proceed = False
+                if "group" in chat_type:
+                    admins = bot.getChatAdministrators(chat_id)
+                    isAdmin = False
+                    msgfrom = str(msg['from']['username'])
+                    for user in admins:
+                        try:
+                            if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                                isAdmin = True
+                        except:
+                            pass
+                    if msgfrom == BOTMASTER:
+                        isAdmin = True
+                    if isAdmin == True:
+                        proceed = True
                 else:
-                    f = open("chatids2.txt", "w")
-                for line in lines:
-                    if not str(chat_id) in line:
-                        f.write(line)
-                f.close()
-                bot.sendMessage(chat_id, "Success: Unsubscribed!")
-        if msg["text"].startswith("/sub"):
-            if chat_type == "private" or "group" in chat_type:
-                f = open("subsoff.txt", "r")
-                lines = f.readlines()
-                f.close()
-                f = open("subsoff.txt", "w")
-                for line in lines:
-                    if not line == str(chat_id)+"\n":
-                        f.write(line)
-                f.close()
-                try:
-                    if chat_type == "private":
-                        f = open("chatids.txt", "a+")
-                    else:
-                        f = open("chatids2.txt", "a+")
-                    f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
-                    f.close()
-                except:
-                    if chat_type == "private":
-                        f = open("chatids.txt", "a+")
-                    else:
-                        f = open("chatids2.txt", "a+")
+                    proceed = True
+                if proceed == True:
+                    f = open("subsoff.txt", "a")
                     f.write(str(chat_id) + "\n")
                     f.close()
-                bot.sendMessage(chat_id, "Success: Subscribed!")
+                    f = open("subsoff.txt", "r")
+                    lines = f.readlines()
+                    f.close()
+                    if chat_type == "private":
+                        f = open("chatids.txt", "w")
+                    else:
+                        f = open("chatids2.txt", "w")
+                    for line in lines:
+                        if not str(chat_id) in line:
+                            f.write(line)
+                    f.close()
+                    bot.sendMessage(chat_id, "Success: Unsubscribed!")
+        if msg["text"].startswith("/sub"):
+            if chat_type == "private" or "group" in chat_type:
+                proceed = False
+                if "group" in chat_type:
+                    admins = bot.getChatAdministrators(chat_id)
+                    isAdmin = False
+                    msgfrom = str(msg['from']['username'])
+                    for user in admins:
+                        try:
+                            if str(user['user']['username']).replace("u'", "").replace("'", "") == msgfrom:
+                                isAdmin = True
+                        except:
+                            pass
+                    if msgfrom == BOTMASTER:
+                        isAdmin = True
+                    if isAdmin == True:
+                        proceed = True
+                else:
+                    proceed = True
+                if proceed == True:
+                    f = open("subsoff.txt", "r")
+                    lines = f.readlines()
+                    f.close()
+                    f = open("subsoff.txt", "w")
+                    for line in lines:
+                        if not line == str(chat_id)+"\n":
+                            f.write(line)
+                    f.close()
+                    try:
+                        if chat_type == "private":
+                            f = open("chatids.txt", "a+")
+                        else:
+                            f = open("chatids2.txt", "a+")
+                        f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
+                        f.close()
+                    except:
+                        if chat_type == "private":
+                            f = open("chatids.txt", "a+")
+                        else:
+                            f = open("chatids2.txt", "a+")
+                        f.write(str(chat_id) + "\n")
+                        f.close()
+                    bot.sendMessage(chat_id, "Success: Subscribed!")
         if msg['text'].startswith("/boxxy"):
             sendVoice(chat_id, "assets/boxxy.ogg")
         if msg['text'].startswith("/vid http://") or msg['text'].startswith("/vid https://"):
