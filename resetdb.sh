@@ -8,6 +8,7 @@ echo "0" > random.txt
 rm -f extras/*.txt
 >tags.txt
 >chatids.txt
+>chatids2.txt
 >counters-disabled.txt
 >subsoff.txt
 echo "Done!"

@@ -22,8 +22,12 @@ while True:
 
 b = "\n".join(contents)
 f = open("chatids.txt", "r")
-s = f.readlines()
+s = f.read()
 f.close()
+f = open("chatids2.txt", "r")
+s = s + f.read()
+f.close()
+s = s.split("\n")
 
 print("Broadcasting...")
 

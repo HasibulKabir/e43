@@ -65,7 +65,10 @@ def handle(msg):
     f.close()
     if chat_type == "private" or "group" in chat_type:
         try:
-            f = open("chatids.txt", "r")
+            if chat_type == "private":
+                f = open("chatids.txt", "r")
+            else:
+                f = open("chatids2.txt", "r")
             x = f.read()
             f.close()
             f = open("subsoff.txt", "r")
@@ -73,16 +76,25 @@ def handle(msg):
             f.close()
             if not str(chat_id) in x:
                 try:
-                    f = open("chatids.txt", "a+")
+                    if chat_type == "private":
+                        f = open("chatids.txt", "a+")
+                    else:
+                        f = open("chatids2.txt", "a+")
                     f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
                     f.close()
                 except:
-                    f = open("chatids.txt", "a+")
+                    if chat_type == "private":
+                        f = open("chatids.txt", "a+")
+                    else:
+                        f = open("chatids2.txt", "a+")
                     f.write(str(chat_id) + "\n")
                     f.close()
             if str(chat_id) in y:
                 lines = y.split("\n")
-                f = open("chatids.txt", "w")
+                if chat_type == "private":
+                    f = open("chatids.txt", "w")
+                else:
+                    f = open("chatids2.txt", "w")
                 for line in lines:
                     if not str(chat_id) in line:
                         f.write(line)
@@ -131,7 +143,10 @@ def handle(msg):
                 f = open("subsoff.txt", "r")
                 lines = f.readlines()
                 f.close()
-                f = open("chatids.txt", "w")
+                if chat_type == "private":
+                    f = open("chatids.txt", "w")
+                else:
+                    f = open("chatids2.txt", "w")
                 for line in lines:
                     if not str(chat_id) in line:
                         f.write(line)
@@ -148,11 +163,17 @@ def handle(msg):
                         f.write(line)
                 f.close()
                 try:
-                    f = open("chatids.txt", "a+")
+                    if chat_type == "private":
+                        f = open("chatids.txt", "a+")
+                    else:
+                        f = open("chatids2.txt", "a+")
                     f.write(str(chat_id) + ":" + msg["from"]["username"] + "\n")
                     f.close()
                 except:
-                    f = open("chatids.txt", "a+")
+                    if chat_type == "private":
+                        f = open("chatids.txt", "a+")
+                    else:
+                        f = open("chatids2.txt", "a+")
                     f.write(str(chat_id) + "\n")
                     f.close()
                 bot.sendMessage(chat_id, "Success: Subscribed!")
