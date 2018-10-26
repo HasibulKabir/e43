@@ -19,7 +19,6 @@ from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 import soundcloud
 import string
-import pylast
 import json
 import urllib
 from HTMLParser import HTMLParser
@@ -32,7 +31,6 @@ sys.setdefaultencoding("utf-8")
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
 API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
 API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
-lastfm = pylast.LastFMNetwork(api_key=API_KEY, api_secret=API_SECRET)
 html = HTMLParser()
 thumb = "thumb.jpg"
 
