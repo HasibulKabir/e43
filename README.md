@@ -1,5 +1,7 @@
 # Everything downloader Bot
 
+**Warning: This bot is not actively maintained anymore!**
+
 This Telegram bot can download almost anything :)
 
 [koyu.space](http://koyu.space)
