@@ -219,7 +219,7 @@ def handle(msg):
                 input_text = msg['text'].split("/vid ")[1]
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
-                cmd_download = "youtube-dl --geo-bypass -f mp4 -o video.%(ext)s " + input_text
+                cmd_download = "youtube-dl --geo-bypass -f mp4 -o \"video.%(ext)s\" " + input_text + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
                 subprocess.Popen(cmd_download.split(), shell=False).wait()
                 cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
@@ -352,9 +352,10 @@ def handle(msg):
                         username = line.split(":")[1]
                         username = "\n🆔 @" + username
                 if "mixcloud" in input_text:
-                    cmd = 'youtube-dl --add-metadata -v -x --audio-format mp3 --output audio.%%(ext)s ' + input_text
+                    cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 --output "audio.%%(ext)s" %summary'%(input_text)
+                    cmd = cmd + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
                     print(cmd)
-                    subprocess.check_call(cmd.split(), shell=False)
+                    os.system(cmd)
                     r = requests.get(input_text)
                     c = r.content
                     title = c.split('<title>')[1].split('</title>')[0]
@@ -410,7 +411,8 @@ def handle(msg):
                     query = urllib.quote_plus(artist + " - " + title)
                     print(query)
                     cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"ytsearch:" + query + "\""
-                    subprocess.check_call(cmd, shell=True)
+                    cmd = cmd + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
+                    os.system(cmd)
                     filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
@@ -517,9 +519,9 @@ def handle(msg):
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
                 if "youtu" in input_text:
                     input_text = input_text.replace("music.", "")
-                    cmd = 'youtube-dl --geo-bypass --write-thumbnail --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 \
-                        --output audio.%%(ext)s %summary'%(input_text)
-                    subprocess.check_call(cmd.split(), shell=False)
+                    cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 --output "audio.%%(ext)s" %summary'%(input_text)
+                    cmd = cmd + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
+                    os.system(cmd)
                     tag = eyed3.load("audio.mp3")
                     try:
                         title = get_artist_title(tag.tag.title).split(" - ")[1]
