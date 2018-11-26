@@ -220,10 +220,10 @@ def handle(msg):
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
                 cmd_download = "youtube-dl --geo-bypass -f mp4 -o \"video.%(ext)s\" " + input_text + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
-                subprocess.Popen(cmd_download.split(), shell=False).wait()
+                os.system(cmd_download)
                 cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
-                subprocess.Popen(cmd_conv.split(), shell=False).wait()
+                os.system(cmd_conv)
                 filename = "out.mp4"
                 os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4")
                 bot.editMessageText(msgid, "Sending...")
