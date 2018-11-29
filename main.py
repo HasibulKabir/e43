@@ -332,7 +332,11 @@ def handle(msg):
                     msgid = telepot.message_identifier(message)
                 else:
                     try:
-                        bot.deleteMessage(telepot.message_identifier(msg))
+                        if input_text.startswith("/") or "youtu" in input_text \
+                        or "mixcloud" in input_text \
+                        or "soundcloud" in input_text \
+                        or "spotify" in input_text:
+                            bot.deleteMessage(telepot.message_identifier(msg))
                     except:
                         pass
                 # Apparently some users are so dumb, that they forgot what an URL is
