@@ -233,7 +233,7 @@ def handle(msg):
                 f.close()
                 bot.deleteMessage(msgid)
                 if chat_type == "private":
-                    bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
+                    bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 done = True
             except Exception, e:
                 done = True
@@ -393,7 +393,7 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 if "spotify" in input_text:
                     try:
                         trackid = input_text.replace("https://open.spotify.com/track/", "").split("?")[0]
@@ -442,7 +442,7 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 if "soundcloud" in input_text:
                     track = client.get('/resolve', url=input_text)
                     thist = track
@@ -520,7 +520,7 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 if "youtu" in input_text:
                     input_text = input_text.replace("music.", "")
                     cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 --output "audio.%%(ext)s" %summary'%(input_text)
@@ -590,7 +590,7 @@ def handle(msg):
                     bot.sendVoice(chat_id,f,username)
                     f.close()
                     if chat_type == "private":
-                        bot.sendMessage(chat_id,"Here you go!\nCheck out @everythingbotarmy for news and informations about this bot.",disable_web_page_preview=True)
+                        bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 try:
                     bot.deleteMessage(msgid)
                 except:
