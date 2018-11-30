@@ -451,10 +451,8 @@ def handle(msg):
                     artist = None
                     title = None
                     try:
-                        printable = set(string.printable)
-                        artist = filter(lambda x: x in printable, thist.title.split(" - ")[0])
-                        printable = set(string.printable)
-                        title = filter(lambda x: x in printable, thist.title.split(" - ")[1])
+                        artist = thist.title.split(" - ")[0]
+                        title = thist.title.split(" - ")[1]
                         try:
                             artist = artist.split(" [")[0]
                             title = title.split(" [")[0]
@@ -468,10 +466,8 @@ def handle(msg):
                             bot.editMessageText(msgid, "Converting...")
                         os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
                     except:
-                        printable = set(string.printable)
-                        artist = filter(lambda x: x in printable, thist.user['username'])
-                        printable = set(string.printable)
-                        title = filter(lambda x: x in printable, thist.title)
+                        artist = thist.user['username']
+                        title = thist.title
                         try:
                             artist = artist.split(" [")[0]
                             title = title.split(" [")[0]
@@ -505,11 +501,11 @@ def handle(msg):
                     else:
                         os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                     try:
-                        sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username, thumb)
+                        sendAudioChan(chat_id, filename, artist, title, username, thumb)
                     except:
                         filename = "audio.mp3"
-                        sendAudioChan(chat_id, ucode(filename), ucode(artist), ucode(title), username, thumb)
-                    audio = MP3(ucode(filename))
+                        sendAudioChan(chat_id, filename, artist, title, username, thumb)
+                    audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = length + 60
                     if audio.info.length > l2:
@@ -1013,7 +1009,7 @@ def removekey(d, key):
     return r
 
 def ucode(text):
-    return text.decode().encode('utf-8')
+    return unicode(text, "utf-8")
 
 bot = telepot.Bot(TOKEN)
 bot.message_loop(handle)
