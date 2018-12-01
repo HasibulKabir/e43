@@ -478,9 +478,9 @@ def handle(msg):
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
                         try:
-                            subprocess.Popen(["lame", "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False)
+                            subprocess.Popen(["lame", "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                         except:
-                            subprocess.Popen(["lame", "-b", "320", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False)
+                            subprocess.Popen(["lame", "-b", "320", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     try:
