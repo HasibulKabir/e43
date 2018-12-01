@@ -453,9 +453,14 @@ def handle(msg):
                             title = title.split(" [")[0]
                         except:
                             pass
-                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                        try:
+                            os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        except:
+                            pass
+                        if not os.path.exists("raw_audio.jpg"):
+                            os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
@@ -468,12 +473,14 @@ def handle(msg):
                             title = title.split(" [")[0]
                         except:
                             pass
-                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         try:
+                            os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         except:
                             pass
+                        if not os.path.exists("raw_audio.jpg"):
+                            os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
+                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
