@@ -14,7 +14,6 @@ This Telegram bot can download almost anything :)
 - Python 3
 - youtube-dl
 - wget
-- moviepy
 - Sacad
 
 ## Installation

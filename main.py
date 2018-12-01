@@ -29,8 +29,6 @@ sys.setdefaultencoding("utf-8")
 
 # Initializing APIs
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
-API_KEY = "9d3ee2a574eb3bb2a6f0a4e108e46ceb"
-API_SECRET = "f982de3bd2d8e7ffe5c117b568b1fc3e"
 html = HTMLParser()
 thumb = "thumb.jpg"
 
@@ -220,12 +218,12 @@ def handle(msg):
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
                 cmd_download = "youtube-dl --geo-bypass -f mp4 -o \"video.%(ext)s\" " + input_text + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
-                os.system(cmd_download)
+                subprocess.Popen(cmd_download.split(' '), shell=False).wait()
                 cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
-                os.system(cmd_conv)
+                subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
                 filename = "out.mp4"
-                os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4")
+                subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
                 bot.editMessageText(msgid, "Sending...")
                 sendVideoNote(chat_id, "vm.mp4")
                 f = open("out.mp4", "r")
@@ -356,10 +354,8 @@ def handle(msg):
                         username = line.split(":")[1]
                         username = "\n🆔 @" + username
                 if "mixcloud" in input_text:
-                    cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 --output "audio.%%(ext)s" %summary'%(input_text)
-                    cmd = cmd + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
-                    print(cmd)
-                    os.system(cmd)
+                    cmd = ["youtube-dl", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
+                    subprocess.Popen(cmd, shell=False).wait()
                     r = requests.get(input_text)
                     c = r.content
                     title = c.split('<title>')[1].split('</title>')[0]
@@ -371,14 +367,14 @@ def handle(msg):
                     os.system("wget -O audio.jpg \"" + cover + "\"")
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
-                    os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    subprocess.Popen(["lame",  "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                     audio = MP3("audio.mp3")
                     length = audio.info.length * 0.33
                     l2 = length + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
@@ -414,20 +410,19 @@ def handle(msg):
                     os.system("wget -O audio.jpg \"" + cover + "\"")
                     query = urllib.quote_plus(artist + " - " + title)
                     print(query)
-                    cmd = "youtube-dl --geo-bypass --add-metadata -x --prefer-ffmpeg --extract-audio -v --audio-format mp3 --output \"audio.%%(ext)\" \"ytsearch:" + query + "\""
-                    cmd = cmd + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
-                    os.system(cmd)
+                    cmd = ["youtube-dl", "--geo-bypass", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
+                    subprocess.Popen(cmd, shell=False).wait()
                     filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
-                    os.system("lame -b 320 --ti audio.jpg  --ty " + year + " --tl \"" + albumtitle + "\" --tc @" + bottag + " --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                    subprocess.Popen(["lame", "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "--ty", year, "--tl", albumtitle, "audio.mp3", filename], shell=False).wait()
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
@@ -464,7 +459,7 @@ def handle(msg):
                         os.system("rm -f raw_audio.jpg")
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
-                        os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                        subprocess.Popen(["lame",  "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                     except:
                         artist = thist.user['username']
                         title = thist.title
@@ -483,9 +478,9 @@ def handle(msg):
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
                         try:
-                            os.system("lame -b 320 --ti audio.jpg --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            subprocess.Popen(["lame", "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False)
                         except:
-                            os.system("lame -b 320 --ta \"" + artist + "\" --tt \"" + title + "\" audio.mp3 \"" + filename + "\"")
+                            subprocess.Popen(["lame", "-b", "320", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False)
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     try:
@@ -509,9 +504,9 @@ def handle(msg):
                     length = audio.info.length * 0.33
                     l2 = length + 60
                     if audio.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
@@ -519,9 +514,8 @@ def handle(msg):
                         bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 if "youtu" in input_text:
                     input_text = input_text.replace("music.", "")
-                    cmd = 'youtube-dl --add-metadata -x --prefer-ffmpeg --extract-audio --write-thumbnail --embed-thumbnail -v --audio-format mp3 --output "audio.%%(ext)s" %summary'%(input_text)
-                    cmd = cmd + " --external-downloader aria2c --external-downloader-args \"-x 16 -s 16 -k 1M\""
-                    os.system(cmd)
+                    cmd = ["youtube-dl", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "--write-thumbnail", "--embed-thumbnail", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)s", input_text]
+                    subprocess.Popen(cmd, shell=False).wait()
                     tag = eyed3.load("audio.mp3")
                     try:
                         title = get_artist_title(tag.tag.title).split(" - ")[1]
@@ -534,7 +528,7 @@ def handle(msg):
                     except:
                         pass
                     try:
-                        os.system("sacad \"" + artist + "\" \"" + title + "\" 800 audio.jpg")
+                        subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
                     except:
                         pass
                     if not chat_type == "channel" and not "group" in chat_type:
@@ -579,9 +573,9 @@ def handle(msg):
                     length = ad.info.length * 0.33
                     l2 = length + 60
                     if ad.info.length > l2:
-                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     else:
-                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
+                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
