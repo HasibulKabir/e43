@@ -368,9 +368,9 @@ def handle(msg):
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
                     subprocess.Popen(["lame",  "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                    audio = MP3("audio.mp3")
+                    audio = MP3(filename)
                     length = audio.info.length * 0.33
-                    l2 = length + 60
+                    l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
                         subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     else:
@@ -384,7 +384,7 @@ def handle(msg):
                         os.system("convert audio.jpg -resize 90x90 thumb.jpg")
                     else:
                         os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                    sendAudioChan(chat_id,"audio.mp3",artist,title,username,thumb)
+                    sendAudioChan(chat_id,filename,artist,title,username,thumb)
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
@@ -426,7 +426,7 @@ def handle(msg):
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
                     f = open("audio.jpg")
-                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + "\n💿 " + albumtitle + "\n📆 " + year + username)
                     f.close()
                     if os.path.exists("audio.jpg"):
                         os.system("convert audio.jpg -resize 90x90 thumb.jpg")
@@ -481,32 +481,23 @@ def handle(msg):
                             subprocess.Popen(["lame", "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                         except:
                             subprocess.Popen(["lame", "-b", "320", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
-                    if not chat_type == "channel" and not "group" in chat_type:
-                        bot.editMessageText(msgid, "Sending...")
-                    try:
-                        f = open("audio.jpg")
-                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
-                        f.close()
-                    except:
-                        f = open("blank.jpg")
-                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist)
-                        f.close()
-                    if os.path.exists("audio.jpg"):
-                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
-                    else:
-                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                    try:
-                        sendAudioChan(chat_id, filename, artist, title, username, thumb)
-                    except:
-                        filename = "audio.mp3"
-                        sendAudioChan(chat_id, filename, artist, title, username, thumb)
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
-                    l2 = length + 60
+                    l2 = (audio.info.length * 0.33) + 60
                     if audio.info.length > l2:
                         subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     else:
                         subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                    if not chat_type == "channel" and not "group" in chat_type:
+                        bot.editMessageText(msgid, "Sending...")
+                    f = open("audio.jpg")
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                    f.close()
+                    if os.path.exists("audio.jpg"):
+                        os.system("convert audio.jpg -resize 90x90 thumb.jpg")
+                    else:
+                        os.system("convert blank.jpg -resize 90x90 thumb.jpg")
+                    sendAudioChan(chat_id,filename,artist,title,username,thumb)
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
@@ -533,49 +524,25 @@ def handle(msg):
                         pass
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Converting...")
-                    subprocess.Popen(["lame", "-V", "0", "-b", "320", "--ti", "audio.jpg", "--tt", title, "--ta", artist , "audio.mp3"], shell=False).wait()
+                    filename = filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
+                    subprocess.Popen(["lame",  "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                    audio = MP3(filename)
+                    length = audio.info.length * 0.33
+                    l2 = (audio.info.length * 0.33) + 60
+                    if audio.info.length > l2:
+                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                    else:
+                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                     if not chat_type == "channel" and not "group" in chat_type:
                         bot.editMessageText(msgid, "Sending...")
-                    try:
-                        f = open("audio.jpg")
-                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
-                        f.close()
-                    except:
-                        f = open("blank.jpg")
-                        bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
-                        f.close()
-                    filename = artist.replace(" ", "_") + "-" + title.replace(" ", "_") + ".mp3"
-                    try:
-                        os.rename("audio.mp3.mp3", filename)
-                    except:
-                        try:
-                            os.rename("audio.mp3", filename)
-                        except:
-                            try:
-                                filename = "audio.mp3.mp3"
-                            except:
-                                try:
-                                    filename = "audio.mp3"
-                                except:
-                                    pass
+                    f = open("audio.jpg")
+                    bot.sendPhoto(chat_id,f,"🎵 " + title + "\n🎤 " + artist + username)
+                    f.close()
                     if os.path.exists("audio.jpg"):
                         os.system("convert audio.jpg -resize 90x90 thumb.jpg")
                     else:
                         os.system("convert blank.jpg -resize 90x90 thumb.jpg")
-                    try:
-                        sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                    except:
-                        filename = "audio.mp3"
-                        sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                    audio = eyed3.load(filename)
-                    artist = audio.tag.artist
-                    ad = MP3(filename)
-                    length = ad.info.length * 0.33
-                    l2 = length + 60
-                    if ad.info.length > l2:
-                        subprocess.Popen(str("ffmpeg -ss " + str(length) + " -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
-                    else:
-                        subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
+                    sendAudioChan(chat_id,filename,artist,title,username,thumb)
                     f = open("output.ogg", "r")
                     bot.sendVoice(chat_id,f,username)
                     f.close()
