@@ -107,7 +107,7 @@ def handle(msg):
         filename = bot.getFile(file_id=fileid)['file_path']
         os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
         if ".mp3" in filename:
-            audio = MP3(ucode(filename))
+            audio = MP3(filename)
             length = audio.info.length * 0.33
             l2 = (audio.info.length * 0.33) + 60
         if ".m4a" in filename:
