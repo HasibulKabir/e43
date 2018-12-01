@@ -217,7 +217,7 @@ def handle(msg):
                 input_text = msg['text'].split("/vid ")[1]
                 input_text = input_text.split('&')[0]
                 msgid = telepot.message_identifier(message)
-                cmd_download = ["youtube-dl", "--geo-bypass", "-f", "mp4", "-o", "video.%(ext)s", input_text, "--external-downloader", "aria2c", "--external-downloader-args", "\"-x 16 -s 16 -k 1M\""]
+                cmd_download = ["youtube-dl", "--geo-bypass", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                 subprocess.Popen(cmd_download, shell=False).wait()
                 cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
                 bot.editMessageText(msgid, "Converting...")
