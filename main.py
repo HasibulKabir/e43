@@ -45,10 +45,6 @@ f.write(str(random.randint(10,30)))
 f.close()
 
 def handle(msg):
-    try:
-        os.system("sh clean.sh")
-    except:
-        pass
     done = False
     bottag = bot.getMe()["username"]
     content_type, chat_type, chat_id = telepot.glance(msg)
