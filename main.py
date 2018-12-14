@@ -230,7 +230,7 @@ def handle(msg):
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 done = True
             except Exception, e:
-                if chat_type == "private"
+                if chat_type == "private":
                     done = True
                     f = open("templates/error", "r")
                     s = f.read()
