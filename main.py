@@ -45,6 +45,7 @@ f.write(str(random.randint(10,30)))
 f.close()
 
 def handle(msg):
+    os.system("sh clean.sh")
     done = False
     bottag = bot.getMe()["username"]
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -225,7 +226,11 @@ def handle(msg):
                 f = open("out.mp4", "r")
                 bot.sendVideo(chat_id, f)
                 f.close()
-                bot.deleteMessage(msgid)
+                try:
+                    bot.deleteMessage(msgid)
+                    bot.deleteMessage(telepot.message_identifier(msg))
+                except:
+                    pass
                 if chat_type == "private":
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 done = True
