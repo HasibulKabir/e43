@@ -8,10 +8,8 @@ import requests
 import os
 import os.path
 import re
-import requests
 import subprocess
 import time
-import re
 import eyed3
 import random
 import mutagen
