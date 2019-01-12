@@ -3,4 +3,3 @@ eyed3
 mutagen
 requests
 soundcloud
-youtube_title_parse
