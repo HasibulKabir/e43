@@ -36,7 +36,7 @@ for x in s:
     chat_id = int(x.split(":")[0])
     print(chat_id)
     if contents[0].startswith("http"):
-      bot.sendPhoto(chat_id, contents[0], "\n".join(contents[1:]))
+      bot.sendPhoto(chat_id, contents[0], "\n".join(contents[1:]), parse_mode="Markdown")
     else:
       bot.sendMessage(chat_id, b, parse_mode="Markdown")
     time.sleep(1.5)
