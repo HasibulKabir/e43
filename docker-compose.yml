@@ -1,7 +1,9 @@
 version: '3'
 services:
   app:
-    build: .
+    #Build if you need a newer image or debug
+    #build: .
+    image: koyuawsmbrtn/everythingbot
     env_file:
       - .env
     volumes: 
