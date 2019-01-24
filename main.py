@@ -407,7 +407,7 @@ def handle(msg):
                     year = data.split('"release_date":"')[1].split('"')[0].split('-')[0]
                     albumtitle = data.split('"name":"')[2].split('"')[0].split('-')[0]
                     os.system("wget -O audio.jpg \"" + cover + "\"")
-                    query = urllib.quote_plus(artist + " - " + title) + " " + albumtitle
+                    query = urllib.quote_plus(artist.replace("(", " ").replace(")", "").lower() + " " + title.replace("(", " ").replace(")", "").lower())
                     print(query)
                     cmd = ["youtube-dl", "--no-continue", "--add-metadata", "-x", "--prefer-ffmpeg", "--extract-audio", "-v", "--audio-format", "mp3", "--output", "audio.%%(ext)\"", "ytsearch:\"" + query + "\""]
                     subprocess.Popen(cmd, shell=False).wait()
