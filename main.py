@@ -53,7 +53,10 @@ def handle(msg):
     f = open("random.txt", "r")
     rnumber = int(f.read())
     f.close()
-    if chat_type == "private" or "group" in chat_type:
+    f = open("blacklist.txt", "r")
+    blacklist = f.read()
+    f.close()
+    if chat_type == "private" or "group" in chat_type and not chat_id in blacklist:
         try:
             if chat_type == "private":
                 f = open("chatids.txt", "r")
@@ -91,7 +94,7 @@ def handle(msg):
                 f.close()
         except:
             pass
-    if content_type == 'audio':
+    if content_type == 'audio' and not chat_id in blacklist:
         fileid = msg['audio']['file_id']
         flavor = telepot.flavor(msg)
         summary = telepot.glance(msg, flavor=flavor)
@@ -113,7 +116,7 @@ def handle(msg):
         else:
             os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg")
         sendVoice(chat_id, "output.ogg")
-    if content_type == "video":
+    if content_type == "video" and not chat_id in blacklist:
         fileid = msg['video']['file_id']
         flavor = telepot.flavor(msg)
         summary = telepot.glance(msg, flavor=flavor)
@@ -124,7 +127,7 @@ def handle(msg):
         os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
         os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
         sendVideoNote(chat_id, "vm.mp4")
-    if content_type == "text":
+    if content_type == "text" and not chat_id in blacklist:
         if msg["text"].startswith("/unsub"):
             if chat_type == "private" or "group" in chat_type:
                 proceed = False
