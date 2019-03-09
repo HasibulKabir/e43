@@ -465,18 +465,13 @@ def handle(msg):
                             title = title.split(" [")[0]
                         except:
                             pass
-                        try:
-                            os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
-                            os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
-                        except:
-                            pass
-                        if not os.path.exists("raw_audio.jpg"):
-                            os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
-                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
+                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
+                        os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                        os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
-                        subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                        subprocess.Popen(["lame",  "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                     except:
                         artist = thist.user['username']
                         title = thist.title
@@ -485,21 +480,19 @@ def handle(msg):
                             title = title.split(" [")[0]
                         except:
                             pass
+                        os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                         try:
-                            os.system("wget \"" + stream_url.location + "\" -O audio.mp3")
                             os.system("wget \"" + track.artwork_url.replace("-large", "-crop") + "?t500x500\" -O raw_audio.jpg")
+                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         except:
                             pass
-                        if not os.path.exists("raw_audio.jpg"):
-                            os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
-                            os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                         os.system("rm -f raw_audio.jpg")
                         if not chat_type == "channel" and not "group" in chat_type:
                             bot.editMessageText(msgid, "Converting...")
                         try:
-                            subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                            subprocess.Popen(["lame", "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                         except:
-                            subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                            subprocess.Popen(["lame", "-b", "320", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                     audio = MP3(filename)
                     length = audio.info.length * 0.33
                     l2 = (audio.info.length * 0.33) + 60
