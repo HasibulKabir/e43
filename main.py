@@ -235,30 +235,40 @@ def handle(msg):
                     bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                 done = True
             except Exception, e:
-                if chat_type == "private":
-                    done = True
-                    f = open("templates/error", "r")
-                    s = f.read()
-                    f.close()
-                    exc_type, exc_obj, tb = sys.exc_info()
-                    print(exc_type, exc_obj, tb)
-                    f = tb.tb_frame
-                    lineno = tb.tb_lineno
-                    error = str("line " + str(lineno) + ": " + str(e))
-                    url = msg["text"]
-                    chatid = str(chat_id)
-                    release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                    s = s.replace("$crashlog$", error)
-                    s = s.replace("$message$", url)
-                    s = s.replace("$chatid$", chatid)
-                    s = s.replace("$release$", release)
-                    s = s.replace("$botowner$", BOTMASTER)
-                    s = s.replace("$bottag$", bottag)
-                    try:
+                f = open("templates/error", "r")
+                s = f.read()
+                f.close()
+                exc_type, exc_obj, tb = sys.exc_info()
+                print(exc_type, exc_obj, tb)
+                f = tb.tb_frame
+                lineno = tb.tb_lineno
+                error = str("line " + str(lineno) + ": " + str(e))
+                url = msg["text"]
+                chatid = str(chat_id)
+                release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                s = s.replace("$crashlog$", error)
+                s = s.replace("$message$", url)
+                s = s.replace("$chatid$", chatid)
+                s = s.replace("$release$", release)
+                s = s.replace("$bottag$", bottag)
+                try:
+                    if chat_type == "private":
                         bot.deleteMessage(msgid)
-                        bot.sendMessage(chat_id, s, parse_mode="HTML")
-                    except:
-                        bot.sendMessage(chat_id, s, parse_mode="HTML")
+                        bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+                except:
+                    if chat_type == "private":
+                        bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+                try:
+                    f = open("chatids.txt")
+                    c = f.readlines()
+                    f.close()
+                    master = ""
+                    for x in c:
+                        if BOTMASTER in x:
+                            master = x.split(":")[0]
+                    bot.sendMessage(master, s, parse_mode="HTML")
+                except:
+                    pass
         try:
             os.system("rm -f audio.jpg")
             os.system("rm -f thumb.jpg")
@@ -572,29 +582,40 @@ def handle(msg):
                 except:
                     pass
         except Exception, e:
-            if chat_type == "private":
-                f = open("templates/error", "r")
-                s = f.read()
-                f.close()
-                exc_type, exc_obj, tb = sys.exc_info()
-                print(exc_type, exc_obj, tb)
-                f = tb.tb_frame
-                lineno = tb.tb_lineno
-                error = str("line " + str(lineno) + ": " + str(e))
-                url = msg["text"]
-                chatid = str(chat_id)
-                release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                s = s.replace("$crashlog$", error)
-                s = s.replace("$message$", url)
-                s = s.replace("$chatid$", chatid)
-                s = s.replace("$release$", release)
-                s = s.replace("$botowner$", BOTMASTER)
-                s = s.replace("$bottag$", bottag)
-                try:
+            f = open("templates/error", "r")
+            s = f.read()
+            f.close()
+            exc_type, exc_obj, tb = sys.exc_info()
+            print(exc_type, exc_obj, tb)
+            f = tb.tb_frame
+            lineno = tb.tb_lineno
+            error = str("line " + str(lineno) + ": " + str(e))
+            url = msg["text"]
+            chatid = str(chat_id)
+            release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+            s = s.replace("$crashlog$", error)
+            s = s.replace("$message$", url)
+            s = s.replace("$chatid$", chatid)
+            s = s.replace("$release$", release)
+            s = s.replace("$bottag$", bottag)
+            try:
+                if chat_type == "private":
                     bot.deleteMessage(msgid)
-                    bot.sendMessage(chat_id, s, parse_mode="HTML")
-                except:
-                    bot.sendMessage(chat_id, s, parse_mode="HTML")
+                    bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+            except:
+                if chat_type == "private":
+                    bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+            try:
+                f = open("chatids.txt")
+                c = f.readlines()
+                f.close()
+                master = ""
+                for x in c:
+                    if BOTMASTER in x:
+                        master = x.split(":")[0]
+                bot.sendMessage(master, s, parse_mode="HTML")
+            except:
+                pass
         else:
             f = open("counters-disabled.txt", "r")
             s = f.read()
