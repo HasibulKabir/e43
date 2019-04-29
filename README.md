@@ -10,7 +10,6 @@ This Telegram bot can download almost anything :)
 - FFMPEG
 - LAME
 - eyeD3
-- Python 2
 - Python 3
 - youtube-dl
 - wget
@@ -24,6 +23,7 @@ Instructions can be found on the [Wiki](https://git.koyu.space/koyu/everythingbo
 
 ```
 help - Show help
+commands - Show list of commands
 chatid - Show your chat_id
 conv - Convert in groups
 ping - Sends back a "Pong!"

@@ -1,0 +1,6 @@
+python-telegram-bot
+eyed3
+mutagen
+requests
+soundcloud
+sacad
