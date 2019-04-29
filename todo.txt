@@ -11,3 +11,4 @@
 - Forcing people to subscribe if bot owner wants so (done)
 - Urban Dictionary, because I suck
 - Language packs
+- Ban, kick, mute and delete commands
