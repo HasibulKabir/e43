@@ -90,7 +90,7 @@ def handle(bot):
                                 f = open("chatids.txt", "a+")
                             else:
                                 f = open("chatids2.txt", "a+")
-                            f.write(str(chat_id) + ":" + update.message["from"]["username"] + "\n")
+                            f.write(str(chat_id) + ":" + update.message.from_user.username + "\n")
                             f.close()
                         except:
                             if chat_type == "private":
@@ -296,9 +296,7 @@ def handle(bot):
                         f.close()
                         release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                         s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER).replace("%release%", release)
-                    if chat_type == "private":
-                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML")
-                    else:
+                    if "group" in chat_type:
                         f = open("chatids.txt", "r")
                         cids = f.read()
                         f.close()
@@ -313,14 +311,16 @@ def handle(bot):
                                         cid = int(x.split(":")[0])
                             except:
                                 pass
-                            bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="Markdown")
+                            bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
                             status_message = bot.sendMessage(chat_id, "Hey @" + update.message.from_user.username + "! I've sent you the help via private message.")
                             time.sleep(5)
-                            bot.deleteMessage(status_message.message_id)
+                            bot.deleteMessage(chat_id, status_message.message_id)
                             try:
-                                bot.deleteMessage(status_message.message_id)
+                                bot.deleteMessage(chat_id, update.message.message_id)
                             except:
                                 pass
+                    else:
+                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML")
                 if update.message['text'].startswith("/chatid"):
                     bot.sendMessage(chat_id, "Your chat_id is: <pre>" + str(chat_id) + "</pre>", parse_mode="HTML")
                 if update.message['text'].startswith("/settag"):
