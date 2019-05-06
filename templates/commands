@@ -1,3 +1,6 @@
+I understand the following commands
+
+<pre>
 help - Show help
 commands - Show this list
 chatid - Show your chat_id
@@ -16,3 +19,4 @@ disablecounters - Disable counters
 sub - Subscribe to broadcasts
 unsub - Unsubscribe from broadcasts
 boxxy - Send "My name is Boxxy"
+</pre>

@@ -72,5 +72,5 @@ thumb.jpg
 audio.webm
 
 # IDEs
-.vscode/*
-.idea/*
+.vscode/settings.json
+.idea

@@ -297,7 +297,7 @@ def handle(bot):
                         release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                         s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER).replace("%release%", release)
                     if chat_type == "private":
-                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="Markdown")
+                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML")
                     else:
                         f = open("chatids.txt", "r")
                         cids = f.read()
