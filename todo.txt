@@ -1,14 +1,15 @@
 - Being able to turn off covers, voice notes, videos (also videos optionally on MP3s)
-- Info command to read out current states (/stats) (WIP)
+- Info command to read out current states (/stats)
 - Command list, fixing /help in groups (done)
 - Tutorial
 - Option to disable voice notes and video notes
 - Reply to message
 - Option to add source URL to music file (user should be able to disable it)
 - Same as above, but with Telegram link
-- Migrate the database to Redis (use bot tag as key)
+- Migrate the database to Redis (use bot tag as key) (cancelled)
 - Python 3 port (WIP)
 - Forcing people to subscribe if bot owner wants so (done)
 - Urban Dictionary, because I suck
 - Language packs
 - Ban, kick, mute and delete commands
+- Module system (done)

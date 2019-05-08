@@ -6,6 +6,7 @@ do
 done
 echo "0" > random.txt
 rm -f extras/*.txt
+rm -f deadlines/*.txt
 >tags.txt
 >chatids.txt
 >chatids2.txt

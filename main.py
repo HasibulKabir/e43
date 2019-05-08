@@ -84,6 +84,36 @@ def handle(bot):
             f.close()
             chat_type = update.message.chat.type
             chat_id = update.message.chat_id
+            isAdmin = False
+            try:
+                admins = bot.getChatAdministrators(chat_id)
+                for user in admins:
+                    try:
+                        if str(user['user']['username']).replace("u'", "").replace("'", "") == bottag:
+                            isAdmin = True
+                    except:
+                        pass
+            except:
+                pass
+            if not isAdmin and "group" in chat_type or chat_type == "channel":
+                if os.path.exists("deadlines/" + str(chat_id) + "-admin.txt"):
+                    f = open("deadlines/" + str(chat_id) + "-admin.txt", "r")
+                    s = f.read()
+                    f.close()
+                    if int(time.time()) > int(s.split(".")[0]):
+                        bot.leaveChat(chat_id)
+                        try:
+                            os.system("rm -f deadlines/" + str(chat_id) + "-admin.txt")
+                        except:
+                            pass
+                else:
+                    ts3 = str(time.time() + 180)
+                    f = open("deadlines/" + str(chat_id) + "-admin.txt", "w+")
+                    f.write(ts3)
+                    f.close()
+                    message_status = bot.sendMessage(chat_id, "You have a deadline of three minutes to make me an admin or I will leave the group. Making me an admin enables me to do more things than I am currently capable of.")
+                    time.sleep(15)
+                    bot.deleteMessage(chat_id, message_status.message_id)
             if chat_type == "private" or "group" in chat_type:
                 try:
                     if chat_type == "private":
@@ -122,7 +152,7 @@ def handle(bot):
                         f.close()
                 except:
                     pass
-            if update.message.audio:
+            if update.message.audio and isenabled("voice"):
                 fileid = update.message.audio.file_id
                 print(fileid)
                 getfile = bot.get_file(fileid).download()
@@ -140,7 +170,7 @@ def handle(bot):
                 else:
                     os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
                 sendVoice(update.message.chat_id, "output.ogg","")
-            if update.message.video:
+            if update.message.video and isenabled("video"):
                 fileid = update.message.video.file_id
                 print(fileid)
                 print(bot.getFile(file_id=fileid))
@@ -238,6 +268,8 @@ def handle(bot):
                                     isAdmin = True
                                 if isAdmin == True:
                                     proceed = True
+                                else:
+                                    bot.sendMessage(chat_id, "You don't have permission to do that.")
                             else:
                                 proceed = True
                             if proceed == True:
@@ -274,6 +306,8 @@ def handle(bot):
                                 isAdmin = True
                             if isAdmin == True:
                                 proceed = True
+                            else:
+                                message_status = bot.sendMessage(chat_id, "You don't have permission to do that.")
                         else:
                             proceed = True
                         if proceed == True:
@@ -821,7 +855,8 @@ def handle(bot):
                                     pass
                                 if proceed == True:
                                     f = open("extras/" + str(chat_id) + ".txt", "a+")
-                                    f.write(str(telepot.message_identifier(update.message['reply_to_message'])) + ":" + extraname + ":" + str(chat_id) + "\n")
+                                    print(update.message["reply_to_message"].message_id)
+                                    f.write(str(update.message.reply_to_message.message_id) + ":" + extraname + ":" + str(chat_id) + "\n")
                                     f.close()
                                     f = open("extras/" + str(chat_id) + "-extralist.txt", "a")
                                     f.write(extraname + "\r\n")
