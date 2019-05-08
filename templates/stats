@@ -1,8 +1,7 @@
-Statistics:
+<b>Statistics for this %%chat_type%% chat</b>
 
-<pre>
-Chat ID: %%chat_id%%
-Channel ID: %%channel_id%%
+<pre>Chat ID: %%chat_id%%
+Channel tag: %%channel_id%%
 Subscribed: %%subscribed%%
 Counters: %%counters%%
 Extras: %%extras%%

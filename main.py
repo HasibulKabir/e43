@@ -157,7 +157,7 @@ def handle(bot):
                     err_disabled = "disabled"
                     err_unset = "not set"
                     ###
-                    s = s.replace("%%chat_id%%", chat_id)
+                    s = s.replace("%%chat_id%%", str(chat_id))
                     if chat_type == "channel":
                         f = open("tags.txt","r")
                         s = f.read().split("\n")
@@ -183,7 +183,7 @@ def handle(bot):
                         f = open("chatids2.txt", "r")
                         cids = cids + f.read()
                         f.close()
-                        if chat_id in cids:
+                        if str(chat_id) in cids:
                             s = s.replace("%%subscribed%%", "yes")
                         else:
                             s = s.replace("%%subscribed%%", "no")
@@ -196,15 +196,31 @@ def handle(bot):
                         f = open("counters-disabled.txt")
                         x = f.read()
                         f.close()
-                        if chat_id in x:
-                            s = s.replace("%%counters%%", "deactivated")
+                        if isenabled("counters"):
+                            if str(chat_id) in x:
+                                s = s.replace("%%counters%%", "deactivated")
+                            else:
+                                s = s.replace("%%counters%%", "activated")
                         else:
-                            s = s.replace("%%counters%%", "activated")
+                            s = s.replace("%%counters%%", err_disabled)
                     else:
                         if isenabled("counters"):
                             s = s.replace("%%counters%%", err_nope)
                         else:
                             s = s.replace("%%counters%%", err_disabled)
+                    if "group" in chat_type or chat_type == "channel":
+                        if isenabled("extras"):
+                            if os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                s = s.replace("%%extras%%", "deactivated")
+                            else:
+                                s = s.replace("%%extras%%", "activated")
+                        else:
+                            s = s.replace("%%extras%%", err_disabled)
+                    else:
+                        s = s.replace("%%extras%%", err_nope)
+                    s = s.replace("%%chat_type%%", chat_type)
+                    s = s.replace("%%modules%%", MODULES.replace(",", ", "))
+                    bot.sendMessage(chat_id, s, parse_mode="HTML")
                 if update.message["text"].startswith("/unsub") and isenabled("subscriptions"):
                     if ALLOWUNSUBS == 'TRUE':
                         if chat_type == "private" or "group" in chat_type:
@@ -212,14 +228,13 @@ def handle(bot):
                             if "group" in chat_type:
                                 admins = bot.getChatAdministrators(chat_id)
                                 isAdmin = False
-                                update.messagefrom = str(update.message['from']['username'])
                                 for user in admins:
                                     try:
-                                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                             isAdmin = True
                                     except:
                                         pass
-                                if update.messagefrom == BOTMASTER:
+                                if update.message.from_user.username == BOTMASTER:
                                     isAdmin = True
                                 if isAdmin == True:
                                     proceed = True
@@ -249,14 +264,13 @@ def handle(bot):
                         if "group" in chat_type:
                             admins = bot.getChatAdministrators(chat_id)
                             isAdmin = False
-                            update.messagefrom = str(update.message['from']['username'])
                             for user in admins:
                                 try:
-                                    if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                    if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                         isAdmin = True
                                 except:
                                     pass
-                            if update.messagefrom == BOTMASTER:
+                            if update.message.from_user.username == BOTMASTER:
                                 isAdmin = True
                             if isAdmin == True:
                                 proceed = True
@@ -429,6 +443,11 @@ def handle(bot):
                     if str(chat_id) in blacklist:
                         goon = False
                         done = True
+                    if "album" in input_text or "list" in update.message['text'] or "set" and "soundcloud" in input_text:
+                        goon = False
+                        done = True
+                        if chat_type == "private":
+                            bot.sendMessage(chat_id, "I cannot convert multiple songs at once, sorry...")
                     if goon == True and done == False:
                         if not chat_type == "channel" and not "group" in chat_type and not input_text.startswith("/") and "http" in update.message["text"] and "://" in update.message["text"] and not input_text.startswith("#"):
                             status_message = bot.sendMessage(chat_id, "Downloading...")
@@ -813,14 +832,13 @@ def handle(bot):
                             else:
                                 admins = bot.getChatAdministrators(chat_id)
                                 isAdmin = False
-                                update.messagefrom = str(update.message['from']['username'])
                                 for user in admins:
                                     try:
-                                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                             isAdmin = True
                                     except:
                                         pass
-                                if update.messagefrom == BOTMASTER:
+                                if update.message.from_user.username == BOTMASTER:
                                     isAdmin = True
                                 if isAdmin == True:
                                     if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
@@ -951,14 +969,13 @@ def handle(bot):
                             if not chat_type == "private":
                                 admins = bot.getChatAdministrators(chat_id)
                                 isAdmin = False
-                                update.messagefrom = str(update.message['from']['username'])
                                 for user in admins:
                                     try:
-                                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                        if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                             isAdmin = True
                                     except:
                                         pass
-                                if update.messagefrom == BOTMASTER:
+                                if update.message.from_user.username == BOTMASTER:
                                     isAdmin = True
                                 if isAdmin == True:
                                     if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
@@ -994,14 +1011,13 @@ def handle(bot):
                     if not chat_type == "private" and update.message["text"].startswith("/disableextras") and isenabled("extras"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        update.messagefrom = str(update.message['from']['username'])
                         for user in admins:
                             try:
-                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                     isAdmin = True
                             except:
                                 pass
-                        if update.messagefrom == BOTMASTER:
+                        if update.message.from_user.username == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
                             os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
@@ -1009,14 +1025,13 @@ def handle(bot):
                     if not chat_type == "private" and update.message["text"].startswith("/enableextras") and isenabled("extras"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        update.messagefrom = str(update.message['from']['username'])
                         for user in admins:
                             try:
-                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                     isAdmin = True
                             except:
                                 pass
-                        if update.messagefrom == BOTMASTER:
+                        if update.message.from_user.username == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
                             os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
@@ -1024,14 +1039,13 @@ def handle(bot):
                     if not chat_type == "private" and update.message['text'].startswith("/disablecounters") and isenabled("counters"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        update.messagefrom = str(update.message['from']['username'])
                         for user in admins:
                             try:
-                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                     isAdmin = True
                             except:
                                 pass
-                        if update.messagefrom == BOTMASTER:
+                        if update.message.from_user.username == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
                             f = open("counters-disabled.txt", "a+")
@@ -1041,14 +1055,13 @@ def handle(bot):
                     if not chat_type == "private" and update.message['text'].startswith("/enablecounters") and isenabled("counters"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
-                        update.messagefrom = update.message['from']['username']
                         for user in admins:
                             try:
-                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.messagefrom:
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.message.from_user.username:
                                     isAdmin = True
                             except:
                                 pass
-                        if update.messagefrom == BOTMASTER:
+                        if update.message.from_user.username == BOTMASTER:
                             isAdmin = True
                         if isAdmin == True:
                             f = open("counters-disabled.txt", "r")
