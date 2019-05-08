@@ -22,7 +22,6 @@ import telegram
 import requests
 from telegram.error import NetworkError, Unauthorized
 
-
 update_id = None
 
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
