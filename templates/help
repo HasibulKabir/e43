@@ -1,7 +1,7 @@
-This is %bottag% 0.9.0-dev
-Release: %release%
+This is %%bottag%% 0.9.0-dev
+Release: %%release%%
 A bot created by @Sommerlichter
-Maintained by %botmaster%
+Maintained by %%botmaster%%
 Source code is on https://git.koyu.space/koyu/everythingbot
 Current engines: YayDown4E, VoiceBot4E, Video4E, SoundCLI4E, Spotify4E, MixCloud4E
 Deprecated engines: AllToMP3

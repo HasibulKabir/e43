@@ -1,0 +1,11 @@
+Statistics:
+
+<pre>
+Chat ID: %%chat_id%%
+Channel ID: %%channel_id%%
+Subscribed: %%subscribed%%
+Counters: %%counters%%
+Extras: %%extras%%
+Chat type: %%chat_type%%
+Enabled modules: %%modules%%
+</pre>

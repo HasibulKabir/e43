@@ -2,11 +2,11 @@
 
 <b>Relevant Information:</b>
 <pre>
-Error: $crashlog$
-Message: $message$
-chat_id: $chatid$
-bottag: $bottag$
-release: $release$
+Error: %%crashlog%%
+Message: %%message%%
+chat_id: %%chatid%%
+bottag: %%bottag%%
+release: %%release%%
 </pre>
 
 <i>Uh oh! ..something happened, almost amusing. An error occurred, and I'm unable to get the music file. 😟</i>

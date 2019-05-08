@@ -3,7 +3,6 @@ I understand the following commands
 <pre>
 help - Show help
 commands - Show this list
-chatid - Show your chat_id
 conv - Convert in groups
 ping - Sends back a "Pong!"
 vid - Convert URL to video
@@ -19,4 +18,5 @@ disablecounters - Disable counters
 sub - Subscribe to broadcasts
 unsub - Unsubscribe from broadcasts
 boxxy - Send "My name is Boxxy"
+stats - Statistics about the current chat
 </pre>

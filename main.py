@@ -56,9 +56,20 @@ if 'ALLOWUNSUBS' in os.environ:
     ALLOWUNSUBS = os.environ.get('ALLOWUNSUBS')
 else:
     ALLOWUNSUBS = 'TRUE'
+if 'MODULES' in os.environ:
+    MODULES = os.environ.get('MODULES')
+else:
+    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,counters,extras,help,stats,commands,subscriptions,videos,boxxy,settag,ping'
 f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
+
+def isenabled(module):
+    modenabled = False
+    for x in MODULES.split(','):
+        if x == module:
+            modenabled = True
+    return modenabled
 
 def handle(bot):
     global update_id
@@ -138,7 +149,63 @@ def handle(bot):
                 os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
                 sendVideoNote(chat_id, "vm.mp4")
             if update.message.text:
-                if update.message["text"].startswith("/unsub"):
+                if update.message["text"].startswith("/stats"):
+                    f = open("templates/stats")
+                    s = f.read()
+                    f.close()
+                    err_nope = "not applicable"
+                    err_disabled = "disabled"
+                    err_unset = "not set"
+                    ###
+                    s = s.replace("%%chat_id%%", chat_id)
+                    if chat_type == "channel":
+                        f = open("tags.txt","r")
+                        s = f.read().split("\n")
+                        f.close()
+                        username = ""
+                        for line in s:
+                            chanid = line.split(":")[0]
+                            if chanid == str(chat_id):
+                                username = line.split(":")[1]
+                        if not username == "":
+                            s = s.replace("%%channel_id%%", username)
+                        else:
+                            s = s.replace("%%channel_id%%", err_unset)
+                    else:
+                        if isenabled("settag"):
+                            s = s.replace("%%channel_id%%", err_nope)
+                        else:
+                            s = s.replace("%%channel_id%%", err_disabled)
+                    if chat_type == "private" or "group" in chat_type:
+                        f = open("chatids.txt", "r")
+                        cids = f.read()
+                        f.close()
+                        f = open("chatids2.txt", "r")
+                        cids = cids + f.read()
+                        f.close()
+                        if chat_id in cids:
+                            s = s.replace("%%subscribed%%", "yes")
+                        else:
+                            s = s.replace("%%subscribed%%", "no")
+                    else:
+                        if isenabled("subscriptions"):
+                            s = s.replace("%%subscribed%%", err_nope)
+                        else:
+                            s = s.replace("%%subscribed%%", err_disabled)
+                    if "group" in chat_type:
+                        f = open("counters-disabled.txt")
+                        x = f.read()
+                        f.close()
+                        if chat_id in x:
+                            s = s.replace("%%counters%%", "deactivated")
+                        else:
+                            s = s.replace("%%counters%%", "activated")
+                    else:
+                        if isenabled("counters"):
+                            s = s.replace("%%counters%%", err_nope)
+                        else:
+                            s = s.replace("%%counters%%", err_disabled)
+                if update.message["text"].startswith("/unsub") and isenabled("subscriptions"):
                     if ALLOWUNSUBS == 'TRUE':
                         if chat_type == "private" or "group" in chat_type:
                             proceed = False
@@ -176,7 +243,7 @@ def handle(bot):
                                 bot.sendMessage(chat_id, "Success: Unsubscribed!")
                     else:
                         bot.sendMessage(chat_id, "My bot owner doesn't allow me to unsubscribe :(")
-                if update.message["text"].startswith("/sub"):
+                if update.message["text"].startswith("/sub") and isenabled("subscriptions"):
                     if chat_type == "private" or "group" in chat_type:
                         proceed = False
                         if "group" in chat_type:
@@ -219,84 +286,88 @@ def handle(bot):
                                 f.write(str(chat_id) + "\n")
                                 f.close()
                             bot.sendMessage(chat_id, "Success: Subscribed!")
-                if update.message['text'].startswith("/boxxy"):
+                if update.message['text'].startswith("/boxxy") and isenabled("boxxy"):
                     sendVoice(chat_id, "assets/boxxy.ogg","")
                 if update.message['text'].startswith("/vid http://") or update.message['text'].startswith("/vid https://"):
-                    try:
-                        status_message = bot.sendMessage(chat_id, "Downloading...")
-                        input_text = update.message['text'].split("/vid ")[1]
-                        input_text = input_text.split('&')[0]
-                        cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
-                        subprocess.Popen(cmd_download, shell=False).wait()
-                        cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
-                        bot.editMessageText(update.messageid, "Converting...")
-                        subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
-                        filename = "out.mp4"
-                        subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
-                        bot.editMessageText(update.messageid, "Sending...")
-                        sendVideoNote(chat_id, "vm.mp4")
-                        f = open("out.mp4", "r")
-                        bot.sendVideo(chat_id, f)
-                        f.close()
+                    if isenabled("videos"):
                         try:
-                            bot.deleteMessage(update.messageid)
-                            bot.deleteMessage(telepot.message_identifier(update.message))
-                        except:
-                            pass
-                        if chat_type == "private":
-                            bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                        done = True
-                    except Exception as e:
-                        if chat_type == "private":
-                            f = open("templates/error", "r")
-                            s = f.read()
+                            status_message = bot.sendMessage(chat_id, "Downloading...")
+                            input_text = update.message['text'].split("/vid ")[1]
+                            input_text = input_text.split('&')[0]
+                            cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
+                            subprocess.Popen(cmd_download, shell=False).wait()
+                            cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
+                            bot.editMessageText(update.messageid, "Converting...")
+                            subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
+                            filename = "out.mp4"
+                            subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
+                            bot.editMessageText(update.messageid, "Sending...")
+                            sendVideoNote(chat_id, "vm.mp4")
+                            f = open("out.mp4", "r")
+                            bot.sendVideo(chat_id, f)
                             f.close()
-                            exc_type, exc_obj, tb = sys.exc_info()
-                            print(exc_type, exc_obj, tb)
-                            f = tb.tb_frame
-                            lineno = tb.tb_lineno
-                            error = str("line " + str(lineno) + ": " + str(e))
-                            url = update.message["text"]
-                            chatid = str(chat_id)
-                            release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                            s = s.replace("$crashlog$", error)
-                            s = s.replace("$message$", url)
-                            s = s.replace("$chatid$", chatid)
-                            s = s.replace("$release$", release)
-                            s = s.replace("$bottag$", bottag)
                             try:
-                                bot.deleteMessage(update.message.id)
-                                bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
-                            except:
-                                bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
-                            try:
-                                f = open("chatids.txt")
-                                c = f.readlines()
-                                f.close()
-                                master = ""
-                                for x in c:
-                                    if BOTMASTER in x:
-                                        master = x.split(":")[0]
-                                bot.sendMessage(master, s, parse_mode="HTML")
+                                bot.deleteMessage(update.messageid)
+                                bot.deleteMessage(telepot.message_identifier(update.message))
                             except:
                                 pass
+                            if chat_type == "private":
+                                bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
+                            done = True
+                        except Exception as e:
+                            if chat_type == "private":
+                                f = open("templates/error", "r")
+                                s = f.read()
+                                f.close()
+                                exc_type, exc_obj, tb = sys.exc_info()
+                                print(exc_type, exc_obj, tb)
+                                f = tb.tb_frame
+                                lineno = tb.tb_lineno
+                                error = str("line " + str(lineno) + ": " + str(e))
+                                url = update.message["text"]
+                                chatid = str(chat_id)
+                                release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
+                                s = s.replace("%%crashlog%%", error)
+                                s = s.replace("%%message%%", url)
+                                s = s.replace("%%chatid%%", chatid)
+                                s = s.replace("%%release%%", release)
+                                s = s.replace("%%bottag%%", bottag)
+                                try:
+                                    bot.deleteMessage(update.message.id)
+                                    bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+                                except:
+                                    bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
+                                try:
+                                    f = open("chatids.txt")
+                                    c = f.readlines()
+                                    f.close()
+                                    master = ""
+                                    for x in c:
+                                        if BOTMASTER in x:
+                                            master = x.split(":")[0]
+                                    bot.sendMessage(master, s, parse_mode="HTML")
+                                except:
+                                    pass
                 try:
                     os.system("rm -f audio.jpg")
                     os.system("rm -f thumb.jpg")
                 except:
                     pass
                 if update.message['text'].startswith("/help") or update.message['text'].startswith("/commands"):
-                    if update.message['text'].startswith("/commands"):
+                    proceed = False
+                    if update.message['text'].startswith("/commands" ) and isenabled("commands"):
+                        proceed = True
                         f = open("templates/commands", "r")
                         s = f.read()
                         f.close()
-                    if update.message['text'].startswith("/help"):
+                    if update.message['text'].startswith("/help") and isenabled("help"):
+                        proceed = True
                         f = open("templates/help", "r")
                         s = f.read()
                         f.close()
                         release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                        s = s.replace("%bottag%", "@" + bottag).replace("%botmaster%", "@" + BOTMASTER).replace("%release%", release)
-                    if "group" in chat_type:
+                        s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release)
+                    if "group" in chat_type and proceed:
                         f = open("chatids.txt", "r")
                         cids = f.read()
                         f.close()
@@ -320,10 +391,9 @@ def handle(bot):
                             except:
                                 pass
                     else:
-                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML")
-                if update.message['text'].startswith("/chatid"):
-                    bot.sendMessage(chat_id, "Your chat_id is: <pre>" + str(chat_id) + "</pre>", parse_mode="HTML")
-                if update.message['text'].startswith("/settag"):
+                        if proceed:
+                            bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML")
+                if update.message['text'].startswith("/settag") and isenabled("settag"):
                     if chat_type == "channel":
                         if update.message['text'] == "/settag":
                             f = open("tags.txt","w+")
@@ -614,11 +684,11 @@ def handle(bot):
                         url = update.message["text"]
                         chatid = str(chat_id)
                         release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                        s = s.replace("$crashlog$", error)
-                        s = s.replace("$message$", url)
-                        s = s.replace("$chatid$", chatid)
-                        s = s.replace("$release$", release)
-                        s = s.replace("$bottag$", bottag)
+                        s = s.replace("%%crashlog%%", error)
+                        s = s.replace("%%message%%", url)
+                        s = s.replace("%%chatid%%", chatid)
+                        s = s.replace("%%release%%", release)
+                        s = s.replace("%%bottag%%", bottag)
                         try:
                             bot.deleteMessage(update.messageid)
                             bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
@@ -639,7 +709,7 @@ def handle(bot):
                     f = open("counters-disabled.txt", "r")
                     s = f.read()
                     f.close()
-                    if not chat_type == "channel" and not chat_type == "private" and not str(chat_id) in s:
+                    if not chat_type == "channel" and not chat_type == "private" and isenabled("counters") and not str(chat_id) in s:
                         if "😂" in update.message['text']:
                             count = len(update.message['text'].split("😂")) - 1
                             f = open("counters/joy.txt", "r")
@@ -705,12 +775,15 @@ def handle(bot):
                             f.close()
                             if sum % rnumber == 0:
                                 bot.sendMessage(chat_id, "pp level is now: " + str(sum))
-                    if update.message['text'].startswith("/ping"):
+                    if update.message['text'].startswith("/ping") and isenabled("ping"):
                         ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
                         bot.sendMessage(chat_id, "Pong! (" + ping + " ms)")
                     if update.message['text'].startswith("/start") and chat_type == "private":
-                        bot.sendMessage(chat_id,"Hello, please send me the URL from Soundcloud, YouTube and many more I have to convert :)")
-                    if update.message['text'].startswith("/addextra"):
+                        f = open("templates/start")
+                        s = f.read()
+                        f.close()
+                        bot.sendMessage(chat_id,s)
+                    if update.message['text'].startswith("/addextra") and isenabled("extras"):
                         try:
                             extraname = update.message['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
                             if chat_type == "private":
@@ -781,7 +854,7 @@ def handle(bot):
                                     bot.sendMessage(chat_id, "Error: Permission denied while trying to add extra!")
                         except:
                             bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]")
-                    if update.message['text'].startswith('#') or update.message['text'].startswith("/extra "):
+                    if update.message['text'].startswith('#') or update.message['text'].startswith("/extra ") and isenabled("extras"):
                         try:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                                 if update.message['text'].startswith("/extra "):
@@ -840,7 +913,7 @@ def handle(bot):
                                     pass
                         except:
                             bot.sendMessage(chat_id, "Error: Extra not found!")
-                    if update.message['text'].startswith("/extralist") or update.message['text'].startswith("/extras"):
+                    if update.message['text'].startswith("/extralist") or update.message['text'].startswith("/extras") and isenabled("extras"):
                         try:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
                                 f = open("extras/" + str(chat_id) + "-extralist.txt", "r")
@@ -848,7 +921,7 @@ def handle(bot):
                                 f.close()
                         except:
                             bot.sendMessage(chat_id, "Error: No extras available!")
-                    if update.message['text'].startswith("/delextra"):
+                    if update.message['text'].startswith("/delextra") and isenabled("extras"):
                         if " " in update.message['text']:
                             extraname = update.message['text'].split('/delextra ')[1].replace('#', '').split('\n')[0]
                             if chat_type == "private":
@@ -918,7 +991,7 @@ def handle(bot):
                                     bot.sendMessage(chat_id, "Error: Permission denied while trying to delete extra!")
                         else:
                             bot.sendMessage(chat_id, "Error: Missing parameter!")
-                    if not chat_type == "private" and update.message["text"].startswith("/disableextras"):
+                    if not chat_type == "private" and update.message["text"].startswith("/disableextras") and isenabled("extras"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
                         update.messagefrom = str(update.message['from']['username'])
@@ -933,7 +1006,7 @@ def handle(bot):
                         if isAdmin == True:
                             os.system("touch extras/" + str(chat_id) + "-deactivated.txt")
                             bot.sendMessage(chat_id, "Success: Extras disabled!")
-                    if not chat_type == "private" and update.message["text"].startswith("/enableextras"):
+                    if not chat_type == "private" and update.message["text"].startswith("/enableextras") and isenabled("extras"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
                         update.messagefrom = str(update.message['from']['username'])
@@ -948,7 +1021,7 @@ def handle(bot):
                         if isAdmin == True:
                             os.system("rm -f extras/" + str(chat_id) + "-deactivated.txt")
                             bot.sendMessage(chat_id, "Extras enabled!")
-                    if not chat_type == "private" and update.message['text'].startswith("/disablecounters"):
+                    if not chat_type == "private" and update.message['text'].startswith("/disablecounters") and isenabled("counters"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
                         update.messagefrom = str(update.message['from']['username'])
@@ -965,7 +1038,7 @@ def handle(bot):
                             f.write(str(chat_id) + "\n")
                             f.close()
                             bot.sendMessage(chat_id, "Success: Counters disabled")
-                    if not chat_type == "private" and update.message['text'].startswith("/enablecounters"):
+                    if not chat_type == "private" and update.message['text'].startswith("/enablecounters") and isenabled("counters"):
                         admins = bot.getChatAdministrators(chat_id)
                         isAdmin = False
                         update.messagefrom = update.message['from']['username']
