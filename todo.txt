@@ -1,5 +1,5 @@
 - Being able to turn off covers, voice notes, videos (also videos optionally on MP3s)
-- Info command to read out current states (/stats)
+- Info command to read out current states (/stats) (WIP)
 - Command list, fixing /help in groups (done)
 - Tutorial
 - Option to disable voice notes and video notes
