@@ -178,6 +178,29 @@ def handle(bot):
                 os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
                 sendVideoNote(chat_id, "vm.mp4")
             if update.message.text:
+                if "group" in chat_type:
+                    if update.message["text"].startswith("/kick"):
+                        userid = update.message.reply_to_message.from_user.id
+                        f = open("users.txt", "r")
+                        s = f.read()
+                        f.close()
+                        if not str(userid) in s:
+                            f = open("users.txt", "a")
+                            f.write(str(userid) + ":" + update.message.reply_to_message.from_user.username + "\n")
+                            f.close()
+                            bot.kickChatMember(chat_id, userid)
+                    if update.message["text"].startswith("/pardon"):
+                        f = open("users.txt", "r")
+                        s = f.read()
+                        f.close()
+                        userid = 0
+                        for x in s:
+                            if update.message.text.split[1] == x.split(":")[1]:
+                                userid = int(x.split[0])
+                        bot.unbanChatMember(chat_id, userid)
+                    if update.message["text"].startswith("/delete"):
+                        bot.deleteMessage(chat_id, update.message.reply_to_message.message_id)
+                        bot.deleteMessage(chat_id, update.message.message_id)
                 if update.message["text"].startswith("/stats"):
                     f = open("templates/stats")
                     s = f.read()

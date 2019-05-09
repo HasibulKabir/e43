@@ -12,4 +12,5 @@ rm -f deadlines/*.txt
 >chatids2.txt
 >counters-disabled.txt
 >subsoff.txt
+>users.txt
 echo "Done!"
