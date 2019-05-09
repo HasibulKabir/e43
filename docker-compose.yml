@@ -3,7 +3,7 @@ services:
   app:
     #Build if you need a newer image or debug
     build: .
-    image: koyuawsmbrtn/everythingbot
+    image: koyuawsmbrtn/e43
     env_file:
       - .env
     volumes: 
