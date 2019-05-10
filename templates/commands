@@ -19,4 +19,8 @@ sub - Subscribe to broadcasts
 unsub - Unsubscribe from broadcasts
 boxxy - Send "My name is Boxxy"
 stats - Statistics about the current chat
+kick - Kicks the user from the group
+ban - Bans the user from the group
+delete - Delete message
+pardon - Unban a user
 </pre>

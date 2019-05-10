@@ -179,7 +179,7 @@ def handle(bot):
                 sendVideoNote(chat_id, "vm.mp4")
             if update.message.text:
                 if "group" in chat_type:
-                    if update.message["text"].startswith("/kick"):
+                    if update.message["text"].startswith("/kick") or update.message["text"].startswith("/ban"):
                         userid = update.message.reply_to_message.from_user.id
                         f = open("users.txt", "r")
                         s = f.read()
@@ -189,6 +189,8 @@ def handle(bot):
                             f.write(str(userid) + ":" + update.message.reply_to_message.from_user.username + "\n")
                             f.close()
                             bot.kickChatMember(chat_id, userid)
+                            if update.message["text"].startswith("/kick"):
+                                bot.unbanChatMember(chat_id, userid)
                     if update.message["text"].startswith("/pardon"):
                         f = open("users.txt", "r")
                         s = f.read()
@@ -444,20 +446,28 @@ def handle(bot):
                         f = open("subsoff.txt", "r")
                         cids = cids + f.read()
                         f.close()
-                        if update.message.from_user.username in cids:
-                            cid = 0
+                        try:
+                            if update.message.from_user.username in cids:
+                                cid = 0
+                                try:
+                                    for x in cids.split("\n"):
+                                        if x.split(":")[1] == update.message.from_user.username:
+                                            cid = int(x.split(":")[0])
+                                except:
+                                    pass
+                                bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
+                                status_message = bot.sendMessage(chat_id, "Hey @" + update.message.from_user.username + "! I've sent you the help via private message.")
+                                time.sleep(5)
+                                bot.deleteMessage(chat_id, status_message.message_id)
+                                try:
+                                    bot.deleteMessage(chat_id, update.message.message_id)
+                                except:
+                                    pass
+                        except:
                             try:
-                                for x in cids.split("\n"):
-                                    if x.split(":")[1] == update.message.from_user.username:
-                                        cid = int(x.split(":")[0])
-                            except:
-                                pass
-                            bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
-                            status_message = bot.sendMessage(chat_id, "Hey @" + update.message.from_user.username + "! I've sent you the help via private message.")
-                            time.sleep(5)
-                            bot.deleteMessage(chat_id, status_message.message_id)
-                            try:
-                                bot.deleteMessage(chat_id, update.message.message_id)
+                                status_message = bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below and start me to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.message.message_id)
+                                time.sleep(5)
+                                bot.deleteMessage(chat_id, status_message.message_id)
                             except:
                                 pass
                     else:
