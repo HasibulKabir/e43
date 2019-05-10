@@ -201,8 +201,14 @@ def handle(bot):
                                 userid = int(x.split[0])
                         bot.unbanChatMember(chat_id, userid)
                     if update.message["text"].startswith("/delete"):
-                        bot.deleteMessage(chat_id, update.message.reply_to_message.message_id)
-                        bot.deleteMessage(chat_id, update.message.message_id)
+                        try:
+                            bot.deleteMessage(chat_id, update.message.reply_to_message.message_id)
+                            bot.deleteMessage(chat_id, update.message.message_id)
+                        except:
+                            try:
+                                bot.deleteMessage(chat_id, update.message.message_id)
+                            except:
+                                pass
                 if update.message["text"].startswith("/stats"):
                     f = open("templates/stats")
                     s = f.read()
