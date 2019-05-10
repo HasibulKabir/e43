@@ -360,6 +360,8 @@ def handle(bot):
                             bot.sendMessage(chat_id, "Success: Subscribed!")
                 if update.message['text'].startswith("/boxxy") and isenabled("boxxy"):
                     sendVoice(chat_id, "assets/boxxy.ogg","")
+                if update.message['text'].startswith("/horny") and isenabled("horny"):
+                    sendVoice(chat_id, "assets/horny.ogg","")
                 if update.message['text'].startswith("/vid http://") or update.message['text'].startswith("/vid https://"):
                     if isenabled("videos"):
                         try:
