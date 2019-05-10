@@ -152,31 +152,37 @@ def handle(bot):
                 except:
                     pass
             if update.message.audio and isenabled("voice"):
-                fileid = update.message.audio.file_id
-                print(fileid)
-                getfile = bot.get_file(fileid).download()
-                filename = getfile
-                if ".mp3" in filename:
-                    audio = MP3(filename)
-                    length = audio.info.length * 0.33
-                    l2 = (audio.info.length * 0.33) + 60
-                if ".m4a" in filename:
-                    audio = MP4(filename)
-                    length = audio.info.length * 0.33
-                    l2 = (audio.info.length * 0.33) + 60
-                if audio.info.length > l2:
-                    os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
-                else:
-                    os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
-                sendVoice(update.message.chat_id, "output.ogg","")
+                try:
+                    fileid = update.message.audio.file_id
+                    print(fileid)
+                    getfile = bot.get_file(fileid).download()
+                    filename = getfile
+                    if ".mp3" in filename:
+                        audio = MP3(filename)
+                        length = audio.info.length * 0.33
+                        l2 = (audio.info.length * 0.33) + 60
+                    if ".m4a" in filename:
+                        audio = MP4(filename)
+                        length = audio.info.length * 0.33
+                        l2 = (audio.info.length * 0.33) + 60
+                    if audio.info.length > l2:
+                        os.system("ffmpeg -ss " + str(length) + " -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
+                    else:
+                        os.system("ffmpeg -ss 0 -t 60 -y -i \"" + filename + "\" -ac 1 -map 0:a -codec:a libopus -b:a 128k -vbr off -ar 24000 output.ogg")
+                    sendVoice(update.message.chat_id, "output.ogg","")
+                except:
+                    pass
             if update.message.video and isenabled("video"):
-                fileid = update.message.video.file_id
-                print(fileid)
-                print(bot.getFile(file_id=fileid))
-                filename = bot.getFile(file_id=fileid)['file_path']
-                os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
-                os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
-                sendVideoNote(chat_id, "vm.mp4")
+                try:
+                    fileid = update.message.video.file_id
+                    print(fileid)
+                    print(bot.getFile(file_id=fileid))
+                    filename = bot.getFile(file_id=fileid)['file_path']
+                    os.system("wget https://api.telegram.org/file/bot" + TOKEN + "/" + filename + " -O " + filename)
+                    os.system("ffmpeg -ss 0 -t 59 -y -i " + filename + " -strict -2 -c:v libx264 -crf 26 -vf scale=480:480 vm.mp4")
+                    sendVideoNote(chat_id, "vm.mp4")
+                except:
+                    pass
             if update.message.text:
                 if "group" in chat_type:
                     if update.message["text"].startswith("/kick") or update.message["text"].startswith("/ban"):
