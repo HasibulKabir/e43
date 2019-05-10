@@ -58,7 +58,7 @@ else:
 if 'MODULES' in os.environ:
     MODULES = os.environ.get('MODULES')
 else:
-    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,counters,extras,help,stats,commands,subscriptions,videos,boxxy,settag,ping'
+    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,counters,help,stats,commands,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete'
 f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
@@ -180,27 +180,14 @@ def handle(bot):
             if update.message.text:
                 if "group" in chat_type:
                     if update.message["text"].startswith("/kick") or update.message["text"].startswith("/ban"):
-                        userid = update.message.reply_to_message.from_user.id
-                        f = open("users.txt", "r")
-                        s = f.read()
-                        f.close()
-                        if not str(userid) in s:
-                            f = open("users.txt", "a")
-                            f.write(str(userid) + ":" + update.message.reply_to_message.from_user.username + "\n")
-                            f.close()
+                        if isenabled("ban"):
+                            userid = update.message.reply_to_message.from_user.id
                             bot.kickChatMember(chat_id, userid)
-                            if update.message["text"].startswith("/kick"):
-                                bot.unbanChatMember(chat_id, userid)
-                    if update.message["text"].startswith("/pardon"):
-                        f = open("users.txt", "r")
-                        s = f.read()
-                        f.close()
-                        userid = 0
-                        for x in s:
-                            if update.message.text.split[1] == x.split(":")[1]:
-                                userid = int(x.split[0])
-                        bot.unbanChatMember(chat_id, userid)
-                    if update.message["text"].startswith("/delete"):
+                        if update.message["text"].startswith("/kick") and isenabled("kick"):
+                            userid = update.message.reply_to_message.from_user.id
+                            bot.kickChatMember(chat_id, userid)
+                            bot.unbanChatMember(chat_id, userid)
+                    if update.message["text"].startswith("/delete") and isenabled("delete"):
                         try:
                             bot.deleteMessage(chat_id, update.message.reply_to_message.message_id)
                             bot.deleteMessage(chat_id, update.message.message_id)
@@ -440,6 +427,17 @@ def handle(bot):
                         f = open("templates/commands", "r")
                         s = f.read()
                         f.close()
+                        commands = ""
+                        for mods in MODULES.split(","):
+                            try:
+                                if isenabled(mods):
+                                    f = open("templates/cmdplates/" + mods, "r")
+                                    command = f.read()
+                                    f.close()
+                                    commands = commands + command + "\n"
+                            except:
+                                pass
+                        s = s.replace("%%commands%%", commands)
                     if update.message['text'].startswith("/help") and isenabled("help"):
                         proceed = True
                         f = open("templates/help", "r")
