@@ -58,7 +58,7 @@ else:
 if 'MODULES' in os.environ:
     MODULES = os.environ.get('MODULES')
 else:
-    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,counters,help,stats,commands,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete'
+    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete'
 f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
