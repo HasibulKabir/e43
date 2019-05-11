@@ -953,64 +953,59 @@ def handle(bot):
                             bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]")
                     if update.message['text'].startswith('#') or update.message['text'].startswith("/extra "):
                         if isenabled("extras"):
-                            try:
-                                if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                                    if update.message['text'].startswith("/extra "):
-                                        extraname = update.message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
-                                    else:
-                                        extraname = update.message['text'].split('#')[1].split('\n')[0]
-                                    f = open("extras/" + str(chat_id) + ".txt", "r")
-                                    s = f.read().split('\n')
-                                    f.close()
-                                    mid = None
-                                    try:
-                                        for x in s:
-                                            ename = x.split(':')[1]
-                                            if ename == extraname:
-                                                mid = x.split(':')[0].split(', ')[1].replace(')', '')
-                                                cid = x.split(':')[2]
-                                    except:
-                                        pass
-                                    try:
-                                        update.message = bot.forwardMessage(chat_id, chat_id, int(mid))
-                                    except:
-                                        bot.sendMessage(chat_id, "Error: Extra not found!")
-                                    try:
-                                        # Some stuff is pretty tricky here. You shouldn't change the order here if this function isn't broken.
-                                        if "document" in str(update.message):
-                                            fileid = update.message.document.file_id
-                                            bot.sendDocument(chat_id, fileid)
-                                        if "sticker" in str(update.message):
-                                            fileid = update.message.sticker.file_id
-                                            bot.sendSticker(chat_id, fileid)
-                                        if "voice" in str(update.message):
-                                            fileid = update.message.voice.file_id
-                                            bot.sendVoice(chat_id, fileid)
-                                        if "video_note" in str(update.message):
-                                            fileid = update.message.video_note.file_id
-                                            bot.sendVideoNote(chat_id, fileid)
-                                        if "video" in str(update.message):
-                                            fileid = update.message.video.file_id
-                                            bot.sendVideo(chat_id, fileid)
-                                        if "photo" in str(update.message):
-                                            fileid = update.message.photo.file_id
-                                            bot.sendPhoto(chat_id, fileid)
-                                        if "audio" in str(update.message):
-                                            fileid = update.message.audio.file_id
-                                            bot.sendAudio(chat_id, fileid)
-                                        if "file" in str(update.message):
-                                            fileid = update.message.document.file_id
-                                            bot.sendDocument(chat_id, fileid)
-                                        if "text" in str(update.message):
-                                            bot.sendMessage(chat_id, update.message['text'])
-                                    except:
-                                        pass
-                                    try:
-                                        bot.deleteMessage(telepot.message_identifier(update.message))
-                                    except:
-                                        pass
-                            except:
-                                bot.sendMessage(chat_id, "Error: Extra not found!")
+                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                if update.message['text'].startswith("/extra "):
+                                    extraname = update.message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
+                                else:
+                                    extraname = update.message['text'].split('#')[1].split('\n')[0]
+                                f = open("extras/" + str(chat_id) + ".txt", "r")
+                                s = f.read().split('\n')
+                                f.close()
+                                mid = None
+                                for x in s:
+                                    if not x == "":
+                                        ename = x.split(':')[1]
+                                        if ename == extraname:
+                                            mid = x.split(':')[0]
+                                            cid = x.split(':')[2]
+                                try:
+                                    status_message = bot.forwardMessage(chat_id, chat_id, int(mid))
+                                except:
+                                    bot.sendMessage(chat_id, "Error: Extra not found!")
+                                try:
+                                    # Some stuff is pretty tricky here. You shouldn't change the order here if this function isn't broken.
+                                    if "document" in str(status_message):
+                                        fileid = status_message.document.file_id
+                                        bot.sendDocument(chat_id, fileid)
+                                    if "sticker" in str(status_message):
+                                        fileid = status_message.sticker.file_id
+                                        bot.sendSticker(chat_id, fileid)
+                                    if "voice" in str(status_message):
+                                        fileid = status_message.voice.file_id
+                                        bot.sendVoice(chat_id, fileid)
+                                    if "video_note" in str(status_message):
+                                        fileid = status_message.video_note.file_id
+                                        bot.sendVideoNote(chat_id, fileid)
+                                    if "video" in str(status_message):
+                                        fileid = status_message.video.file_id
+                                        bot.sendVideo(chat_id, fileid)
+                                    if "photo" in str(status_message):
+                                        fileid = status_message.photo.file_id
+                                        bot.sendPhoto(chat_id, fileid)
+                                    if "audio" in str(status_message):
+                                        fileid = status_message.audio.file_id
+                                        bot.sendAudio(chat_id, fileid)
+                                    if "file" in str(status_message):
+                                        fileid = status_message.document.file_id
+                                        bot.sendDocument(chat_id, fileid)
+                                    if "text" in str(status_message):
+                                        bot.sendMessage(chat_id, status_message['text'])
+                                except:
+                                    pass
+                                try:
+                                    bot.deleteMessage(chat_id, status_message.message_id)
+                                except:
+                                    pass
                     if update.message['text'].startswith("/extralist") or update.message['text'].startswith("/extras") and isenabled("extras"):
                         try:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
@@ -1019,9 +1014,9 @@ def handle(bot):
                                 f.close()
                         except:
                             bot.sendMessage(chat_id, "Error: No extras available!")
-                    if update.message['text'].startswith("/delextra") and isenabled("extras"):
+                    if update.message['text'].startswith("/extradel") and isenabled("extras"):
                         if " " in update.message['text']:
-                            extraname = update.message['text'].split('/delextra ')[1].replace('#', '').split('\n')[0]
+                            extraname = update.message['text'].split('/extradel ')[1].replace('#', '').split('\n')[0]
                             if chat_type == "private":
                                 f = open("extras/" + str(chat_id) + ".txt", "r")
                                 lines = f.readlines()
@@ -1036,12 +1031,14 @@ def handle(bot):
                                 linesb = f.readlines()
                                 f.close()
                                 f = open("extras/" + str(chat_id) + "-extralist.txt", "w")
-                                for line in linesb:
-                                    if not line == extraname+"\r\n":
-                                        f.write(line)
-                                    else:
-                                        actuallyDidIt = True
-                                f.close()
+                                try:
+                                    for line in linesb:
+                                        if not line == extraname+"\r\n":
+                                            f.write(line)
+                                    f.close()
+                                    actuallyDidIt = True
+                                except:
+                                    pass
                                 if actuallyDidIt == True:
                                     bot.sendMessage(chat_id, "Success: Extra deleted!")
                                 else:
