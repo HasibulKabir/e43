@@ -364,29 +364,28 @@ def handle(bot):
                 if update.message['text'].startswith("/vid http://") or update.message['text'].startswith("/vid https://"):
                     if isenabled("videos"):
                         try:
+                            done = True
                             status_message = bot.sendMessage(chat_id, "Downloading...")
                             input_text = update.message['text'].split("/vid ")[1]
                             input_text = input_text.split('&')[0]
                             cmd_download = ["youtube-dl", "--no-continue", "-f", "mp4", "-o", "video.%(ext)s", input_text]
                             subprocess.Popen(cmd_download, shell=False).wait()
                             cmd_conv = "ffmpeg -y -i video.mp4 -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 640x360 out.mp4"
-                            bot.editMessageText(update.messageid, "Converting...")
+                            if not chat_type == "channel" and not "group" in chat_type:
+                                bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                             subprocess.Popen(cmd_conv.split(' '), shell=False).wait()
                             filename = "out.mp4"
                             subprocess.Popen(str("ffmpeg -ss 0 -t 59 -y -i " + filename + " -vcodec libx264 -crf 27 -preset veryfast -c:a copy -s 480x480 vm.mp4").split(' '), shell=False).wait()
-                            bot.editMessageText(update.messageid, "Sending...")
+                            if not chat_type == "channel" and not "group" in chat_type:
+                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
                             sendVideoNote(chat_id, "vm.mp4")
-                            f = open("out.mp4", "r")
-                            bot.sendVideo(chat_id, f)
-                            f.close()
+                            sendVideo(chat_id, "out.mp4")
                             try:
-                                bot.deleteMessage(update.messageid)
-                                bot.deleteMessage(telepot.message_identifier(update.message))
+                                bot.deleteMessage(status_message.message_id)
                             except:
                                 pass
                             if chat_type == "private":
                                 bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
-                            done = True
                         except Exception as e:
                             if chat_type == "private":
                                 f = open("templates/error", "r")
@@ -663,7 +662,7 @@ def handle(bot):
                                     os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                                 os.system("rm -f raw_audio.jpg")
                                 if not chat_type == "channel" and not "group" in chat_type:
-                                    bot.editMessageText(update.messageid, "Converting...")
+                                    bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                 subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                             except:
                                 artist = thist.user['username']
@@ -683,7 +682,7 @@ def handle(bot):
                                     os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
                                 os.system("rm -f raw_audio.jpg")
                                 if not chat_type == "channel" and not "group" in chat_type:
-                                    bot.editMessageText(update.messageid, "Converting...")
+                                    bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                 try:
                                     subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                                 except:
@@ -696,7 +695,7 @@ def handle(bot):
                             else:
                                 subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                             if not chat_type == "channel" and not "group" in chat_type:
-                                bot.editMessageText(update.messageid, "Sending...")
+                                bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
                             f = open("audio.jpg")
                             bot.sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
                             f.close()
@@ -787,7 +786,7 @@ def handle(bot):
                         s = s.replace("%%release%%", release)
                         s = s.replace("%%bottag%%", bottag)
                         try:
-                            bot.deleteMessage(update.messageid)
+                            bot.deleteMessage(status_message.message_id)
                             bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
                         except:
                             bot.sendMessage(chat_id, "<pre>An error occured. It has been reported to my owner.</pre>", parse_mode="HTML")
@@ -1164,6 +1163,13 @@ def sendAudio(chat_id,file_name,performer,title,thumb):
 def sendVideoNote(chat_id,file_name):
     url = "https://api.telegram.org/bot%s/sendVideoNote"%(TOKEN)
     files = {'video_note': open(file_name, 'rb')}
+    data = {'chat_id' : chat_id}
+    r= requests.post(url, files=files, data=data)
+    print(r.status_code, r.reason, r.content)
+
+def sendVideo(chat_id,file_name):
+    url = "https://api.telegram.org/bot%s/sendVideo"%(TOKEN)
+    files = {'video': open(file_name, 'rb')}
     data = {'chat_id' : chat_id}
     r= requests.post(url, files=files, data=data)
     print(r.status_code, r.reason, r.content)
