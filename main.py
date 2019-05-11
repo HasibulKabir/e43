@@ -193,15 +193,16 @@ def handle(bot):
                             userid = update.message.reply_to_message.from_user.id
                             bot.kickChatMember(chat_id, userid)
                             bot.unbanChatMember(chat_id, userid)
-                    if update.message["text"].startswith("/delete") and isenabled("delete"):
-                        try:
-                            bot.deleteMessage(chat_id, update.message.reply_to_message.message_id)
-                            bot.deleteMessage(chat_id, update.message.message_id)
-                        except:
+                    if update.message["text"].startswith("/delete") or update.message["text"].startswith("/del"):
+                        if isenabled("delete"):
                             try:
+                                bot.deleteMessage(chat_id, update.message.reply_to_message.message_id)
                                 bot.deleteMessage(chat_id, update.message.message_id)
                             except:
-                                pass
+                                try:
+                                    bot.deleteMessage(chat_id, update.message.message_id)
+                                except:
+                                    pass
                 if update.message["text"].startswith("/stats"):
                     f = open("templates/stats")
                     s = f.read()
