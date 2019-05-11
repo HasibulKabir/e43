@@ -186,13 +186,16 @@ def handle(bot):
             if update.message.text:
                 if "group" in chat_type:
                     if update.message["text"].startswith("/kick") or update.message["text"].startswith("/ban"):
-                        if isenabled("ban"):
-                            userid = update.message.reply_to_message.from_user.id
-                            bot.kickChatMember(chat_id, userid)
-                        if update.message["text"].startswith("/kick") and isenabled("kick"):
-                            userid = update.message.reply_to_message.from_user.id
-                            bot.kickChatMember(chat_id, userid)
-                            bot.unbanChatMember(chat_id, userid)
+                        try:
+                            if isenabled("ban"):
+                                userid = update.message.reply_to_message.from_user.id
+                                bot.kickChatMember(chat_id, userid)
+                            if update.message["text"].startswith("/kick") and isenabled("kick"):
+                                userid = update.message.reply_to_message.from_user.id
+                                bot.kickChatMember(chat_id, userid)
+                                bot.unbanChatMember(chat_id, userid)
+                        except:
+                            pass
                     if update.message["text"].startswith("/delete") or update.message["text"].startswith("/del"):
                         if isenabled("delete"):
                             try:
