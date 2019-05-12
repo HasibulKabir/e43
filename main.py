@@ -186,27 +186,58 @@ def handle(bot):
                     pass
             if update.effective_message.text:
                 if "group" in chat_type:
-                    if update.effective_message["text"].startswith("/kick") or update.effective_message["text"].startswith("/ban"):
-                        try:
-                            if isenabled("ban"):
-                                userid = update.effective_message.reply_to_message.from_user.id
-                                bot.kickChatMember(chat_id, userid)
-                            if update.effective_message["text"].startswith("/kick") and isenabled("kick"):
-                                userid = update.effective_message.reply_to_message.from_user.id
-                                bot.kickChatMember(chat_id, userid)
-                                bot.unbanChatMember(chat_id, userid)
-                        except:
-                            pass
-                    if update.effective_message["text"].startswith("/delete") or update.effective_message["text"].startswith("/del"):
-                        if isenabled("delete"):
+                    if update.effective_message["text"].startswith("/kick") or update.effective_message["text"].startswith("/ban") or update.effective_message["text"].startswith("/delete") or update.effective_message["text"].startswith("/promote"):
+                        admins = bot.getChatAdministrators(chat_id)
+                        isAdmin = False
+                        proceed = False
+                        for user in admins:
                             try:
-                                bot.deleteMessage(chat_id, update.effective_message.reply_to_message.message_id)
-                                bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                if str(user['user']['username']).replace("u'", "").replace("'", "") == update.effective_message.from_user.username:
+                                    isAdmin = True
                             except:
+                                pass
+                        if update.effective_message.from_user.username == BOTMASTER:
+                            isAdmin = True
+                        if isAdmin == True:
+                            proceed = True
+                        else:
+                            message_status = bot.sendMessage(chat_id, "You don't have permission to do that.", reply_to_message_id=update.effective_message.message_id)
+                        if proceed:
+                            if update.effective_message["text"].startswith("/kick") or update.effective_message["text"].startswith("/ban"):
                                 try:
-                                    bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                    if isenabled("ban"):
+                                        userid = update.effective_message.reply_to_message.from_user.id
+                                        bot.kickChatMember(chat_id, userid)
+                                    if update.effective_message["text"].startswith("/kick") and isenabled("kick"):
+                                        userid = update.effective_message.reply_to_message.from_user.id
+                                        bot.kickChatMember(chat_id, userid)
+                                        bot.unbanChatMember(chat_id, userid)
                                 except:
                                     pass
+                            if update.effective_message["text"].startswith("/promote") and isenabled("promote"):
+                                try:
+                                    if isenabled("promote"):
+                                        userid = update.effective_message.reply_to_message.from_user.id
+                                        bot.promoteChatMember(chat_id, userid)
+                                except:
+                                    pass
+                            if update.effective_message["text"].startswith("/pin") and isenabled("pin"):
+                                try:
+                                    if isenabled("pin"):
+                                        msgid = update.effective_message.message_id
+                                        bot.pinChatMessage(chat_id, msgid)
+                                except:
+                                    pass
+                            if update.effective_message["text"].startswith("/delete") or update.effective_message["text"].startswith("/del"):
+                                if isenabled("delete"):
+                                    try:
+                                        bot.deleteMessage(chat_id, update.effective_message.reply_to_message.message_id)
+                                        bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                    except:
+                                        try:
+                                            bot.deleteMessage(chat_id, update.effective_message.message_id)
+                                        except:
+                                            pass
                 if update.effective_message["text"].startswith("/stats"):
                     f = open("templates/stats")
                     s = f.read()
@@ -964,59 +995,62 @@ def handle(bot):
                             bot.sendMessage(chat_id, "Message not a reply to a message or no name defined! Reply to a message with /addextra [name]", reply_to_message_id=update.effective_message.message_id)
                     if update.effective_message['text'].startswith('#') or update.effective_message['text'].startswith("/extra "):
                         if isenabled("extras"):
-                            if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
-                                if update.effective_message['text'].startswith("/extra "):
-                                    extraname = update.effective_message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
-                                else:
-                                    extraname = update.effective_message['text'].split('#')[1].split('\n')[0]
-                                f = open("extras/" + str(chat_id) + ".txt", "r")
-                                s = f.read().split('\n')
-                                f.close()
-                                mid = None
-                                for x in s:
-                                    if not x == "":
-                                        ename = x.split(':')[1]
-                                        if ename == extraname:
-                                            mid = x.split(':')[0]
-                                            cid = x.split(':')[2]
-                                try:
-                                    status_message = bot.forwardMessage(chat_id, chat_id, int(mid))
-                                except:
-                                    bot.sendMessage(chat_id, "Error: Extra not found!", reply_to_message_id=update.effective_message.message_id)
-                                try:
-                                    # Some stuff is pretty tricky here. You shouldn't change the order here if this function isn't broken.
-                                    if "document" in str(status_message):
-                                        fileid = status_message.document.file_id
-                                        bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "sticker" in str(status_message):
-                                        fileid = status_message.sticker.file_id
-                                        bot.sendSticker(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "voice" in str(status_message):
-                                        fileid = status_message.voice.file_id
-                                        bot.sendVoice(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "video_note" in str(status_message):
-                                        fileid = status_message.video_note.file_id
-                                        bot.sendVideoNote(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "video" in str(status_message):
-                                        fileid = status_message.video.file_id
-                                        bot.sendVideo(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "photo" in str(status_message):
-                                        fileid = status_message.photo.file_id
-                                        bot.sendPhoto(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "audio" in str(status_message):
-                                        fileid = status_message.audio.file_id
-                                        bot.sendAudio(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "file" in str(status_message):
-                                        fileid = status_message.document.file_id
-                                        bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
-                                    if "text" in str(status_message):
-                                        bot.sendMessage(chat_id, status_message['text'], reply_to_message_id=update.effective_message.message_id)
-                                except:
-                                    pass
-                                try:
-                                    bot.deleteMessage(chat_id, status_message.message_id)
-                                except:
-                                    pass
+                            try:
+                                if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
+                                    if update.effective_message['text'].startswith("/extra "):
+                                        extraname = update.effective_message['text'].split('/extra ')[1].replace('#', '').split('\n')[0]
+                                    else:
+                                        extraname = update.effective_message['text'].split('#')[1].split('\n')[0]
+                                    f = open("extras/" + str(chat_id) + ".txt", "r")
+                                    s = f.read().split('\n')
+                                    f.close()
+                                    mid = None
+                                    for x in s:
+                                        if not x == "":
+                                            ename = x.split(':')[1]
+                                            if ename == extraname:
+                                                mid = x.split(':')[0]
+                                                cid = x.split(':')[2]
+                                    try:
+                                        status_message = bot.forwardMessage(chat_id, chat_id, int(mid))
+                                    except:
+                                        bot.sendMessage(chat_id, "Error: Extra not found!", reply_to_message_id=update.effective_message.message_id)
+                                    try:
+                                        # Some stuff is pretty tricky here. You shouldn't change the order here if this function isn't broken.
+                                        if "document" in str(status_message):
+                                            fileid = status_message.document.file_id
+                                            bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "sticker" in str(status_message):
+                                            fileid = status_message.sticker.file_id
+                                            bot.sendSticker(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "voice" in str(status_message):
+                                            fileid = status_message.voice.file_id
+                                            bot.sendVoice(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "video_note" in str(status_message):
+                                            fileid = status_message.video_note.file_id
+                                            bot.sendVideoNote(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "video" in str(status_message):
+                                            fileid = status_message.video.file_id
+                                            bot.sendVideo(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "photo" in str(status_message):
+                                            fileid = status_message.photo.file_id
+                                            bot.sendPhoto(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "audio" in str(status_message):
+                                            fileid = status_message.audio.file_id
+                                            bot.sendAudio(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "file" in str(status_message):
+                                            fileid = status_message.document.file_id
+                                            bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
+                                        if "text" in str(status_message):
+                                            bot.sendMessage(chat_id, status_message['text'], reply_to_message_id=update.effective_message.message_id)
+                                    except:
+                                        pass
+                                    try:
+                                        bot.deleteMessage(chat_id, status_message.message_id)
+                                    except:
+                                        pass
+                            except:
+                                pass
                     if update.effective_message['text'].startswith("/extralist") or update.effective_message['text'].startswith("/extras") and isenabled("extras"):
                         try:
                             if not os.path.isfile("extras/" + str(chat_id) + "-deactivated.txt"):
