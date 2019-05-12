@@ -538,7 +538,7 @@ def handle(bot):
                             status_message = bot.sendMessage(chat_id, "Downloading...", reply_to_message_id=update.effective_message.message_id)
                         else:
                             try:
-                                if input_text.startswith("/") or "youtu" in input_text \
+                                if input_text.startswith("/settag") or "youtu" in input_text \
                                 or "mixcloud" in input_text \
                                 or "soundcloud" in input_text \
                                 or "spotify" in input_text:
