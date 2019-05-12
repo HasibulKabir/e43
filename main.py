@@ -502,7 +502,7 @@ def handle(bot):
                                             cid = int(x.split(":")[0])
                                 except:
                                     pass
-                                bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
+                                bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
                                 status_message = bot.sendMessage(chat_id, "Hey @" + update.effective_message.from_user.username + "! I've sent you the help via private message.", reply_to_message_id=update.effective_message.message_id)
                                 time.sleep(5)
                                 bot.deleteMessage(chat_id, status_message.message_id)
