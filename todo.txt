@@ -9,7 +9,7 @@
 - Migrate the database to Redis (use bot tag as key) (cancelled)
 - Python 3 port (done)
 - Forcing people to subscribe if bot owner wants so (done)
-- Urban Dictionary, because I suck
+- Urban Dictionary, because I suck (done)
 - Language packs (done)
 - Ban, kick, mute and delete commands (done)
 - Module system (done)

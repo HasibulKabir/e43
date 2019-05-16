@@ -10,8 +10,6 @@ import time
 import eyed3
 import random
 import mutagen
-from mutagen.mp3 import MP3
-from mutagen.mp4 import MP4
 import soundcloud
 import string
 import json
@@ -20,6 +18,10 @@ import html.parser
 import logging
 import telegram
 import requests
+import urbandict as ud
+from bs4 import BeautifulSoup
+from mutagen.mp3 import MP3
+from mutagen.mp4 import MP4
 from telegram.error import NetworkError, Unauthorized
 
 update_id = None
@@ -58,7 +60,7 @@ else:
 if 'MODULES' in os.environ:
     MODULES = os.environ.get('MODULES')
 else:
-    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
+    MODULES = 'spotify,youtube,soundcloud,mixcloud,voice,videonotes,help,commands,stats,extras,counters,ud,subscriptions,videos,boxxy,horny,settag,ping,kick,ban,delete,pin,promote'
 f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
@@ -79,10 +81,13 @@ def handle(bot):
         update_id = update.update_id + 1
         if update.effective_message:
             os.system("sh clean.sh")
-            botlang = update.effective_message.from_user.language_code
-            if "de" in botlang:
-                botlang = "de"
-            else:
+            try:
+                botlang = update.effective_message.from_user.language_code
+                if "de" in botlang:
+                    botlang = "de"
+                else:
+                    botlang = "c"
+            except:
                 botlang = "c"
             done = False
             bottag = bot.getMe()["username"]
@@ -245,7 +250,17 @@ def handle(bot):
                                             bot.deleteMessage(chat_id, update.effective_message.message_id)
                                         except:
                                             pass
-                if update.effective_message["text"].startswith("/stats"):
+                if update.effective_message["text"].startswith("/ud") and isenabled("ud"):
+                    try:
+                        word = str(update.effective_message["text"].replace("/ud ", "").replace("/ud@" + bottag + " ", ""))
+                        with urllib.request.urlopen("https://api.urbandictionary.com/v0/define?term=" + word) as response:
+                            r = response.read().decode()
+                        callback = json.loads(r)
+                        definition = callback["list"][0]["definition"]
+                        bot.sendMessage(chat_id, "Definition for <b>" + callback["list"][0]["word"].capitalize() + "</b>:\n\n" + definition, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
+                    except:
+                        bot.sendMessage(chat_id, "Can't find definition!", reply_to_message_id=update.effective_message.message_id)
+                if update.effective_message["text"].startswith("/stats") and isenabled("stats"):
                     f = open("lang/" + botlang + "/stats")
                     s = f.read()
                     f.close()
