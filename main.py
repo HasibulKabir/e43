@@ -18,8 +18,6 @@ import html.parser
 import logging
 import telegram
 import requests
-import urbandict as ud
-from bs4 import BeautifulSoup
 from mutagen.mp3 import MP3
 from mutagen.mp4 import MP4
 from telegram.error import NetworkError, Unauthorized
