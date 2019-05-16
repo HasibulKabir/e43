@@ -10,6 +10,6 @@
 - Python 3 port (done)
 - Forcing people to subscribe if bot owner wants so (done)
 - Urban Dictionary, because I suck
-- Language packs
+- Language packs (done)
 - Ban, kick, mute and delete commands (done)
 - Module system (done)

@@ -1,0 +1,7 @@
+/addextra - Extra hinzufügen
+/extradel - Extra löschen
+/extra - Extra senden (funktioniert auch mit Hashtags)
+/extralist - Sende Extras als Textdatei
+/extras - Alias von /extralist
+/disableextras - Extras deaktivieren
+/enableextras - Extras aktivieren

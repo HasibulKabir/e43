@@ -63,6 +63,8 @@ f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
 
+VERSION = "0.9.0rc3"
+
 def isenabled(module):
     modenabled = False
     for x in MODULES.split(','):
@@ -77,6 +79,11 @@ def handle(bot):
         update_id = update.update_id + 1
         if update.effective_message:
             os.system("sh clean.sh")
+            botlang = update.effective_message.from_user.language_code
+            if "de" in botlang:
+                botlang = "de"
+            else:
+                botlang = "c"
             done = False
             bottag = bot.getMe()["username"]
             f = open("random.txt", "r")
@@ -239,7 +246,7 @@ def handle(bot):
                                         except:
                                             pass
                 if update.effective_message["text"].startswith("/stats"):
-                    f = open("templates/stats")
+                    f = open("lang/" + botlang + "/stats")
                     s = f.read()
                     f.close()
                     err_nope = "not applicable"
@@ -424,7 +431,7 @@ def handle(bot):
                                 bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
                         except Exception as e:
                             if chat_type == "private":
-                                f = open("templates/error", "r")
+                                f = open("lang/" + botlang + "/error", "r")
                                 s = f.read()
                                 f.close()
                                 exc_type, exc_obj, tb = sys.exc_info()
@@ -465,14 +472,14 @@ def handle(bot):
                     proceed = False
                     if update.effective_message['text'].startswith("/commands" ) and isenabled("commands"):
                         proceed = True
-                        f = open("templates/commands", "r")
+                        f = open("lang/" + botlang + "/commands", "r")
                         s = f.read()
                         f.close()
                         commands = ""
                         for mods in MODULES.split(","):
                             try:
                                 if isenabled(mods):
-                                    f = open("templates/cmdplates/" + mods, "r")
+                                    f = open("lang/" + botlang + "/cmdplates/" + mods, "r")
                                     command = f.read()
                                     f.close()
                                     commands = commands + command + "\n"
@@ -481,11 +488,11 @@ def handle(bot):
                         s = s.replace("%%commands%%", commands)
                     if update.effective_message['text'].startswith("/help") and isenabled("help"):
                         proceed = True
-                        f = open("templates/help", "r")
+                        f = open("lang/" + botlang + "/help", "r")
                         s = f.read()
                         f.close()
                         release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
-                        s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release)
+                        s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release).replace("%%version%%", VERSION)
                     if "group" in chat_type and proceed:
                         f = open("chatids.txt", "r")
                         cids = f.read()
@@ -808,7 +815,7 @@ def handle(bot):
                             pass
                 except Exception as e:
                     if chat_type == "private":
-                        f = open("templates/error", "r")
+                        f = open("lang/" + botlang + "/error", "r")
                         s = f.read()
                         f.close()
                         exc_type, exc_obj, tb = sys.exc_info()
@@ -914,13 +921,16 @@ def handle(bot):
                         ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
                         bot.sendMessage(chat_id, "Pong! (" + ping + " ms)", reply_to_message_id=update.effective_message.message_id)
                     if update.effective_message['text'].startswith("/start") and chat_type == "private":
-                        f = open("templates/start")
+                        f = open("lang/" + botlang + "/start")
                         s = f.read()
                         f.close()
                         if bottag == "e43bot":
                             s = s.replace("%%name%%", "E43")
                         else:
-                            s = s.replace("%%name%%", bot.getMe().first_name + ", a clone of E43")
+                            if botlang == "de":
+                                s = s.replace("%%name%%", bot.getMe().first_name + ", ein Klon von E43")
+                            else:
+                                s = s.replace("%%name%%", bot.getMe().first_name + ", a clone of E43")
                         bot.sendMessage(chat_id,s,disable_web_page_preview=True)
                     if update.effective_message['text'].startswith("/addextra") and isenabled("extras"):
                         try:
