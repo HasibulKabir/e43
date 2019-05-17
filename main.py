@@ -39,7 +39,6 @@ f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
 
-# Initializing APIs
 client = soundcloud.Client(client_id='LBCcHmRB8XSStWL6wKH2HPACspQlXg2P')
 thumb = "thumb.jpg"
 
@@ -75,7 +74,6 @@ def isenabled(module):
 def handle(bot):
     global update_id
     for update in bot.get_updates(offset=update_id, timeout=10):
-        #print(update)
         update_id = update.update_id + 1
         if update.effective_message:
             os.system("sh clean.sh")
@@ -265,7 +263,6 @@ def handle(bot):
                     err_nope = "not applicable"
                     err_disabled = "disabled"
                     err_unset = "not set"
-                    ###
                     s = s.replace("%%chat_id%%", str(chat_id))
                     if chat_type == "channel":
                         f = open("tags.txt","r")
@@ -596,8 +593,6 @@ def handle(bot):
                                     bot.deleteMessage(chat_id, update.effective_message.message_id)
                             except:
                                 pass
-                        # Apparently some users are so dumb, that they forgot what an URL is
-                        # Thanks StackOverflow: https://stackoverflow.com/questions/839994/extracting-a-url-in-python
                         try:
                             input_text = input_text.replace("\n", " ")
                             input_text = re.search("(?P<url>https?://[^\s]+)", input_text).group("url") # pylint: disable=W1401
@@ -1039,7 +1034,6 @@ def handle(bot):
                                     except:
                                         bot.sendMessage(chat_id, "Error: Extra not found!", reply_to_message_id=update.effective_message.message_id)
                                     try:
-                                        # Some stuff is pretty tricky here. You shouldn't change the order here if this function isn't broken.
                                         if "document" in str(status_message):
                                             fileid = status_message.document.file_id
                                             bot.sendDocument(chat_id, fileid, reply_to_message_id=update.effective_message.message_id)
@@ -1278,7 +1272,6 @@ def main():
     except IndexError:
         update_id = None
 
-    #logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.DEBUG)
     logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     while True:
