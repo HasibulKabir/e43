@@ -181,7 +181,7 @@ def handle(bot):
                     sendVoice(update.effective_message.chat_id, "output.ogg","")
                 except:
                     pass
-            if update.effective_message.video and isenabled("video"):
+            if update.effective_message.video and isenabled("videonotes"):
                 try:
                     fileid = update.effective_message.video.file_id
                     print(fileid)
