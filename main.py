@@ -62,7 +62,7 @@ f = open("random.txt", "w+")
 f.write(str(random.randint(10,30)))
 f.close()
 
-VERSION = "0.9.0rc3"
+VERSION = "0.9.0"
 
 def isenabled(module):
     modenabled = False
