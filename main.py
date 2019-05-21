@@ -939,7 +939,13 @@ def handle(bot):
                                 s = s.replace("%%name%%", bot.getMe().first_name + ", ein Klon von E43")
                             else:
                                 s = s.replace("%%name%%", bot.getMe().first_name + ", a clone of E43")
-                        bot.sendMessage(chat_id,s,disable_web_page_preview=True)
+                        try:
+                            fileid = bot.getUserProfilePhotos(bot.getMe().id).photos[0][0].file_id
+                            bot.sendPhoto(chat_id,fileid,s)
+                        except:
+                            os.system("convert e43.png -resize 512x512 thumb.jpg")
+                            bot.sendPhoto(chat_id,open("thumb.jpg", "rb"),s)
+                            os.system("rm -f thumb.jpg")
                     if update.effective_message['text'].startswith("/addextra") and isenabled("extras"):
                         try:
                             extraname = update.effective_message['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
