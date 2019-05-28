@@ -103,6 +103,24 @@ def handle(bot):
                         pass
             except:
                 pass
+            def start():
+                f = open("lang/" + botlang + "/start")
+                s = f.read()
+                f.close()
+                if bottag == "e43bot":
+                    s = s.replace("%%name%%", "E43")
+                else:
+                    if botlang == "de":
+                        s = s.replace("%%name%%", bot.getMe().first_name + ", ein Klon von E43")
+                    else:
+                        s = s.replace("%%name%%", bot.getMe().first_name + ", a clone of E43")
+                try:
+                    fileid = bot.getUserProfilePhotos(bot.getMe().id).photos[0][0].file_id
+                    bot.sendPhoto(chat_id,fileid,s)
+                except:
+                    os.system("convert e43.png -resize 512x512 thumb.jpg")
+                    bot.sendPhoto(chat_id,open("thumb.jpg", "rb"),s)
+                    os.system("rm -f thumb.jpg")
             if not isAdmin and "group" in chat_type:
                 if os.path.exists("deadlines/" + str(chat_id) + "-admin.txt"):
                     f = open("deadlines/" + str(chat_id) + "-admin.txt", "r")
@@ -119,7 +137,11 @@ def handle(bot):
                     f = open("deadlines/" + str(chat_id) + "-admin.txt", "w+")
                     f.write(ts3)
                     f.close()
-                    message_status = bot.sendMessage(chat_id, "You have a deadline of three minutes to make me an admin or I will leave the group. Making me an admin enables me to do more things than I am currently capable of.")
+                    start()
+                    f = open("lang/" + botlang + "/deadline", "r")
+                    s = f.read()
+                    f.close()
+                    message_status = bot.sendMessage(chat_id, s)
                     time.sleep(15)
                     bot.deleteMessage(chat_id, message_status.message_id)
             if chat_type == "private" or "group" in chat_type:
@@ -248,7 +270,11 @@ def handle(bot):
                                             pass
                 if update.effective_message["text"].startswith("/ud") and isenabled("ud"):
                     try:
-                        word = str(update.effective_message["text"].replace("/ud ", "").replace("/ud@" + bottag + " ", ""))
+                        if update.effective_message.reply_to_message.text == "/ud" or "/ud@" + bottag and "group" in chat_type:
+                            input_text = update.effective_message.reply_to_message.text.replace("/ud", "")
+                        else:
+                            input_text = update.effective_message.text
+                        word = str(input_text.replace("/ud ", "").replace("/ud@" + bottag + " ", ""))
                         with urllib.request.urlopen("https://api.urbandictionary.com/v0/define?term=" + word) as response:
                             r = response.read().decode()
                         callback = json.loads(r)
@@ -569,6 +595,11 @@ def handle(bot):
                             goon = False
                         else:
                             goon = True
+                    try:
+                        if update.effective_message.reply_to_message.text == "/conv" or "/conv@" + bottag and "group" in chat_type:
+                            input_text = update.effective_message.reply_to_message.text.replace("/conv", "")
+                    except:
+                        pass
                     blacklist = open("blacklist.txt", "r").read()
                     if str(chat_id) in blacklist:
                         goon = False
@@ -929,23 +960,7 @@ def handle(bot):
                         ping = os.popen("ping -c1 www.google.com").read().split("time=")[1].split(" ms")[0]
                         bot.sendMessage(chat_id, "Pong! (" + ping + " ms)", reply_to_message_id=update.effective_message.message_id)
                     if update.effective_message['text'].startswith("/start") and chat_type == "private":
-                        f = open("lang/" + botlang + "/start")
-                        s = f.read()
-                        f.close()
-                        if bottag == "e43bot":
-                            s = s.replace("%%name%%", "E43")
-                        else:
-                            if botlang == "de":
-                                s = s.replace("%%name%%", bot.getMe().first_name + ", ein Klon von E43")
-                            else:
-                                s = s.replace("%%name%%", bot.getMe().first_name + ", a clone of E43")
-                        try:
-                            fileid = bot.getUserProfilePhotos(bot.getMe().id).photos[0][0].file_id
-                            bot.sendPhoto(chat_id,fileid,s)
-                        except:
-                            os.system("convert e43.png -resize 512x512 thumb.jpg")
-                            bot.sendPhoto(chat_id,open("thumb.jpg", "rb"),s)
-                            os.system("rm -f thumb.jpg")
+                        start()
                     if update.effective_message['text'].startswith("/addextra") and isenabled("extras"):
                         try:
                             extraname = update.effective_message['text'].replace('/addextra ', '').replace(':', '').replace('#', '').split('\n')[0]
