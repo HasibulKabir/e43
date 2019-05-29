@@ -270,10 +270,17 @@ def handle(bot):
                                             pass
                 if update.effective_message["text"].startswith("/ud") and isenabled("ud"):
                     try:
-                        if update.effective_message.text == "/ud" or "/ud@" + bottag and "group" in chat_type:
-                            input_text = update.effective_message.reply_to_message.text.replace("/ud", "")
+                        if "group" in chat_type:
+                            if update.effective_message.text == "/ud" or update.effective_message.text == "/ud@" + bottag:
+                                input_text = update.effective_message.reply_to_message.text
+                            else:
+                                input_text = update.effective_message.text
                         else:
                             input_text = update.effective_message.text
+                        try:
+                            input_text = input_text.split(" ")[len(input_text.split(" ")) - 1]
+                        except:
+                            pass
                         word = str(input_text.replace("/ud ", "").replace("/ud@" + bottag + " ", ""))
                         with urllib.request.urlopen("https://api.urbandictionary.com/v0/define?term=" + word) as response:
                             r = response.read().decode()
