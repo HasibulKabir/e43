@@ -270,7 +270,7 @@ def handle(bot):
                                             pass
                 if update.effective_message["text"].startswith("/ud") and isenabled("ud"):
                     try:
-                        if update.effective_message.reply_to_message.text == "/ud" or "/ud@" + bottag and "group" in chat_type:
+                        if update.effective_message.text == "/ud" or "/ud@" + bottag and "group" in chat_type:
                             input_text = update.effective_message.reply_to_message.text.replace("/ud", "")
                         else:
                             input_text = update.effective_message.text
