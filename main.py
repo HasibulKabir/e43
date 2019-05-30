@@ -512,9 +512,7 @@ def handle(bot):
                 except:
                     pass
                 if update.effective_message['text'].startswith("/help") or update.effective_message['text'].startswith("/commands"):
-                    proceed = False
                     if update.effective_message['text'].startswith("/commands" ) and isenabled("commands"):
-                        proceed = True
                         f = open("lang/" + botlang + "/commands", "r")
                         s = f.read()
                         f.close()
@@ -530,13 +528,12 @@ def handle(bot):
                                 pass
                         s = s.replace("%%commands%%", commands)
                     if update.effective_message['text'].startswith("/help") and isenabled("help"):
-                        proceed = True
                         f = open("lang/" + botlang + "/help", "r")
                         s = f.read()
                         f.close()
                         release = str(subprocess.check_output("git rev-parse --verify HEAD", shell=True)).replace("b'", "").replace("'", "").replace("\\n", "")
                         s = s.replace("%%bottag%%", "@" + bottag).replace("%%botmaster%%", "@" + BOTMASTER).replace("%%release%%", release).replace("%%version%%", VERSION)
-                    if "group" in chat_type and proceed:
+                    if "group" in chat_type:
                         f = open("chatids.txt", "r")
                         cids = f.read()
                         f.close()
@@ -568,8 +565,7 @@ def handle(bot):
                             except:
                                 pass
                     else:
-                        if proceed:
-                            bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
+                        bot.sendMessage(chat_id, s, disable_web_page_preview=True, parse_mode="HTML", reply_to_message_id=update.effective_message.message_id)
                 if update.effective_message['text'].startswith("/settag") and isenabled("settag"):
                     if chat_type == "channel":
                         if update.effective_message['text'] == "/settag":
