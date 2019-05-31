@@ -141,7 +141,7 @@ def handle(bot):
                     f = open("lang/" + botlang + "/deadline", "r")
                     s = f.read()
                     f.close()
-                    message_status = bot.sendMessage(chat_id, s)
+                    bot.sendMessage(chat_id, s)
             if chat_type == "private" or "group" in chat_type:
                 try:
                     if chat_type == "private":
@@ -229,7 +229,7 @@ def handle(bot):
                         if isAdmin == True:
                             proceed = True
                         else:
-                            message_status = bot.sendMessage(chat_id, "You don't have permission to do that.", reply_to_message_id=update.effective_message.message_id)
+                            bot.sendMessage(chat_id, "You don't have permission to do that.", reply_to_message_id=update.effective_message.message_id)
                         if proceed:
                             if update.effective_message["text"].startswith("/kick") or update.effective_message["text"].startswith("/ban"):
                                 try:
@@ -540,7 +540,6 @@ def handle(bot):
                         f.close()
                         try:
                             if update.effective_message.from_user.username in cids:
-                                cid = 0
                                 try:
                                     for x in cids.split("\n"):
                                         if x.split(":")[1] == update.effective_message.from_user.username:
@@ -552,9 +551,11 @@ def handle(bot):
                                     bot.deleteMessage(chat_id, update.effective_message.message_id)
                                 except:
                                     pass
+                            else:
+                                bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below, send me any message and try again to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
                         except:
                             try:
-                                status_message = bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below and start me to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
+                                bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below and start me to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
                             except:
                                 pass
                     else:
