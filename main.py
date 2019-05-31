@@ -142,8 +142,6 @@ def handle(bot):
                     s = f.read()
                     f.close()
                     message_status = bot.sendMessage(chat_id, s)
-                    time.sleep(15)
-                    bot.deleteMessage(chat_id, message_status.message_id)
             if chat_type == "private" or "group" in chat_type:
                 try:
                     if chat_type == "private":
@@ -550,9 +548,6 @@ def handle(bot):
                                 except:
                                     pass
                                 bot.sendMessage(cid, s, disable_web_page_preview=True, parse_mode="HTML")
-                                status_message = bot.sendMessage(chat_id, "Hey @" + update.effective_message.from_user.username + "! I've sent you the help via private message.", reply_to_message_id=update.effective_message.message_id)
-                                time.sleep(5)
-                                bot.deleteMessage(chat_id, status_message.message_id)
                                 try:
                                     bot.deleteMessage(chat_id, update.effective_message.message_id)
                                 except:
@@ -560,8 +555,6 @@ def handle(bot):
                         except:
                             try:
                                 status_message = bot.sendMessage(chat_id, "There was a problem sending you the help. Press the link below and start me to receive the help.\nhttps://t.me/" + bottag, reply_to_message_id=update.effective_message.message_id)
-                                time.sleep(5)
-                                bot.deleteMessage(chat_id, status_message.message_id)
                             except:
                                 pass
                     else:
