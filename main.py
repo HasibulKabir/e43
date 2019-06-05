@@ -601,7 +601,7 @@ def handle(bot):
                     if str(chat_id) in blacklist:
                         goon = False
                         done = True
-                    if "album" in input_text or "list" in update.effective_message['text'] or "set" and "soundcloud" in input_text:
+                    if "album" in input_text or "list" in update.effective_message['text'] or "set" in input_text:
                         goon = False
                         done = True
                         if chat_type == "private":
