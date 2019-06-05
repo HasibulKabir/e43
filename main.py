@@ -645,7 +645,7 @@ def handle(bot):
                             artist = html.unescape(title.split(' by ')[1].split(' | Mixcloud')[0].split(',')[0])
                             title = stitle
                             filename = artist.replace(" ", "-").replace("/", "-") + "_" + title.replace(" ", "-").replace("/", "-") + ".mp3"
-                            cover = "https://thumbnailer.mixcloud.com/unsafe/800x800/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
+                            cover = "https://thumbnailer.mixcloud.com/unsafe/500x500/extaudio/" + c.split('src="https://thumbnailer.mixcloud.com/unsafe/60x60/extaudio/')[1].split('"')[0]
                             os.system("wget -O audio.jpg \"" + cover + "\"")
                             if not chat_type == "channel" and not "group" in chat_type:
                                 bot.editMessageText(update.effective_messageid, "Converting...")
@@ -811,7 +811,7 @@ def handle(bot):
                             except:
                                 pass
                             try:
-                                subprocess.Popen(["sacad", artist, title, "800", "audio.jpg"], shell=False).wait()
+                                subprocess.Popen(["sacad", artist, title, "500", "audio.jpg"], shell=False).wait()
                             except:
                                 pass
                             if not chat_type == "channel" and not "group" in chat_type:
