@@ -722,7 +722,7 @@ def handle(bot):
                         if "soundcloud" in input_text:
                             track = client.get('/resolve', url=input_text)
                             thist = track
-                            filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_") + ".mp3"
+                            filename = thist.title.replace(" ", "_").replace("!", "_").replace("&", "_").replace("?", "_").replace("/", "-") + ".mp3"
                             stream_url = client.get(thist.stream_url, allow_redirects=False)
                             artist = None
                             title = None
@@ -741,11 +741,9 @@ def handle(bot):
                                     pass
                                 if not os.path.exists("raw_audio.jpg"):
                                     os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
-                                    os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                                os.system("rm -f raw_audio.jpg")
                                 if not chat_type == "channel" and not "group" in chat_type:
                                     bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
-                                subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                subprocess.Popen(["lame", "--tc", "@" + bottag, "-b", "320", "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                             except:
                                 artist = thist.user['username']
                                 title = thist.title
@@ -761,12 +759,10 @@ def handle(bot):
                                     pass
                                 if not os.path.exists("raw_audio.jpg"):
                                     os.system("wget \"" + track.user['avatar_url'].replace("-large", "-t500x500") + "\" -O raw_audio.jpg")
-                                    os.system("convert raw_audio.jpg -resize 800x800 audio.jpg")
-                                os.system("rm -f raw_audio.jpg")
                                 if not chat_type == "channel" and not "group" in chat_type:
                                     bot.editMessageText(text="Converting...", message_id=status_message.message_id, chat_id=chat_id)
                                 try:
-                                    subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
+                                    subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ti", "raw_audio.jpg", "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                                 except:
                                     subprocess.Popen(["lame", "-b", "320", "--tc", "@" + bottag, "--ta", artist, "--tt", title, "audio.mp3", filename], shell=False).wait()
                             audio = MP3(filename)
@@ -778,16 +774,14 @@ def handle(bot):
                                 subprocess.Popen(str("ffmpeg -ss 0 -t 60 -y -i " + filename + " -strict -2 -ac 1 -map 0:a -codec:a opus -b:a 128k -vn output.ogg").split(' '), shell=False).wait()
                             if not chat_type == "channel" and not "group" in chat_type:
                                 bot.editMessageText(text="Sending...", message_id=status_message.message_id, chat_id=chat_id)
-                            f = open("audio.jpg")
-                            bot.sendPhoto(chat_id,"audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
-                            f.close()
+                            sendPhoto(chat_id,"raw_audio.jpg","🎵 " + title + "\n🎤 " + artist + username)
                             if os.path.exists("audio.jpg"):
                                 os.system("convert audio.jpg -resize 90x90 thumb.jpg")
                             else:
                                 os.system("convert blank.jpg -resize 90x90 thumb.jpg")
                             sendAudioChan(chat_id,filename,artist,title,username,thumb)
-                            f = open("output.ogg", "r")
-                            bot.sendVoice(chat_id,f,username)
+                            f = open("output.ogg", "rb")
+                            bot.sendVoice(chat_id,f,"",username)
                             f.close()
                             if chat_type == "private":
                                 bot.sendMessage(chat_id,"Here you go!\nCheck out @kseverythingbot_army for news and informations about this bot.",disable_web_page_preview=True)
