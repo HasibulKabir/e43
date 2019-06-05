@@ -4,7 +4,7 @@
 - Tutorial (done, see start)
 - Option to disable voice notes and video notes
 - Reply to message (done)
-- Option to add source URL to music file (user should be able to disable it)
+- Option to add source URL to music file (user should be able to disable it, disabled by default)
 - Same as above, but with Telegram link
 - Migrate the database to Redis (use bot tag as key) (cancelled)
 - Python 3 port (done)
